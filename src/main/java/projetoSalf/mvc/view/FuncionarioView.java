@@ -1,84 +1,60 @@
 package projetoSalf.mvc.view;
 
+import projetoSalf.mvc.controller.FuncionarioController;
+import projetoSalf.mvc.util.Mensagem;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Map;
+
+@CrossOrigin
+@RestController
+@RequestMapping({"apis/funcionario"})
 public class FuncionarioView {
-    private int func_cod;
-    private String func_nome;
-    private String func_cpf;
-    private String func_senha;
-    private String func_email;
-    private String func_login;
-    private int func_nivel;
 
-    // Construtor sem parâmetros
-    public FuncionarioView() {
+    @Autowired
+    private FuncionarioController funcionarioController;
+
+    @GetMapping
+    public ResponseEntity<Object> getFuncionario() {
+        List<Map<String, Object>> listFunc = this.funcionarioController.getFuncionario("");
+        return listFunc != null && !listFunc.isEmpty()
+                ? ResponseEntity.ok(listFunc.getFirst())
+                : ResponseEntity.badRequest().body(new Mensagem("Nenhum funcionário cadastrado"));
     }
 
-    // Construtor com todos os parâmetros
-    public FuncionarioView(int func_cod, String func_nome, String func_cpf, String func_senha, String func_email, String func_login, int func_nivel) {
-        this.func_cod = func_cod;
-        this.func_nome = func_nome;
-        this.func_cpf = func_cpf;
-        this.func_senha = func_senha;
-        this.func_email = func_email;
-        this.func_login = func_login;
-        this.func_nivel = func_nivel;
+    @PostMapping
+    public ResponseEntity<Object> addFuncionario(
+            @RequestParam("func_nome") String nome,
+            @RequestParam("func_cpf") String cpf,
+            @RequestParam("func_senha") String senha,
+            @RequestParam("func_email") String email,
+            @RequestParam("func_login") String login,
+            @RequestParam("func_nivel") int nivel,
+            @RequestPart("file") MultipartFile file) {
+
+        Map<String, Object> json = this.funcionarioController.addFuncionario(nome, cpf, senha, email, login, nivel, file);
+        return json.get("erro") == null
+                ? ResponseEntity.ok(new Mensagem("Funcionário cadastrado com sucesso!"))
+                : ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
 
-    // Métodos getters e setters
-    public int getFunc_cod() {
-        return func_cod;
-    }
+    @PutMapping
+    public ResponseEntity<Object> updtFuncionario(
+            @RequestParam("func_nome") String nome,
+            @RequestParam("func_cpf") String cpf,
+            @RequestParam("func_senha") String senha,
+            @RequestParam("func_email") String email,
+            @RequestParam("func_login") String login,
+            @RequestParam("func_nivel") int nivel,
+            @RequestPart("file") MultipartFile file) {
 
-    public void setFunc_cod(int func_cod) {
-        this.func_cod = func_cod;
-    }
-
-    public String getFunc_nome() {
-        return func_nome;
-    }
-
-    public void setFunc_nome(String func_nome) {
-        this.func_nome = func_nome;
-    }
-
-    public String getFunc_cpf() {
-        return func_cpf;
-    }
-
-    public void setFunc_cpf(String func_cpf) {
-        this.func_cpf = func_cpf;
-    }
-
-    public String getFunc_senha() {
-        return func_senha;
-    }
-
-    public void setFunc_senha(String func_senha) {
-        this.func_senha = func_senha;
-    }
-
-    public String getFunc_email() {
-        return func_email;
-    }
-
-    public void setFunc_email(String func_email) {
-        this.func_email = func_email;
-    }
-
-    public String getFunc_login() {
-        return func_login;
-    }
-
-    public void setFunc_login(String func_login) {
-        this.func_login = func_login;
-    }
-
-    public int getFunc_nivel() {
-        return func_nivel;
-    }
-
-    public void setFunc_nivel(int func_nivel) {
-        this.func_nivel = func_nivel;
+        Map<String, Object> json = this.funcionarioController.updtFuncionario(nome, cpf, senha, email, login, nivel, file);
+        return json.get("erro") == null
+                ? ResponseEntity.ok(new Mensagem("Funcionário alterado com sucesso!"))
+                : ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
 }
-
