@@ -20,13 +20,13 @@ public class ProdutoDAO implements IDAO<Produto>{
     public Produto gravar(Produto produto) {
         String sql = """
                 INSERT INTO produto(prod_dtvalid, prod_desc, prod_valorun, cat_cod) 
-            VALUES ('#1', '#2', '#3', '#4');
+                VALUES ('#1', '#2', '#3', '#4');
         """;
 
         sql=sql.replace("#1",produto.getProd_dtvalid());
         sql=sql.replace("#2",produto.getProd_desc());
         sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCat_cod().getCat_cod()));
+        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getCat_ID()));
 
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
@@ -51,7 +51,7 @@ public class ProdutoDAO implements IDAO<Produto>{
         sql=sql.replace("#1",produto.getProd_dtvalid());
         sql=sql.replace("#2",produto.getProd_desc());
         sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCat_cod().getCat_cod()));
+        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getCat_ID()));
         sql=sql.replace("#5",String.valueOf(produto.getProd_cod()));
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
@@ -61,61 +61,51 @@ public class ProdutoDAO implements IDAO<Produto>{
         }
     }
 
-    @Override
-    public boolean apagar(Produto produto)
-    {
-        return false;
-    }
+
 
     @Override
     public Produto get(int id)
     {
-        String sql = "SELECT * FROM empresa WHERE prod_cod = " + id;
-        ResultSet resultset = SingletonDB.getConexao().consultar(sql);
+        String sql = "SELECT * FROM produto WHERE prod_cod = " + id;
+        Produto p = null;
         try{
-            if(resultset.next())
+            ResultSet resultSet = SingletonDB.getConexao().consultar(sql);
+            if(resultSet.next())
             {
-                Produto p = new Produto();
-                p.setProd_cod(resultset.getLong("prod_cod"));
-                p.setProd_dtvalid(resultset.getString("prod_dtvalid"));
-                p.setProd_desc(resultset.getString("prod_desc"));
-                p.setProd_valorun(resultset.getFloat("prod_valorun"));
+               p = new Produto(
+                        resultSet.getLong("prod_cod"),
+                        resultSet.getString("prod_dtvalid"),
+                        resultSet.getString("prod_desc"),
+                        resultSet.getFloat("prod_valorun"),
+                        new Categoria(resultSet.getLong("cat_cod"))
 
-                CategoriaProduto cat = new CategoriaProduto(
-                        resultset.getInt("cat_cod"),
-                        "" // Você pode buscar a descrição se quiser em outra consulta
                 );
-                p.setCat_cod(cat);
 
-                return p;
             }
         } catch (Exception e) {
             System.out.println("Erro ao buscar produto "+ e.getMessage());
         }
-        return null;
+        return p;
     }
 
     @Override
     public List<Produto> get(String filtro) {
         List<Produto> lista = new ArrayList<>();
         String sql = "SELECT * FROM produto";
-        if (filtro != null && !filtro.isBlank()) {
+        if (!filtro.isEmpty()) {
             sql += " WHERE " + filtro;
         }
         ResultSet rs = SingletonDB.getConexao().consultar(sql);
         try {
             while (rs.next()) {
-                Produto p = new Produto();
-                p.setProd_cod(rs.getLong("prod_cod"));
-                p.setProd_dtvalid(rs.getString("prod_dtvalid"));
-                p.setProd_desc(rs.getString("prod_desc"));
-                p.setProd_valorun(rs.getFloat("prod_valorun"));
+               Produto p = new Produto(
+                        rs.getLong("prod_cod"),
+                        rs.getString("prod_dtvalid"),
+                        rs.getString("prod_desc"),
+                        rs.getFloat("prod_valorun"),
+                        new Categoria(rs.getLong("cat_cod"))
 
-                CategoriaProduto cat = new CategoriaProduto(
-                        rs.getInt("cat_cod"),
-                        ""
                 );
-                p.setCat_cod(cat);
 
                 lista.add(p);
             }
@@ -128,7 +118,7 @@ public class ProdutoDAO implements IDAO<Produto>{
 
 
     public boolean isEmpty() {
-        String sql = "SELECT * FROM empresa";
+        String sql = "SELECT * FROM produto";
         ResultSet rs = SingletonDB.getConexao().consultar(sql);
         try {
             return !rs.next();
@@ -137,8 +127,8 @@ public class ProdutoDAO implements IDAO<Produto>{
         }
     }
 
-    public boolean deletarProduto() {
-        String sql = "DELETE FROM produto";
+    public boolean deletarProduto(Long id) {
+        String sql = "DELETE FROM produto where prod_cod= "+id;
         return SingletonDB.getConexao().manipular(sql);
     }
 }

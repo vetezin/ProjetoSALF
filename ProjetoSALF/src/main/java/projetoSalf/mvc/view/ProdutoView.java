@@ -2,23 +2,25 @@ package projetoSalf.mvc.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import projetoSalf.mvc.controller.ProdutoController;
 import projetoSalf.mvc.util.Mensagem;
 
 import java.util.List;
 import java.util.Map;
 
+
+@CrossOrigin
+@RestController
+@RequestMapping
 public class ProdutoView {
-////////
+
     @Autowired
     private ProdutoController produtoController;
 
     @GetMapping
-    public ResponseEntity<Object> getProdutos() {
+    public ResponseEntity<Object> getAll() {
+
         List<Map<String, Object>> lista = produtoController.getProd();
         if (lista != null && !lista.isEmpty())
             return ResponseEntity.ok(lista);
@@ -31,14 +33,15 @@ public class ProdutoView {
             @RequestParam("prod_desc") String descricao,
             @RequestParam("prod_dtvalid") String validade,
             @RequestParam("prod_valorun") float valor,
-            @RequestParam("cat_cod") int catCod
+            @RequestParam("categoria") Categoria categoria
     ) {
-        Map<String, Object> json = produtoController.addProduto(descricao, validade, valor, catCod);
+        Map<String, Object> json = produtoController.addProd(descricao, validade, valor, categoria);
         if (json.get("erro") == null)
             return ResponseEntity.ok(new Mensagem("Produto cadastrado com sucesso!"));
         else
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
+
 
     @PutMapping
     public ResponseEntity<Object> updtProduto(
@@ -46,12 +49,24 @@ public class ProdutoView {
             @RequestParam("prod_desc") String descricao,
             @RequestParam("prod_dtvalid") String validade,
             @RequestParam("prod_valorun") float valor,
-            @RequestParam("cat_cod") int catCod
+            @RequestParam("categoria") Categoria categoria
     ) {
-        Map<String, Object> json = produtoController.updtProduto(cod, descricao, validade, valor, catCod);
+        Map<String, Object> json = produtoController.updtProduto(cod, descricao, validade, valor, categoria);
         if (json.get("erro") == null)
             return ResponseEntity.ok(new Mensagem("Produto alterado com sucesso!"));
         else
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletarProduto(@PathVariable("id") long id) {
+        Map<String, Object> json = produtoController.deletarProduto(id);
+
+        if (json.get("erro") == null) {
+            return ResponseEntity.ok(new Mensagem(json.get("mensagem").toString()));
+        } else {
+            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
+        }
+    }
+
 }

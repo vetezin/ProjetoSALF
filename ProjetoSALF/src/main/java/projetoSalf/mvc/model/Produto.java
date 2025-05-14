@@ -18,17 +18,17 @@ public class Produto {
     private String prod_dtvalid;
     private String prod_desc;
     private float prod_valorun;
-    private CategoriaProduto categoriaProduto;
+    private Categoria categoria;
 
     public Produto() {
     }
 
-    public Produto(Long prod_cod, String prod_dtvalid, String prod_desc, float prod_valorun, CategoriaProduto categoriaProduto) {
-        this.prod_cod = prod_cod;
+    public Produto( String prod_dtvalid, String prod_desc, float prod_valorun, Categoria categoria) {
+
         this.prod_dtvalid = prod_dtvalid;
         this.prod_desc = prod_desc;
         this.prod_valorun = prod_valorun;
-        this.categoriaProduto = categoriaProduto;
+        this.categoria = categoria;
     }
 
 
@@ -65,24 +65,27 @@ public class Produto {
         this.prod_valorun = prod_valorun;
     }
 
-    public CategoriaProduto getCat_cod() {
-        return categoriaProduto;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setCat_cod(CategoriaProduto categoriaProduto) {
-        this.categoriaProduto = categoriaProduto;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public List<Produto> consultar(String filtro, Conexao conexao){
         return dao.get(filtro);
     }
+    public Produto consultar(int id){
+        return dao.get(id);
+    }
     public boolean isEmpty(){
         return dao.get("").isEmpty();
     }
-    public Produto gravar(Parametrizacao param){
-        return dao.gravar(produ);
+    public Produto gravar(Produto produto){
+        return dao.gravar(produto);
     }
-    public boolean deletarProduto(){
-        return dao.deletarProduto();
+    public boolean deletarProduto(Long id){
+        return dao.deletarProduto(id);
     }
 }
