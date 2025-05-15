@@ -1,7 +1,8 @@
 package projetoSalf.mvc.dao;
 
 
-import projetoSalf.mvc.model.CategoriaProduto;
+import projetoSalf.mvc.model.Categoria;
+
 
 
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ProdutoDAO implements IDAO<Produto>{
+public class ProdutoDAO implements IDAO<Produto>
+{
 
     @Override
     public Produto gravar(Produto produto) {
@@ -26,7 +28,7 @@ public class ProdutoDAO implements IDAO<Produto>{
         sql=sql.replace("#1",produto.getProd_dtvalid());
         sql=sql.replace("#2",produto.getProd_desc());
         sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getCat_ID()));
+        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getId()));
 
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
@@ -51,7 +53,7 @@ public class ProdutoDAO implements IDAO<Produto>{
         sql=sql.replace("#1",produto.getProd_dtvalid());
         sql=sql.replace("#2",produto.getProd_desc());
         sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getCat_ID()));
+        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getId()));
         sql=sql.replace("#5",String.valueOf(produto.getProd_cod()));
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
@@ -73,11 +75,11 @@ public class ProdutoDAO implements IDAO<Produto>{
             if(resultSet.next())
             {
                p = new Produto(
-                        resultSet.getLong("prod_cod"),
+                        resultSet.getInt("prod_cod"),
                         resultSet.getString("prod_dtvalid"),
                         resultSet.getString("prod_desc"),
                         resultSet.getFloat("prod_valorun"),
-                        new Categoria(resultSet.getLong("cat_cod"))
+                        new Categoria(resultSet.getInt("cat_cod"))
 
                 );
 
@@ -99,11 +101,11 @@ public class ProdutoDAO implements IDAO<Produto>{
         try {
             while (rs.next()) {
                Produto p = new Produto(
-                        rs.getLong("prod_cod"),
+                        rs.getInt("prod_cod"),
                         rs.getString("prod_dtvalid"),
                         rs.getString("prod_desc"),
                         rs.getFloat("prod_valorun"),
-                        new Categoria(rs.getLong("cat_cod"))
+                        new Categoria(rs.getInt("cat_cod"))
 
                 );
 
@@ -127,8 +129,12 @@ public class ProdutoDAO implements IDAO<Produto>{
         }
     }
 
-    public boolean deletarProduto(Long id) {
-        String sql = "DELETE FROM produto where prod_cod= "+id;
+    @Override
+    public boolean apagar(Produto produto) {
+        if (produto == null)
+            return false;
+
+        String sql = "DELETE FROM produto WHERE prod_cod = " + produto.getProd_cod();
         return SingletonDB.getConexao().manipular(sql);
     }
 }

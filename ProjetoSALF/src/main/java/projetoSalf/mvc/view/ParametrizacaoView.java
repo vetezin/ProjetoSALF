@@ -1,6 +1,7 @@
+/*
 package projetoSalf.mvc.view;
 
-import casoft.mvc.controller.ParametrizacaoController;
+import projetoSalf.mvc.controller.ParametrizacaoController;
 import projetoSalf.mvc.util.Mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,3 +46,4 @@ public class ParametrizacaoView {
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
 }
+*/

@@ -2,6 +2,7 @@ package projetoSalf.mvc.controller;
 
 
 import org.springframework.web.bind.annotation.*;
+import projetoSalf.mvc.model.Categoria;
 import projetoSalf.mvc.model.Produto;
 
 import projetoSalf.mvc.util.Conexao;
@@ -36,7 +37,7 @@ public class ProdutoController {
                 json.put("nome", p.getProd_desc());
                 json.put("preco", p.getProd_valorun());
                 json.put("data", p.getProd_dtvalid());
-                json.put("categoria", p.getCategoria().getID());
+                json.put("categoria", p.getCategoria().getId());
                 prodList.add(json);
             }
 
@@ -57,7 +58,7 @@ public class ProdutoController {
             json.put("nome", produto.getProd_desc());
             json.put("preco", produto.getProd_valorun());
             json.put("data", produto.getProd_dtvalid());
-            json.put("categoria", produto.getCategoria().getID());
+            json.put("categoria", produto.getCategoria().getId());
 
             return json;
         }
@@ -65,10 +66,14 @@ public class ProdutoController {
 
 
 
-    public Map<String, Object> deletarProduto(Long id) {
-        Conexao conexao = new Conexao();
+    public Map<String, Object> deletarProduto(int  id) {
+        Produto produto = produtoModel.consultar(id); // Busca o produto pelo ID
+        if (produto == null) {
+            return Map.of("erro", "Produto não encontrado");
+        }
 
-        boolean deletado = produtoModel.deletarProduto(id);
+        boolean deletado = produtoModel.deletarProduto(produto); // Deleta o produto
+
         if (deletado) {
             return Map.of("mensagem", "Produto removido com sucesso!");
         } else {
@@ -105,9 +110,9 @@ public class ProdutoController {
     }
 
 
-
+/*
     public Map<String, Object> updtProd(
-            Long prod_cod,
+            int prod_cod,
             String prod_dtvalid,
             String prod_desc,
            float prod_valorun,
@@ -115,31 +120,78 @@ public class ProdutoController {
      {
 
         if (prod_cod == null || prod_dtvalid == null || prod_desc == null || prod_desc.isBlank() || prod_valorun < 0 || categoria == null) {
-            return Map.of("erro", "Dados inválidos para atualização");
+            return Map.of("erro", "Dados inválidos para atualizacao");
         }
+        else
+        {
 
-        if (produtoModel.deletarProduto(prod_cod)) {
-            Produto produto = new Produto(prod_dtvalid, prod_desc, prod_valorun, categoria);
-            produto.setProd_cod(prod_cod); // garante que mantém o mesmo ID
 
-            Produto atualizado = produtoModel.gravar(produto);
-            if (atualizado != null) {
-                Map<String, Object> json = new HashMap<>();
-                json.put("id", atualizado.getProd_cod());
-                json.put("nome", atualizado.getProd_desc());
-                json.put("preco", atualizado.getProd_valorun());
-                json.put("data", atualizado.getProd_dtvalid());
-                json.put("categoria", atualizado.getCategoria().getId());
-                return json;
+            if (produtoModel.deletarProduto(prod_cod)) {
+                Produto produto = new Produto(prod_dtvalid, prod_desc, prod_valorun, categoria);
+                produto.setProd_cod(prod_cod); // garante que mantém o mesmo ID
+
+                Produto atualizado = produtoModel.gravar(produto);
+                if (atualizado != null) {
+                    Map<String, Object> json = new HashMap<>();
+                    json.put("id", atualizado.getProd_cod());
+                    json.put("nome", atualizado.getProd_desc());
+                    json.put("preco", atualizado.getProd_valorun());
+                    json.put("data", atualizado.getProd_dtvalid());
+                    json.put("categoria", atualizado.getCategoria().getId());
+                    return json;
+                } else {
+                    return Map.of("erro", "Erro ao atualizar o produto");
+                }
             } else {
-                return Map.of("erro", "Erro ao atualizar o produto");
+                return Map.of("erro", "Erro ao deletar o produto antigo");
             }
-        } else {
-            return Map.of("erro", "Erro ao deletar o produto antigo");
         }
     }
 
+*/
+    public Map<String, Object> updtProd(
+            int prod_cod,
+            String prod_dtvalid,
+            String prod_desc,
+            float prod_valorun,
+            Categoria categoria)
+    {
+        // Validar ID existente
+        if (prod_cod <= 0
+                || prod_dtvalid == null
+                || prod_desc == null
+                || prod_desc.isBlank()
+                || prod_valorun < 0
+                || categoria == null) {
+            return Map.of("erro", "Dados inválidos para atualização");
+        }
 
+        // Buscar o produto antes de atualizar
+        Produto existente = produtoModel.consultar(prod_cod);
+        if (existente == null) {
+            return Map.of("erro", "Produto não encontrado");
+        }
+
+        // Atualiza apenas os campos necessários
+        existente.setProd_dtvalid(prod_dtvalid);
+        existente.setProd_desc(prod_desc);
+        existente.setProd_valorun(prod_valorun);
+        existente.setCategoria(categoria);
+
+        // Usa o mesmo metodo
+        Produto atualizado = produtoModel.gravar(existente);
+        if (atualizado != null) {
+            return Map.of(
+                    "id",        atualizado.getProd_cod(),
+                    "nome",      atualizado.getProd_desc(),
+                    "preco",     atualizado.getProd_valorun(),
+                    "data",      atualizado.getProd_dtvalid(),
+                    "categoria", atualizado.getCategoria().getId()
+            );
+        } else {
+            return Map.of("erro", "Erro ao atualizar o produto");
+        }
+    }
 
 
 }

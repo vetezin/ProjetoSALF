@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projetoSalf.mvc.controller.ProdutoController;
+import projetoSalf.mvc.model.Categoria;
 import projetoSalf.mvc.util.Mensagem;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping
+@RequestMapping("apis/produto")
 public class ProdutoView {
 
     @Autowired
@@ -45,13 +46,13 @@ public class ProdutoView {
 
     @PutMapping
     public ResponseEntity<Object> updtProduto(
-            @RequestParam("prod_cod") long cod,
+            @RequestParam("prod_cod") int cod,
             @RequestParam("prod_desc") String descricao,
             @RequestParam("prod_dtvalid") String validade,
             @RequestParam("prod_valorun") float valor,
             @RequestParam("categoria") Categoria categoria
     ) {
-        Map<String, Object> json = produtoController.updtProduto(cod, descricao, validade, valor, categoria);
+        Map<String, Object> json = produtoController.updtProd(cod, descricao, validade, valor, categoria);
         if (json.get("erro") == null)
             return ResponseEntity.ok(new Mensagem("Produto alterado com sucesso!"));
         else
@@ -59,7 +60,7 @@ public class ProdutoView {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarProduto(@PathVariable("id") long id) {
+    public ResponseEntity<Object> deletarProduto(@PathVariable("id") int id) {
         Map<String, Object> json = produtoController.deletarProduto(id);
 
         if (json.get("erro") == null) {

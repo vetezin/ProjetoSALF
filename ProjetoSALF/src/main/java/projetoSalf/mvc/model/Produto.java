@@ -14,7 +14,7 @@ public class Produto {
     @Autowired
     private ProdutoDAO dao;
 
-    private Long prod_cod;
+    private int prod_cod;
     private String prod_dtvalid;
     private String prod_desc;
     private float prod_valorun;
@@ -23,7 +23,16 @@ public class Produto {
     public Produto() {
     }
 
-    public Produto( String prod_dtvalid, String prod_desc, float prod_valorun, Categoria categoria) {
+    public Produto( int prod_cod, String prod_dtvalid, String prod_desc, float prod_valorun, Categoria categoria) {
+
+        this.prod_cod = prod_cod;
+        this.prod_dtvalid = prod_dtvalid;
+        this.prod_desc = prod_desc;
+        this.prod_valorun = prod_valorun;
+        this.categoria = categoria;
+    }
+
+    public Produto(String prod_dtvalid, String prod_desc, float prod_valorun, Categoria categoria) {
 
         this.prod_dtvalid = prod_dtvalid;
         this.prod_desc = prod_desc;
@@ -33,11 +42,11 @@ public class Produto {
 
 
 
-    public Long getProd_cod() {
+    public int getProd_cod() {
         return prod_cod;
     }
 
-    public void setProd_cod(Long prod_cod) {
+    public void setProd_cod(int prod_cod) {
         this.prod_cod = prod_cod;
     }
 
@@ -85,7 +94,7 @@ public class Produto {
     public Produto gravar(Produto produto){
         return dao.gravar(produto);
     }
-    public boolean deletarProduto(Long id){
-        return dao.deletarProduto(id);
+    public boolean deletarProduto(Produto produto){
+        return dao.apagar(produto);
     }
 }
