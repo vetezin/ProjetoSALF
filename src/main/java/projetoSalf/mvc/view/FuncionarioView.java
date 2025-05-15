@@ -20,7 +20,7 @@ public class FuncionarioView {
 
     @GetMapping
     public ResponseEntity<Object> getFuncionario() {
-        List<Map<String, Object>> listFunc = this.funcionarioController.getFuncionario("");
+        List<Map<String, Object>> listFunc = this.funcionarioController.getFuncionario();
         return listFunc != null && !listFunc.isEmpty()
                 ? ResponseEntity.ok(listFunc.getFirst())
                 : ResponseEntity.badRequest().body(new Mensagem("Nenhum funcionário cadastrado"));

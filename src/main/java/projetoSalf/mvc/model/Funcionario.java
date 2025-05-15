@@ -1,14 +1,18 @@
 package projetoSalf.mvc.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.FuncionarioDAO;
 import projetoSalf.mvc.util.Conexao;
 
 import java.util.List;
 
+@Component
 public class Funcionario {
+
     @Autowired
     private FuncionarioDAO dao;
+
     private int func_cod;
     private String func_nome;
     private String func_cpf;

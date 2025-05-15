@@ -1,6 +1,7 @@
 package projetoSalf.mvc.dao;
 
 import org.springframework.stereotype.Repository;
+
 import projetoSalf.mvc.model.Funcionario;
 import projetoSalf.mvc.util.SingletonDB;
 

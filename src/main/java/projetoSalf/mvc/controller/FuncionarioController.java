@@ -18,9 +18,9 @@ public class FuncionarioController {
     @Autowired
     private Funcionario funcionarioModel;
 
-    public List<Map<String, Object>> getFuncionario(String filtro) {
+    public List<Map<String, Object>> getFuncionario() {
         Conexao conexao = new Conexao();
-        List<Funcionario> lista = funcionarioModel.consultar(filtro, conexao);
+        List<Funcionario> lista = funcionarioModel.consultar("", conexao);
         if (!lista.isEmpty()) {
             List<Map<String, Object>> funcList = new ArrayList<>();
             for (Funcionario func : lista) {
