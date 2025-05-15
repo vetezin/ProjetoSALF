@@ -20,30 +20,46 @@ public class ProdutoController {
     @Autowired
     private Produto produtoModel;
 
+    @Autowired
+    private Categoria categoriaModel;
 
 
 
     public List<Map<String, Object>> getProd() {
         Conexao conexao = new Conexao();
         List<Produto> lista = produtoModel.consultar("", conexao);
-
+        Categoria cAux = new Categoria();
         if (lista.isEmpty())
             return null;
-        else {
+        else
+        {
             List<Map<String, Object>> prodList = new ArrayList<>();
             for (Produto p : lista) {
                 Map<String, Object> json = new HashMap<>();
+                Map<String,Object> catJson = new HashMap<>();
+
                 json.put("id", p.getProd_cod());
                 json.put("nome", p.getProd_desc());
                 json.put("preco", p.getProd_valorun());
                 json.put("data", p.getProd_dtvalid());
-                json.put("categoria", p.getCategoria().getId());
+
+
+
+
+                cAux = categoriaModel.consultar(p.getCategoria().getId());
+
+                Map<String, Object> categoriaJson = new HashMap<>();
+                categoriaJson.put("id", cAux.getId());
+                categoriaJson.put("desc", cAux.getDesc());
+
+                json.put("categoria", categoriaJson);
                 prodList.add(json);
             }
 
             return prodList;
         }
     }
+
 
 
     public Map<String, Object> getProd(int id){
@@ -63,6 +79,8 @@ public class ProdutoController {
             return json;
         }
     }
+
+
 
 
 
@@ -103,6 +121,7 @@ public class ProdutoController {
             json.put("preco", gravado.getProd_valorun());
             json.put("data", gravado.getProd_dtvalid());
             json.put("categoria", gravado.getCategoria().getId());
+            json.put("descricao",gravado.getCategoria().getDesc());
             return json;
         } else {
             return Map.of("erro", "Erro ao cadastrar o produto");
@@ -110,45 +129,7 @@ public class ProdutoController {
     }
 
 
-/*
-    public Map<String, Object> updtProd(
-            int prod_cod,
-            String prod_dtvalid,
-            String prod_desc,
-           float prod_valorun,
-            Categoria categoria)
-     {
 
-        if (prod_cod == null || prod_dtvalid == null || prod_desc == null || prod_desc.isBlank() || prod_valorun < 0 || categoria == null) {
-            return Map.of("erro", "Dados inválidos para atualizacao");
-        }
-        else
-        {
-
-
-            if (produtoModel.deletarProduto(prod_cod)) {
-                Produto produto = new Produto(prod_dtvalid, prod_desc, prod_valorun, categoria);
-                produto.setProd_cod(prod_cod); // garante que mantém o mesmo ID
-
-                Produto atualizado = produtoModel.gravar(produto);
-                if (atualizado != null) {
-                    Map<String, Object> json = new HashMap<>();
-                    json.put("id", atualizado.getProd_cod());
-                    json.put("nome", atualizado.getProd_desc());
-                    json.put("preco", atualizado.getProd_valorun());
-                    json.put("data", atualizado.getProd_dtvalid());
-                    json.put("categoria", atualizado.getCategoria().getId());
-                    return json;
-                } else {
-                    return Map.of("erro", "Erro ao atualizar o produto");
-                }
-            } else {
-                return Map.of("erro", "Erro ao deletar o produto antigo");
-            }
-        }
-    }
-
-*/
     public Map<String, Object> updtProd(
             int prod_cod,
             String prod_dtvalid,

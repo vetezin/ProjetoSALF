@@ -3,14 +3,20 @@ package projetoSalf.mvc.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import projetoSalf.mvc.dao.CategoriaDAO;
 
 @Component
 public class Categoria {
-    //@Autowired
-    //private CategoriaDAO dao
+    @Autowired
+    private CategoriaDAO dao;
 
     private int Id;
     private String desc;
+
+    public Categoria(int id, String desc) {
+        Id = id;
+        this.desc = desc;
+    }
 
     public Categoria(String desc) {
         this.desc = desc;
@@ -37,5 +43,8 @@ public class Categoria {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+    public Categoria consultar(int id){
+        return dao.get(id);
     }
 }
