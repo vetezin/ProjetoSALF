@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cadastro de Funcionário</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Cadastro de Funcionário</h1>
+  <form id="formCadastro">
+    <label for="func_nome">Nome</label>
+    <input type="text" id="func_nome" name="func_nome" placeholder="Digite o nome" required />
+
+    <label for="func_cpf">CPF</label>
+    <input type="text" id="func_cpf" name="func_cpf" placeholder="Digite o CPF" required />
+
+    <label for="func_senha">Senha</label>
+    <input type="password" id="func_senha" name="func_senha" placeholder="Digite a senha" required />
+
+    <label for="func_email">Email</label>
+    <input type="email" id="func_email" name="func_email" placeholder="Digite o email" required />
+
+    <label for="func_login">Login</label>
+    <input type="text" id="func_login" name="func_login" placeholder="Digite o login" required />
+
+    <label for="func_nivel">Nível</label>
+    <select id="func_nivel" name="func_nivel" required>
+      <option value="">Selecione o nível</option>
+      <option value="1">1 - Básico</option>
+      <option value="2">2 - Intermediário</option>
+      <option value="3">3 - Avançado</option>
+    </select>
+
+    <button type="submit">Cadastrar</button>
+    <div id="message"></div>
+  </form>
+
+<script src="cadastroFuncionario.js"></script>
+</body>
+</html>
