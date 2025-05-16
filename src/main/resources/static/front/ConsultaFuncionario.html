@@ -1,33 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Consultar Funcionários</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Consulta de Funcionários</title>
+  <link rel="stylesheet" href="styleConsulta.css">
 </head>
 <body>
-  <h1>Consultar Funcionários</h1>
-  <div id="funcionariosContainer">
+  <header class="header">
+    <nav>
+      <a href="index.html" class="nav-link">Ir para Cadastro</a>
+    </nav>
+  </header>
+
+  <div class="container">
     <table>
-        <thead>
-            <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Email</th>
-            <th>Login</th>
-            <th>Nível</th>
-            <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="tabela-funcionarios">
-            <!-- Linhas preenchidas via JS -->
-        </tbody>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Email</th>
+          <th>Login</th>
+          <th>Nível</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-funcionarios">
+        <!-- Conteúdo preenchido pelo JavaScript -->
+      </tbody>
     </table>
-    <div id="message"></div>
+    <div id="message-consulta"></div>
   </div>
 
-<script src="consultaFuncionario.js"></script>
+  <script src="consultaFuncionario.js"></script>
 </body>
 </html>

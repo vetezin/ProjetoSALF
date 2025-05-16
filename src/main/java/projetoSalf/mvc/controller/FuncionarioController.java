@@ -78,7 +78,7 @@ public class FuncionarioController {
         existente.setFunc_nome(nome);
         existente.setFunc_senha(senha);
 
-        Funcionario atualizado = funcionarioModel.gravar(existente);
+        Funcionario atualizado = funcionarioModel.update(existente);
         if (atualizado != null) {
             return Map.of(
                     "id",        atualizado.getId(),

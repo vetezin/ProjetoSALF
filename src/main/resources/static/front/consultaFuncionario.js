@@ -12,7 +12,6 @@ async function carregarFuncionarios() {
     tabelaFuncionarios.innerHTML = '';
 
     funcionarios.forEach(f => {
-      // Ajuste os nomes das propriedades conforme seu JSON real aqui:
       const func_cod = f.func_cod || f.id || 'N/A';
       const nome = f.nome || f.name || 'N/A';
       const cpf = f.cpf || 'N/A';
@@ -28,7 +27,7 @@ async function carregarFuncionarios() {
         <td>${email}</td>
         <td>${login}</td>
         <td>${nivel}</td>
-        <td><button class="delete-btn" data-cpf="${cpf}">Excluir</button></td>
+        <td><button class="delete-btn" data-id="${func_cod}">Excluir</button></td>
       `;
 
       tabelaFuncionarios.appendChild(tr);
@@ -42,20 +41,26 @@ async function carregarFuncionarios() {
   }
 }
 
-// Função para excluir funcionário pelo CPF
-async function excluirFuncionario(cpf) {
-  if (!confirm(`Confirma exclusão do funcionário com CPF: ${cpf}?`)) return;
+// Função para excluir funcionário pelo ID
+async function excluirFuncionario(id) {
+  if (!confirm(`Confirma exclusão do funcionário com ID: ${id}?`)) return;
 
   try {
-    const response = await fetch(`http://localhost:5050/apis/funcionario/${cpf}`, {
+    const response = await fetch(`http://localhost:5050/apis/funcionario/${id}`, {
       method: 'DELETE',
     });
-    if (!response.ok) throw new Error('Erro ao excluir funcionário.');
+
+    if (!response.ok) {
+      const erroTexto = await response.text();
+      console.error('Erro ao excluir:', erroTexto);
+      throw new Error('Erro ao excluir funcionário.');
+    }
 
     alert('Funcionário excluído com sucesso!');
     carregarFuncionarios();  // Recarrega a lista após exclusão
 
   } catch (error) {
+    console.error(error);
     alert('Erro ao excluir funcionário.');
   }
 }
@@ -63,8 +68,8 @@ async function excluirFuncionario(cpf) {
 // Evento delegado para o botão excluir
 tabelaFuncionarios.addEventListener('click', (event) => {
   if (event.target.classList.contains('delete-btn')) {
-    const cpf = event.target.getAttribute('data-cpf');
-    excluirFuncionario(cpf);
+    const id = event.target.getAttribute('data-id');
+    excluirFuncionario(id);
   }
 });
 
