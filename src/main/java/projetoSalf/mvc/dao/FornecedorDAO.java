@@ -4,7 +4,7 @@ import projetoSalf.mvc.model.Fornecedor;
 
 import org.springframework.stereotype.Repository;
 import projetoSalf.mvc.util.SingletonDB;
-import projetoSalf.mvc.util.CNPJUtils;
+import projetoSalf.mvc.util.FormatUtils;
 
 
 import java.sql.ResultSet;
@@ -18,7 +18,7 @@ public class FornecedorDAO implements IDAO<Fornecedor>
     public Fornecedor gravar(Fornecedor fornecedor) {
 
         // Limpar e atualizar o valor do objeto
-        String cnpjLimpo = CNPJUtils.limparCNPJ(fornecedor.getForn_cnpj());
+        String cnpjLimpo = FormatUtils.limparCNPJ(fornecedor.getForn_cnpj());
         fornecedor.setForn_cnpj(cnpjLimpo); // atualiza no objeto para gravar certo
 
         System.out.println("CNPJ recebido do objeto: [" + cnpjLimpo + "]");
@@ -58,7 +58,7 @@ public class FornecedorDAO implements IDAO<Fornecedor>
     @Override
     public Fornecedor alterar(Fornecedor fornecedor) {
         // Limpa o CNPJ e atualiza no objeto
-        String cnpjLimpo = CNPJUtils.limparCNPJ(fornecedor.getForn_cnpj());
+        String cnpjLimpo = FormatUtils.limparCNPJ(fornecedor.getForn_cnpj());
         fornecedor.setForn_cnpj(cnpjLimpo);
 
         // Verifica se existe outro fornecedor com o mesmo CNPJ

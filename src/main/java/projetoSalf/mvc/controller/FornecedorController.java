@@ -3,7 +3,8 @@ package projetoSalf.mvc.controller;
 import org.springframework.stereotype.Service;
 import projetoSalf.mvc.dao.FornecedorDAO;
 import projetoSalf.mvc.model.Fornecedor;
-import projetoSalf.mvc.util.CNPJUtils;
+import projetoSalf.mvc.util.FormatUtils;
+import projetoSalf.mvc.util.FormatUtils;
 
 import java.util.*;
 
@@ -66,9 +67,14 @@ public class FornecedorController {
             return Map.of("erro", "Dados inválidos");
         }
 
-        forn_cnpj = CNPJUtils.limparCNPJ(forn_cnpj);
-        if (!CNPJUtils.validarCNPJ(forn_cnpj)) {
+        forn_cnpj = FormatUtils.limparCNPJ(forn_cnpj);
+        if (!FormatUtils.validarCNPJ(forn_cnpj)) {
             return Map.of("erro", "CNPJ inválido.");
+        }
+
+        forn_telefone = FormatUtils.limparTelefone(forn_telefone); // remove tudo que não é número
+        if(!FormatUtils.validarTelefone(forn_telefone)){
+            return Map.of("erro", "Telefone inválido");
         }
 
         Fornecedor novo = new Fornecedor(forn_nome, forn_endereco, forn_cnpj, forn_telefone);
@@ -92,8 +98,8 @@ public class FornecedorController {
             return Map.of("erro", "Dados inválidos");
         }
 
-        forn_cnpj = CNPJUtils.limparCNPJ(forn_cnpj);
-        if (!CNPJUtils.validarCNPJ(forn_cnpj)) {
+        forn_cnpj = FormatUtils.limparCNPJ(forn_cnpj);
+        if (!FormatUtils.validarCNPJ(forn_cnpj)) {
             return Map.of("erro", "CNPJ inválido.");
         }
 

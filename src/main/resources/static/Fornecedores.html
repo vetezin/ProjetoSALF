@@ -100,6 +100,10 @@
             padding: 5px 10px;
             cursor: pointer;
         }
+        .invalid {
+            border-color: red;
+            background-color: #ffe6e6;
+        }
     </style>
 </head>
 <body>
@@ -146,49 +150,74 @@
     const apiBase = "http://localhost:8080/apis/fornecedor";
     const mensagemEl = document.getElementById("mensagem");
 
-    document.addEventListener("DOMContentLoaded", carregarFornecedores);
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarFornecedores();
 
-    document.getElementById("fornecedor-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        mensagemEl.textContent = "";
+        const cnpjInput = document.getElementById("forn_cnpj");
+        const telInput = document.getElementById("forn_telefone");
 
-        const forn_cod = document.getElementById("forn_cod").value;
-        const dados = {
-            forn_nome: document.getElementById("forn_nome").value,
-            forn_end: document.getElementById("forn_end").value,
-            forn_cnpj: document.getElementById("forn_cnpj").value,
-            forn_telefone: document.getElementById("forn_telefone").value
-        };
-        if (forn_cod) dados.forn_cod = forn_cod;
+        cnpjInput.addEventListener("input", (e) => {
+            e.target.value = aplicarMascaraCNPJ(e.target.value);
+            validarCampoCNPJ(e.target);
+        });
 
-        const method = forn_cod ? "PUT" : "POST";
+        telInput.addEventListener("input", (e) => {
+            e.target.value = aplicarMascaraTelefone(e.target.value);
+            validarCampoTelefone(e.target);
+        });
 
-        try {
-            const res = await fetch(apiBase, {
-                method: method,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: new URLSearchParams(dados).toString()
-            });
+        document.getElementById("fornecedor-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            mensagemEl.textContent = "";
 
-            const texto = await res.text();
-            let msg = texto;
+            validarCampoCNPJ(cnpjInput);
+            validarCampoTelefone(telInput);
+
+            if (cnpjInput.classList.contains("invalid") || telInput.classList.contains("invalid")) {
+                mensagemEl.style.color = "red";
+                mensagemEl.textContent = "Verifique os campos destacados.";
+                return;
+            }
+
+            const forn_cod = document.getElementById("forn_cod").value;
+            const dados = {
+                forn_nome: document.getElementById("forn_nome").value,
+                forn_end: document.getElementById("forn_end").value,
+                forn_cnpj: cnpjInput.value,
+                forn_telefone: telInput.value
+            };
+            if (forn_cod) dados.forn_cod = forn_cod;
+
+            const method = forn_cod ? "PUT" : "POST";
+
             try {
-                const obj = JSON.parse(texto);
-                if (obj.mensagem) msg = obj.mensagem;
-            } catch {}
+                const res = await fetch(apiBase, {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams(dados).toString()
+                });
 
-            if (!res.ok) throw new Error(msg);
+                const texto = await res.text();
+                let msg = texto;
+                try {
+                    const obj = JSON.parse(texto);
+                    if (obj.mensagem) msg = obj.mensagem;
+                } catch {}
 
-            document.getElementById("fornecedor-form").reset();
-            carregarFornecedores();
-            mensagemEl.style.color = "green";
-            mensagemEl.textContent = msg;
-        } catch (error) {
-            mensagemEl.style.color = "red";
-            mensagemEl.textContent = error.message;
-        }
+                if (!res.ok) throw new Error(msg);
+
+                document.getElementById("fornecedor-form").reset();
+                document.getElementById("forn_cod").value = "";
+                carregarFornecedores();
+                mensagemEl.style.color = "green";
+                mensagemEl.textContent = msg;
+            } catch (error) {
+                mensagemEl.style.color = "red";
+                mensagemEl.textContent = error.message;
+            }
+        });
     });
 
     async function carregarFornecedores() {
@@ -200,15 +229,15 @@
         fornecedores.forEach(f => {
             const row = document.createElement("tr");
             row.innerHTML = `
-          <td>${f.nome}</td>
-          <td>${f.endereco}</td>
-          <td>${f.cnpj}</td>
-          <td>${f.telefone}</td>
-          <td class="actions">
-            <button onclick='editar(${JSON.stringify(f)})'>Editar</button>
-            <button onclick='deletar(${f.id})'>Excluir</button>
-          </td>
-        `;
+              <td>${f.nome}</td>
+              <td>${f.endereco}</td>
+              <td>${formatarCNPJ(f.cnpj)}</td>
+              <td>${formatarTelefone(f.telefone)}</td>
+              <td class="actions">
+                <button onclick='editar(${JSON.stringify(f)})'>Editar</button>
+                <button onclick='deletar(${f.id})'>Excluir</button>
+              </td>
+            `;
             lista.appendChild(row);
         });
     }
@@ -218,8 +247,8 @@
         document.getElementById("forn_cod").value = f.id;
         document.getElementById("forn_nome").value = f.nome;
         document.getElementById("forn_end").value = f.endereco;
-        document.getElementById("forn_cnpj").value = f.cnpj;
-        document.getElementById("forn_telefone").value = f.telefone;
+        document.getElementById("forn_cnpj").value = aplicarMascaraCNPJ(f.cnpj);
+        document.getElementById("forn_telefone").value = aplicarMascaraTelefone(f.telefone);
     }
 
     async function deletar(id) {
@@ -251,6 +280,50 @@
 
         document.getElementById(aba).classList.remove("hidden");
         document.getElementById("aba" + aba.charAt(0).toUpperCase() + aba.slice(1)).classList.add("active");
+    }
+
+    function formatarCNPJ(cnpj) {
+        cnpj = cnpj.replace(/\D/g, "");
+        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+    }
+
+    function formatarTelefone(telefone) {
+        telefone = telefone.replace(/\D/g, "");
+        if (telefone.length === 10) {
+            return telefone.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+        } else if (telefone.length === 11) {
+            return telefone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+        }
+        return telefone;
+    }
+
+    function aplicarMascaraCNPJ(valor) {
+        valor = valor.replace(/\D/g, "");
+        valor = valor.replace(/(\d{2})(\d)/, "$1.$2");
+        valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+        valor = valor.replace(/(\d{3})(\d{1,4})/, "$1/$2");
+        valor = valor.replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+        return valor;
+    }
+
+    function aplicarMascaraTelefone(valor) {
+        valor = valor.replace(/\D/g, "");
+        if (valor.length <= 10) {
+            valor = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+        } else {
+            valor = valor.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+        }
+        return valor.trim();
+    }
+
+    function validarCampoCNPJ(input) {
+        const val = input.value.replace(/\D/g, "");
+        input.classList.toggle("invalid", val.length !== 14);
+    }
+
+    function validarCampoTelefone(input) {
+        const val = input.value.replace(/\D/g, "");
+        input.classList.toggle("invalid", val.length < 10 || val.length > 11);
     }
 </script>
 </body>
