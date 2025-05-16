@@ -29,6 +29,17 @@ public class Conexao
         { erro="Outro erro: " + ex.toString(); }
         return conectado;
     }
+
+    public boolean conectarPadrao() {
+
+        String local = "jdbc:postgresql://localhost:5432/";
+        String banco = "SALF";
+        String usuario = "Caiopros";
+        String senha = "Senha123";
+
+        return conectar(local, banco, usuario, senha);
+    }
+
     public String getMensagemErro() {
         return erro;
     }
@@ -81,4 +92,16 @@ public class Conexao
         }
         return max;
     }
+
+    public void desconectar() {
+        try {
+            if (connect != null && !connect.isClosed()) {
+                connect.close();
+                connect = null;
+            }
+        } catch (SQLException e) {
+            erro = "Erro ao fechar conexão: " + e.getMessage();
+        }
+    }
+
 }

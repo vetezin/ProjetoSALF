@@ -54,7 +54,7 @@ public class FornecedorView {
     ){
         Map<String,Object> json = fornecedorController.updateFornecedor(cod, nome, endereco, cnpj, telefone);
         if(json.get("erro") == null)
-            return ResponseEntity.ok(new Mensagem("Produto alterado com sucesso!"));
+            return ResponseEntity.ok(new Mensagem("Fornecedor alterado com sucesso!"));
         else
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
@@ -64,7 +64,7 @@ public class FornecedorView {
         Map<String, Object> json = fornecedorController.deletarFornecedor(id);
 
         if (json.get("erro") == null)
-            return ResponseEntity.ok(new Mensagem("Produto deletado com sucesso!"));
+            return ResponseEntity.ok(new Mensagem("Fornecedor deletado com sucesso!"));
         else
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }

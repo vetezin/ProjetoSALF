@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Fornecedores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #393d4c;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            height: 50px;
+            margin-left: 20px;
+        }
+        header h1 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+            font-size: 24px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #e0e0e0;
+            padding: 10px;
+        }
+        nav button {
+            background-color: transparent;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        nav button.active {
+            border-bottom: 3px solid #e71721;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .hidden {
+            display: none;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form input {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        form button {
+            padding: 10px;
+            background-color: #e71721;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #mensagem {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .actions button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="larSantaFilomena.png" alt="Logo Lar Santa Filomena">
+    <h1>Gerenciar Fornecedores</h1>
+</header>
+<nav>
+    <button id="abaCadastro" class="active" onclick="mostrarAba('cadastro')">Cadastro</button>
+    <button id="abaLista" onclick="mostrarAba('lista')">Lista de Fornecedores</button>
+</nav>
+
+<div class="container">
+    <div id="mensagem"></div>
+
+    <div id="cadastro">
+        <form id="fornecedor-form">
+            <input type="hidden" id="forn_cod">
+            <input type="text" id="forn_nome" placeholder="Nome" required>
+            <input type="text" id="forn_end" placeholder="Endereço" required>
+            <input type="text" id="forn_cnpj" placeholder="CNPJ" required>
+            <input type="text" id="forn_telefone" placeholder="Telefone" required>
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+
+    <div id="lista" class="hidden">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Endereço</th>
+                <th>CNPJ</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody id="fornecedores-list"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const apiBase = "http://localhost:8080/apis/fornecedor";
+    const mensagemEl = document.getElementById("mensagem");
+
+    document.addEventListener("DOMContentLoaded", carregarFornecedores);
+
+    document.getElementById("fornecedor-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        mensagemEl.textContent = "";
+
+        const forn_cod = document.getElementById("forn_cod").value;
+        const dados = {
+            forn_nome: document.getElementById("forn_nome").value,
+            forn_end: document.getElementById("forn_end").value,
+            forn_cnpj: document.getElementById("forn_cnpj").value,
+            forn_telefone: document.getElementById("forn_telefone").value
+        };
+        if (forn_cod) dados.forn_cod = forn_cod;
+
+        const method = forn_cod ? "PUT" : "POST";
+
+        try {
+            const res = await fetch(apiBase, {
+                method: method,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams(dados).toString()
+            });
+
+            const texto = await res.text();
+            let msg = texto;
+            try {
+                const obj = JSON.parse(texto);
+                if (obj.mensagem) msg = obj.mensagem;
+            } catch {}
+
+            if (!res.ok) throw new Error(msg);
+
+            document.getElementById("fornecedor-form").reset();
+            carregarFornecedores();
+            mensagemEl.style.color = "green";
+            mensagemEl.textContent = msg;
+        } catch (error) {
+            mensagemEl.style.color = "red";
+            mensagemEl.textContent = error.message;
+        }
+    });
+
+    async function carregarFornecedores() {
+        const res = await fetch(apiBase);
+        const fornecedores = await res.json();
+        const lista = document.getElementById("fornecedores-list");
+        lista.innerHTML = "";
+
+        fornecedores.forEach(f => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+          <td>${f.nome}</td>
+          <td>${f.endereco}</td>
+          <td>${f.cnpj}</td>
+          <td>${f.telefone}</td>
+          <td class="actions">
+            <button onclick='editar(${JSON.stringify(f)})'>Editar</button>
+            <button onclick='deletar(${f.id})'>Excluir</button>
+          </td>
+        `;
+            lista.appendChild(row);
+        });
+    }
+
+    function editar(f) {
+        mostrarAba('cadastro');
+        document.getElementById("forn_cod").value = f.id;
+        document.getElementById("forn_nome").value = f.nome;
+        document.getElementById("forn_end").value = f.endereco;
+        document.getElementById("forn_cnpj").value = f.cnpj;
+        document.getElementById("forn_telefone").value = f.telefone;
+    }
+
+    async function deletar(id) {
+        if (confirm("Deseja realmente excluir este fornecedor?")) {
+            try {
+                const res = await fetch(`${apiBase}/${id}`, { method: "DELETE" });
+                const texto = await res.text();
+                let msg = texto;
+                try {
+                    const obj = JSON.parse(texto);
+                    if (obj.mensagem) msg = obj.mensagem;
+                } catch {}
+                if (!res.ok) throw new Error(msg);
+                carregarFornecedores();
+                mensagemEl.style.color = "green";
+                mensagemEl.textContent = msg;
+            } catch (error) {
+                mensagemEl.style.color = "red";
+                mensagemEl.textContent = error.message;
+            }
+        }
+    }
+
+    function mostrarAba(aba) {
+        document.getElementById("cadastro").classList.add("hidden");
+        document.getElementById("lista").classList.add("hidden");
+        document.getElementById("abaCadastro").classList.remove("active");
+        document.getElementById("abaLista").classList.remove("active");
+
+        document.getElementById(aba).classList.remove("hidden");
+        document.getElementById("aba" + aba.charAt(0).toUpperCase() + aba.slice(1)).classList.add("active");
+    }
+</script>
+</body>
+</html>

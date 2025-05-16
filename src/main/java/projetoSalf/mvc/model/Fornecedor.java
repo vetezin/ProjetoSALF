@@ -85,4 +85,15 @@ public class Fornecedor {
     public boolean isEmpty(){return dao.get("").isEmpty();}
     public Fornecedor gravar(Fornecedor fornecedor){return dao.gravar(fornecedor);}
     public boolean deletar(Fornecedor fornecedor){return dao.apagar(fornecedor);}
+
+    public Fornecedor inserir() {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.gravar(this);
+    }
+
+    public Fornecedor alterar() {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.alterar(this);
+    }
+
 }
