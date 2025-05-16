@@ -18,26 +18,28 @@ public class Produto {
     private String prod_dtvalid;
     private String prod_desc;
     private float prod_valorun;
-    private Categoria categoria;
+    //private Categoria categoria;
+    private int cat_cod;
+
 
     public Produto() {
     }
 
-    public Produto( int prod_cod, String prod_dtvalid, String prod_desc, float prod_valorun, Categoria categoria) {
+    public Produto( int prod_cod, String prod_dtvalid, String prod_desc, float prod_valorun, int cat_cod) {
 
         this.prod_cod = prod_cod;
         this.prod_dtvalid = prod_dtvalid;
         this.prod_desc = prod_desc;
         this.prod_valorun = prod_valorun;
-        this.categoria = categoria;
+        this.cat_cod = cat_cod;
     }
 
-    public Produto(String prod_dtvalid, String prod_desc, float prod_valorun, Categoria categoria) {
+    public Produto(String prod_dtvalid, String prod_desc, float prod_valorun, int cat_cod) {
 
         this.prod_dtvalid = prod_dtvalid;
         this.prod_desc = prod_desc;
         this.prod_valorun = prod_valorun;
-        this.categoria = categoria;
+        this.cat_cod = cat_cod;
     }
 
 
@@ -74,12 +76,12 @@ public class Produto {
         this.prod_valorun = prod_valorun;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public int getCategoria() {
+        return cat_cod;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setCategoria(int cat_cod) {
+        this.cat_cod = cat_cod;
     }
 
     public List<Produto> consultar(String filtro, Conexao conexao){
@@ -96,5 +98,8 @@ public class Produto {
     }
     public boolean deletarProduto(Produto produto){
         return dao.apagar(produto);
+    }
+    public Produto alterar(Produto produto) {
+        return dao.alterar(produto);
     }
 }

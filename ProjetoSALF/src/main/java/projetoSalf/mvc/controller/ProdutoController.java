@@ -46,7 +46,7 @@ public class ProdutoController {
 
 
 
-                cAux = categoriaModel.consultar(p.getCategoria().getId());
+                cAux = categoriaModel.consultar(p.getCategoria());
 
                 Map<String, Object> categoriaJson = new HashMap<>();
                 categoriaJson.put("id", cAux.getId());
@@ -61,10 +61,11 @@ public class ProdutoController {
     }
 
 
-
+//testar depois o getbyIDD
     public Map<String, Object> getProd(int id){
         Conexao conexao = new Conexao();
         Produto produto =  produtoModel.consultar(id);
+        Categoria cAux = new Categoria();
 
         if (produto==null)
             return null;
@@ -74,7 +75,15 @@ public class ProdutoController {
             json.put("nome", produto.getProd_desc());
             json.put("preco", produto.getProd_valorun());
             json.put("data", produto.getProd_dtvalid());
-            json.put("categoria", produto.getCategoria().getId());
+            json.put("categoria", produto.getCategoria());
+
+            cAux = categoriaModel.consultar(produto.getCategoria());
+
+            Map<String, Object> categoriaJson = new HashMap<>();
+            categoriaJson.put("id", cAux.getId());
+            categoriaJson.put("desc", cAux.getDesc());
+
+            json.put("categoria", categoriaJson);
 
             return json;
         }
@@ -101,18 +110,24 @@ public class ProdutoController {
 
 
     public Map<String, Object> addProd(
-            String prod_dtvalid,
             String prod_desc,
+            String prod_dtvalid,
+
             float prod_valorun,
-            Categoria categoria)
+            int cat_cod)
     {
-        if (prod_dtvalid == null || prod_desc.isBlank() || prod_valorun <= 0 || categoria == null) {
+        Categoria cAux = new Categoria();
+        cAux= categoriaModel.consultar(cat_cod);
+
+        if (prod_dtvalid == null || prod_desc.isBlank() || prod_valorun <= 0 || cat_cod <= 0 ||cAux == null) {
             return Map.of("erro", "Dados inválidos para cadastro");
         }
 
         Conexao conexao = new Conexao();
-        Produto novo = new Produto(prod_dtvalid, prod_desc, prod_valorun,categoria);
+        Produto novo = new Produto(prod_dtvalid, prod_desc, prod_valorun,cat_cod);
+
         Produto gravado = produtoModel.gravar(novo);
+        //fazer verificacao para ver se a categoria existe
 
         if (gravado != null) {
             Map<String, Object> json = new HashMap<>();
@@ -120,8 +135,10 @@ public class ProdutoController {
             json.put("nome", gravado.getProd_desc());
             json.put("preco", gravado.getProd_valorun());
             json.put("data", gravado.getProd_dtvalid());
-            json.put("categoria", gravado.getCategoria().getId());
-            json.put("descricao",gravado.getCategoria().getDesc());
+
+
+            json.put("categoria", gravado.getCategoria());
+            json.put("descricao",cAux.getDesc());
             return json;
         } else {
             return Map.of("erro", "Erro ao cadastrar o produto");
@@ -135,15 +152,17 @@ public class ProdutoController {
             String prod_dtvalid,
             String prod_desc,
             float prod_valorun,
-            Categoria categoria)
+            int  cat_cod)
     {
         // Validar ID existente
+        Categoria cAux = new Categoria();
+        cAux= categoriaModel.consultar(cat_cod);
         if (prod_cod <= 0
                 || prod_dtvalid == null
                 || prod_desc == null
                 || prod_desc.isBlank()
                 || prod_valorun < 0
-                || categoria == null) {
+                || cAux == null) {
             return Map.of("erro", "Dados inválidos para atualização");
         }
 
@@ -157,17 +176,18 @@ public class ProdutoController {
         existente.setProd_dtvalid(prod_dtvalid);
         existente.setProd_desc(prod_desc);
         existente.setProd_valorun(prod_valorun);
-        existente.setCategoria(categoria);
+        //Verificar a categoria
+        existente.setCategoria(cat_cod);
 
         // Usa o mesmo metodo
-        Produto atualizado = produtoModel.gravar(existente);
+        Produto atualizado = produtoModel.alterar(existente);
         if (atualizado != null) {
             return Map.of(
                     "id",        atualizado.getProd_cod(),
                     "nome",      atualizado.getProd_desc(),
                     "preco",     atualizado.getProd_valorun(),
                     "data",      atualizado.getProd_dtvalid(),
-                    "categoria", atualizado.getCategoria().getId()
+                    "categoria", atualizado.getCategoria()
             );
         } else {
             return Map.of("erro", "Erro ao atualizar o produto");

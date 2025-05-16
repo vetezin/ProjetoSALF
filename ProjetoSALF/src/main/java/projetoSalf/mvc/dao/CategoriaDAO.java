@@ -55,7 +55,7 @@ public class CategoriaDAO implements IDAO<Categoria> {
 
         String sql = "SELECT * FROM categoria_produto WHERE cat_cod = " + id;
         try {
-            System.out.println("aqui");
+
             ResultSet rs = SingletonDB.getConexao().consultar(sql);
             if (rs.next()) {
 

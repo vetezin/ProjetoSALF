@@ -28,7 +28,7 @@ public class ProdutoDAO implements IDAO<Produto>
         sql=sql.replace("#1",produto.getProd_dtvalid());
         sql=sql.replace("#2",produto.getProd_desc());
         sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getId()));
+        sql=sql.replace("#4",String.valueOf(produto.getCategoria()));
 
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
@@ -43,18 +43,19 @@ public class ProdutoDAO implements IDAO<Produto>
         String sql = """
             UPDATE produto SET
             prod_dtvalid=#1,
-             prod_desc=#2,
-             prod_valorun=#3,
-             cat_cod=#4
+            prod_desc=#2,
+            prod_valorun=#3,
+            cat_cod=#4
             WHERE prod_cod = #5;
             
         """;
 
-        sql=sql.replace("#1",produto.getProd_dtvalid());
-        sql=sql.replace("#2",produto.getProd_desc());
-        sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCategoria().getId()));
-        sql=sql.replace("#5",String.valueOf(produto.getProd_cod()));
+
+        sql = sql.replace("#1", "'" + produto.getProd_dtvalid() + "'");
+        sql = sql.replace("#2", "'" + produto.getProd_desc().replace("'", "''") + "'");
+        sql = sql.replace("#3", String.valueOf(produto.getProd_valorun()));
+        sql = sql.replace("#4", String.valueOf(produto.getCategoria()));
+        sql = sql.replace("#5", String.valueOf(produto.getProd_cod()));
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
         } else {
@@ -79,7 +80,7 @@ public class ProdutoDAO implements IDAO<Produto>
                         resultSet.getString("prod_dtvalid"),
                         resultSet.getString("prod_desc"),
                         resultSet.getFloat("prod_valorun"),
-                        new Categoria(resultSet.getInt("cat_cod"))
+                       resultSet.getInt("cat_cod")
 
                 );
 
@@ -105,7 +106,7 @@ public class ProdutoDAO implements IDAO<Produto>
                         rs.getString("prod_dtvalid"),
                         rs.getString("prod_desc"),
                         rs.getFloat("prod_valorun"),
-                        new Categoria(rs.getInt("cat_cod"))
+                        rs.getInt("cat_cod")
 
                 );
 

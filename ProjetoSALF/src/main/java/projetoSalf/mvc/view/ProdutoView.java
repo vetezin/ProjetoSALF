@@ -29,14 +29,26 @@ public class ProdutoView {
             return ResponseEntity.badRequest().body(new Mensagem("Nenhum produto encontrado."));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Object> getId(@PathVariable int id) {
+        Map<String, Object> produto = produtoController.getProd(id);
+        if (produto != null)
+            return ResponseEntity.ok(produto);
+        else
+            return ResponseEntity.badRequest().body(new Mensagem("Produto não encontrado."));
+    }
+
+    //fazer o getID
     @PostMapping
     public ResponseEntity<Object> addProduto(
+
             @RequestParam("prod_desc") String descricao,
             @RequestParam("prod_dtvalid") String validade,
+
             @RequestParam("prod_valorun") float valor,
-            @RequestParam("categoria") Categoria categoria
+            @RequestParam("categoria") int cat_cod
     ) {
-        Map<String, Object> json = produtoController.addProd(descricao, validade, valor, categoria);
+        Map<String, Object> json = produtoController.addProd(descricao, validade, valor, cat_cod);
         if (json.get("erro") == null)
             return ResponseEntity.ok(new Mensagem("Produto cadastrado com sucesso!"));
         else
@@ -47,12 +59,13 @@ public class ProdutoView {
     @PutMapping
     public ResponseEntity<Object> updtProduto(
             @RequestParam("prod_cod") int cod,
-            @RequestParam("prod_desc") String descricao,
             @RequestParam("prod_dtvalid") String validade,
+            @RequestParam("prod_desc") String descricao,
+
             @RequestParam("prod_valorun") float valor,
-            @RequestParam("categoria") Categoria categoria
+            @RequestParam("categoria") int cat_cod
     ) {
-        Map<String, Object> json = produtoController.updtProd(cod, descricao, validade, valor, categoria);
+        Map<String, Object> json = produtoController.updtProd(cod, validade , descricao, valor, cat_cod);
         if (json.get("erro") == null)
             return ResponseEntity.ok(new Mensagem("Produto alterado com sucesso!"));
         else

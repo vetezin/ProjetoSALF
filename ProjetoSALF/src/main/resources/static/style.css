@@ -1,0 +1,310 @@
+/* Estilo geral do body */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #2b2e2e, #393939); /* Gradiente escuro para o fundo */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+}
+
+/* Cabeçalho fixo */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #1c1f1f;
+    padding: 20px 0;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar ul li {
+    text-align: center;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    color: #2575fc;
+}
+
+.navbar ul li a.active {
+    color: #2575fc;
+}
+
+/* Container centralizado */
+.container {
+    background-color: rgba(33, 37, 41, 0.9); /* Fundo escuro com transparência */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    z-index: 1;
+    margin-top: 100px; /* Espaçamento para não sobrepor o cabeçalho */
+}
+
+/* Título */
+h2 {
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+/* Caixa de input */
+.input-box {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilo dos inputs */
+.input-box input {
+    padding: 12px;
+    border: 2px solid #444;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 5px;
+    background-color: #555;
+    color: #fff;
+}
+
+.input-box input:focus {
+    border-color: #2575fc;
+    background-color: #333;
+}
+
+/* Estilo do botão */
+button {
+    background-color: #2575fc;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+    background-color: #1e60d5;
+}
+
+/* Estilo da mensagem */
+#mensagem {
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Respostas de sucesso ou erro */
+#mensagem.success {
+    color: #4CAF50;
+}
+
+#mensagem.error {
+    color: #FF3B3B;
+}
+
+/* Estilo para o botão de selecionar o estilo */
+#toggleEstilos {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#toggleEstilos:hover {
+    background-color: #45a049;
+}
+
+/* Estilo para a lista de estilos */
+#estilosList {
+    display: none;
+    position: absolute;
+    top: 80px;  /* Alinha a lista logo abaixo do botão */
+    left: 0;
+    width: 100%;
+    background-color: #1c1f1f;
+    border-radius: 5px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 10;  /* Garante que o menu ficará em cima de outros elementos */
+    text-align: left;
+}
+
+#estilosList label {
+    display: block;
+    padding: 5px 0;
+    color: #fff;
+}
+
+/* Estilo personalizado para o select */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0!important;
+    background: #2b2e2e;
+    color: #fff;
+    flex: 1;
+    padding: 0 .5em;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+.select {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background: #2b2e2e;
+    overflow: hidden;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 1em;
+    background: #444;
+    cursor: pointer;
+    pointer-events: none;
+    transition: .25s all ease;
+}
+
+.select:hover::after {
+    color: #23b499;
+}
+/* Tabela de músicas estilizada */
+.music-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    background: #222; /* Fundo escuro */
+    color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.music-table thead {
+    background: linear-gradient(45deg, #2575fc, #6a11cb);
+    color: white;
+}
+
+.music-table th, .music-table td {
+    padding: 15px;
+    text-align: left;
+}
+
+.music-table th {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.music-table tbody tr {
+    transition: background 0.3s ease-in-out;
+}
+
+.music-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.music-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Botão de play */
+.play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, #28a745, #218838);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.play-btn:hover {
+    background: linear-gradient(45deg, #2ecc71, #1e8449);
+    transform: scale(1.05);
+}
+
+.play-btn i {
+    margin-right: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .music-table th, .music-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .play-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+.produto-item {
+    background-color: #000000;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px #ccc;
+}
