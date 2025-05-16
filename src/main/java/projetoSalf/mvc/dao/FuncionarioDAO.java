@@ -23,9 +23,11 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
         String SQL = "INSERT INTO funcionario(func_nome, func_cpf, func_senha, func_email, func_login, func_nivel) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
-        SingletonDB.conectar();
-        try (Connection conn = SingletonDB.getConexao();
-             PreparedStatement stmt = conn.prepareStatement(SQL)) {
+        try {
+            Conexao conexao = new Conexao();
+            Connection conn = conexao.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(SQL);
 
             stmt.setString(1, func.getFuncNome());
             stmt.setString(2, func.getFuncCpf());
@@ -34,29 +36,33 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
             stmt.setString(5, func.getFuncLogin());
             stmt.setInt(6, func.getFuncNivel());
 
-            int linhasAfetadas = stmt.executeUpdate();
-            return (linhasAfetadas > 0) ? func : null;
+            if(stmt.execute()){
+                conexao.fechar();
+                return func;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+
         }
+        return null;
     }
 
     @Override
     public Funcionario alterar(Funcionario func) {
 
         String SQL = "UPDATE funcionario SET func_nome = ? WHERE func_email = ?";
-        SingletonDB.conectar();
+
         try{
-            Connection con = SingletonDB.getConexao();
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
             PreparedStatement stmt = con.prepareStatement(SQL);
 
             stmt.setString(1, func.getFuncNome());
             stmt.setString(2, func.getFuncEmail());
 
             if(stmt.executeUpdate() > 0){
-
+                conexao.fechar();
                 return func;
             }
             return null;
@@ -71,14 +77,17 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
     public boolean apagar(Funcionario func) {
 
         String SQL = "DELETE FROM funcionario WHERE func_email = ?";
-        SingletonDB.conectar();
+
         try{
-            Connection con = SingletonDB.getConexao();
+
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
             PreparedStatement stmt = con.prepareStatement(SQL);
 
             stmt.setString(1, func.getFuncEmail());
 
             if(stmt.executeUpdate() > 0){
+                conexao.fechar();
                 return true;
             }
             return false;
@@ -96,10 +105,11 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
 
         String SQL = "SELECT * FROM funcionario WHERE func_cod = ?";
         Funcionario func = new Funcionario();
-        SingletonDB.conectar();
+
         try{
 
-            Connection con = SingletonDB.getConexao();
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
             PreparedStatement stmt = con.prepareStatement(SQL);
             stmt.setInt(1, id);
 
@@ -112,6 +122,8 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
                 func.setFuncEmail(rs.getString("func_email"));
                 func.setFuncLogin(rs.getString("func_login"));
                 func.setFuncNivel(rs.getInt("func_nivel"));
+
+                conexao.fechar();
                 return func;
 
             }
@@ -121,8 +133,41 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
         }
 
 
+
+
         return func;
     }
+
+
+    public Funcionario buscarPorEmail(String email) {
+        String SQL = "SELECT * FROM funcionario WHERE func_email = ? ";
+        Funcionario func = null;
+
+        try {
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
+            stmt.setString(1, email);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()){
+                func = new Funcionario();
+                func.setFuncNome(rs.getString("func_nome"));
+                func.setFuncCpf(rs.getString("func_cpf"));
+                func.setFuncSenha(rs.getString("func_senha"));
+                func.setFuncEmail(rs.getString("func_email"));
+                func.setFuncLogin(rs.getString("func_login"));
+                func.setFuncNivel(rs.getInt("func_nivel"));
+            }
+            conexao.fechar();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return func;
+    }
+
 
     @Override
     public List<Funcionario> get(String filtro) {
@@ -134,9 +179,10 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
 
         try{
 
+
             Conexao conexao = new Conexao();
-            conexao.getConnection();
-            PreparedStatement stmt = conexao.getConnection().prepareStatement(SQL);
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
             stmt.setString(1, filtro);
 
             ResultSet rs = stmt.executeQuery();
@@ -150,6 +196,8 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
                 funcionariosAdd.setFuncNivel(rs.getInt("func_nivel"));
                 func.add(funcionariosAdd);
             }
+
+            conexao.fechar();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
