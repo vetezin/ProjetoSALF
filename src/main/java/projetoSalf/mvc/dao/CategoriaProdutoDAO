@@ -3,11 +3,14 @@ package projetoSalf.mvc.dao;
 // ⬇️ Imports
 import projetoSalf.mvc.model.CategoriaProduto;
 import projetoSalf.mvc.util.Conexao;
+import org.springframework.stereotype.Repository;
+
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class CategoriaProdutoDAO {
 
     private Conexao conexao;
