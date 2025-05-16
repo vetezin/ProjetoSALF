@@ -63,8 +63,11 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
     }
 
     @Override
-    public boolean apagar(Funcionario funcionario) {
-        String sql = "DELETE FROM funcionario WHERE func_cod = " + funcionario.getId();
+    public boolean apagar(Funcionario func) {
+        if (func == null)
+            return false;
+
+        String sql = "DELETE FROM funcionario WHERE func_cod = " + func.getId();
         return SingletonDB.getConexao().manipular(sql);
     }
 
@@ -114,10 +117,5 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
             System.out.println("Erro ao listar funcionários: " + e.getMessage());
         }
         return lista;
-    }
-
-    public boolean deletarFuncionario() {
-        String sql = "DELETE FROM funcionario";
-        return SingletonDB.getConexao().manipular(sql);
     }
 }

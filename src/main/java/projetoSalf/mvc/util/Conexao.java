@@ -2,7 +2,7 @@ package projetoSalf.mvc.util;
 
 import java.sql.*;
 
-public class Conexao 
+public class Conexao
 {
     private Connection connect;
     private String erro;
@@ -35,49 +35,50 @@ public class Conexao
     public boolean getEstadoConexao() {
         return (connect!=null);
     }
-    public boolean manipular(String sql) {
-        boolean executou = false;
-
+    public boolean manipular(String sql) // inserir, alterar,excluir
+    {   boolean executou=false;
         try {
-            Statement statement = this.connect.createStatement();
-            int result = statement.executeUpdate(sql);
+            Statement statement = connect.createStatement();
+            int result = statement.executeUpdate( sql );
             statement.close();
-            if (result >= 1) {
-                executou = true;
-            }
-        } catch (SQLException sqlex) {
-            this.erro = "Erro: " + sqlex.toString();
+            if(result>=1)
+                executou=true;
         }
-
+        catch ( SQLException sqlex )
+        {  erro="Erro: "+sqlex.toString();
+        }
         return executou;
     }
-    public ResultSet consultar(String sql) {
-        ResultSet rs = null;
-
+    public ResultSet consultar(String sql)
+    {   ResultSet rs=null;
         try {
-            Statement statement = this.connect.createStatement();
-            rs = statement.executeQuery(sql);
-        } catch (SQLException sqlex) {
-            this.erro = "Erro: " + sqlex.toString();
+            Statement statement = connect.createStatement();
+            //ResultSet.TYPE_SCROLL_INSENSITIVE,
+            //ResultSet.CONCUR_READ_ONLY);
+            rs = statement.executeQuery( sql );
+            //statement.close();
+        }
+        catch ( SQLException sqlex )
+        { erro="Erro: "+sqlex.toString();
             rs = null;
         }
-
         return rs;
     }
-    public int getMaxPK(String tabela, String chave) {
-        String sql = "select max(" + chave + ") from " + tabela;
-        int max = 0;
-        ResultSet rs = this.consultar(sql);
-
-        try {
-            if (rs.next()) {
-                max = rs.getInt(1);
-            }
-        } catch (SQLException sqlex) {
-            this.erro = "Erro: " + sqlex.toString();
+    public int getMaxPK(String tabela,String chave)
+    {
+        String sql="select max("+chave+") from "+tabela;
+        int max=0;
+        ResultSet rs= consultar(sql);
+        try
+        {
+            if(rs.next())
+                max=rs.getInt(1);
+        }
+        catch (SQLException sqlex)
+        {
+            erro="Erro: " + sqlex.toString();
             max = -1;
         }
-
         return max;
     }
 }

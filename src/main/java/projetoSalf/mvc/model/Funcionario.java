@@ -36,6 +36,15 @@ public class Funcionario {
         this.func_nivel = func_nivel;
     }
 
+    public Funcionario(String nome, String cpf, String senha, String email, String login, int nivel) {
+        this.func_nome = nome;
+        this.func_cpf = cpf;
+        this.func_senha = senha;
+        this.func_email = email;
+        this.func_login = login;
+        this.func_nivel = nivel;
+    }
+
     // Métodos getters e setters
     public int getId() {
         return func_cod;
@@ -96,13 +105,21 @@ public class Funcionario {
     public List<Funcionario> consultar(String filtro, Conexao conexao) {
         return this.dao.get(filtro);
     }
+    public Funcionario consultar(int id){
+        return dao.get(id);
+    }
     public boolean isEmpty() {
         return this.dao.get("").isEmpty();
     }
     public Funcionario gravar(Funcionario func) {
         return this.dao.gravar(func);
     }
-    public boolean deletarFuncionario() {
-        return this.dao.deletarFuncionario();
+
+    public boolean deletarFuncionario(Funcionario func) {
+        return dao.apagar(func);
+    }
+
+    public Funcionario update(Funcionario func) {
+        return dao.alterar(func);
     }
 }
