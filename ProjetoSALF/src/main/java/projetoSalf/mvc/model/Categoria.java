@@ -4,6 +4,9 @@ package projetoSalf.mvc.model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.CategoriaDAO;
+import projetoSalf.mvc.util.Conexao;
+
+import java.util.List;
 
 @Component
 public class Categoria {
@@ -43,6 +46,9 @@ public class Categoria {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+    public List<Categoria> consultar(String filtro, Conexao conexao){
+        return dao.get(filtro);
     }
     public Categoria consultar(int id){
         return dao.get(id);

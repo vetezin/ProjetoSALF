@@ -4,7 +4,17 @@
 
 
 
-document.addEventListener("DOMContentLoaded", listarProdutos);
+document.addEventListener("DOMContentLoaded", () => {
+  listarProdutos();
+  carregarCategorias(); // carrega as categorias assim que a página abre
+});
+
+async function formatarData(dataISO) {
+  if (!dataISO) return ""; // previne erro se data for null ou undefined
+  const [ano, mes, dia] = dataISO.split("-");
+  return `${dia}/${mes}/${ano}`;
+}
+
 
 async function listarProdutos() {
     const tbody = document.querySelector("#tabelaProdutos tbody");
@@ -29,8 +39,10 @@ async function listarProdutos() {
             tr.innerHTML = `
                 <td>${produto.id}</td>
                 <td>${produto.nome}</td>
-                <td>${produto.data}</td>
-                <td>R$ ${produto.preco.toFixed(2)}</td>
+
+                <td>${formatarData(produto.data)}</td>
+                <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
+
                 <td>${produto.categoria.desc}</td>
                 <td class="acoes">
                     <button class="editar" onclick="editarProduto(${produto.id})">Editar</button>
@@ -192,4 +204,29 @@ function cadastrarProduto(event) {
     });
 
   return false;
+}
+
+
+async function carregarCategorias() {
+  const selectCategoria = document.getElementById("categoria");
+
+  try {
+    const response = await fetch("http://localhost:8080/apis/categoria");
+    const categorias = await response.json();
+
+    if (!Array.isArray(categorias)) {
+      console.error("Resposta de categoria inválida", categorias);
+      return;
+    }
+
+    categorias.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat.id;
+      option.textContent = cat.desc;
+      selectCategoria.appendChild(option);
+    });
+
+  } catch (erro) {
+    console.error("Erro ao carregar categorias:", erro);
+  }
 }

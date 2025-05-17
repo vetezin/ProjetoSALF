@@ -65,17 +65,21 @@
         </div>
 
         <div class="form-floating mb-3">
-          <input type="number" class="form-control" id="valor" name="prod_valorun" placeholder="Valor unitário"
-            required>
+          <input type="text" class="form-control" id="valor" name="prod_valorun" placeholder="Valor unitário" required>
+
           <label for="valor">Valor Unitário (R$)</label>
           <div class="invalid-feedback">Informe o valor.</div>
         </div>
 
         <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="categoria" name="cat_nome" placeholder="Categoria" required>
+          <select class="form-select" id="categoria" name="categoria" required>
+            <option value="">Selecione uma categoria</option>
+            <!-- opcoes vao ser inseridas aqui-->
+          </select>
           <label for="categoria">Categoria</label>
-          <div class="invalid-feedback">Informe a categoria.</div>
+          <div class="invalid-feedback">Selecione uma categoria válida.</div>
         </div>
+
 
         <div class="modal-footer">
           <button type="submit" class="button green">Salvar</button>
