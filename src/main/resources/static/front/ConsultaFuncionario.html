@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Consulta de Funcionários</title>
-  <link rel="stylesheet" href="styleConsulta.css">
+  <link rel="stylesheet" href="styleConsulta.css" />
+  
 </head>
 <body>
-  <header class="header">
-    <nav>
-      <a href="index.html" class="nav-link">Ir para Cadastro</a>
-    </nav>
+  <header class="topbar">
+    <div class="user-info">
+      <span id="usuario-logado">Logado como: Usuário</span>
+      <button id="logout-btn" class="logout-btn">Sair</button>
+    </div>
   </header>
 
+
   <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Consulta de Funcionários</h1>
+      <a href="index.html">
+        <button id="btn-novo" class="edit-btn">Novo</button>
+      </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtro-container">
+      <input type="text" id="filtro-input" placeholder="Digite aqui..." />
+      <button class="edit-btn" id="filtrar-nome">Filtrar por Nome</button>
+      <button class="edit-btn" id="filtrar-login">Filtrar por Login</button>
+      <p id="filtro-status" style="margin-left: 10px; font-style: italic; color: #bbb;"></p>
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -25,10 +43,9 @@
           <th>Ações</th>
         </tr>
       </thead>
-      <tbody id="tabela-funcionarios">
-        <!-- Conteúdo preenchido pelo JavaScript -->
-      </tbody>
+      <tbody id="tabela-funcionarios"></tbody>
     </table>
+
     <div id="message-consulta"></div>
   </div>
 

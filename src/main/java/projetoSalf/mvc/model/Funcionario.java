@@ -105,6 +105,9 @@ public class Funcionario {
     public List<Funcionario> consultar(String filtro, Conexao conexao) {
         return this.dao.get(filtro);
     }
+    public Funcionario consultar(int func_cod, Conexao conexao) {
+        return this.dao.get(func_cod);
+    }
     public Funcionario consultar(int id){
         return dao.get(id);
     }

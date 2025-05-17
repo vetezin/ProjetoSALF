@@ -40,6 +40,20 @@ public class FuncionarioController {
         }
     }
 
+    public Map<String, Object> getFuncionario(int id) {
+        Conexao conexao = new Conexao();
+        Funcionario func = funcionarioModel.consultar(id, conexao);
+            Map<String, Object> json = new HashMap<>();
+            json.put("id", func.getId());
+            json.put("nome", func.getNome());
+            json.put("cpf", func.getCpf());
+            json.put("email", func.getEmail());
+            json.put("login", func.getLogin());
+            json.put("nivel", func.getNivel());
+            json.put("senha", func.getSenha());
+            return json;
+    }
+
     public Map<String, Object> addFuncionario(String nome, String cpf, String senha, String email, String login, int nivel) {
 
 

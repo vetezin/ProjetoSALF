@@ -1,6 +1,7 @@
 package projetoSalf.mvc.view;
 
 import projetoSalf.mvc.controller.FuncionarioController;
+import projetoSalf.mvc.model.Funcionario;
 import projetoSalf.mvc.util.Mensagem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,16 @@ public class FuncionarioView {
         else
             return ResponseEntity.badRequest().body(new Mensagem("Nenhum funcionario encontrado."));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getFuncId(@RequestParam("func_cod") int cod) {
+
+        Map<String, Object> json = funcionarioController.getFuncionario(cod);
+        if (json != null)
+            return ResponseEntity.ok(json);
+        else
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhum funcionario encontrado."));
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletarFuncionario(@PathVariable("id") int id) {
