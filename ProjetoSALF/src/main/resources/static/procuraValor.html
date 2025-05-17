@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SALF</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <ul>
+                <li><a href="index.html">Cadastrar Produto</a></li>
+                <li><a href="procurar.html" >Procurar Produto</a></li>
+                <li><a href="apagarProduto.html" >Apagar Produto</a></li>
+                 <li><a href="atualizarProduto.html" >Atualizar Produto</a></li>
+                  <li><a href="procurar.html">Atualizar Produto</a></li>
+                  <li><a href="procuraValor.html" class="active">Produto Menor</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container" id="procurar">
+       <h2>Buscar Produtos por Valor Máximo</h2>
+
+        <label for="valorMaxInput">Valor máximo (R$):</label>
+        <input type="number" step="0.01" id="valorMaxInput" placeholder="Digite o valor máximo" />
+        <button onclick="buscarPorValorMenor()">Buscar</button>
+
+    </div>
+
+    <script defer src="produtoScript.js"></script>
+</body>
+</html>

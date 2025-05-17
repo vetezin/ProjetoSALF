@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   carregarCategorias(); // carrega as categorias assim que a página abre
 });
 
-async function formatarData(dataISO) {
+function formatarData(dataISO) {
   if (!dataISO) return ""; // previne erro se data for null ou undefined
   const [ano, mes, dia] = dataISO.split("-");
   return `${dia}/${mes}/${ano}`;
