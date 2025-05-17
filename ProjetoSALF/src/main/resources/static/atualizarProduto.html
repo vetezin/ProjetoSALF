@@ -14,6 +14,8 @@
             <li><a href="procurarProduto.html">Procurar Produto</a></li>
             <li><a href="apagarProduto.html">Apagar Produto</a></li>
             <li><a href="atualizarProduto.html" class="active">Atualizar Produto</a></li>
+             <li><a href="procurar.html">Busca Filtro</a></li>
+              <li><a href="procuraValor.html" >Produto Menor</a></li>
         </ul>
     </nav>
 </header>
@@ -22,7 +24,7 @@
     <h2>Atualizar Produto</h2>
     <form id="formAtualizar" method="POST">
         <div class="input-box">
-            <input type="number" id="idProduto" placeholder="ID do Produto" required>
+            <input type="number" id="idProduto" placeholder="* ID do Produto" required>
             <button type="button" onclick="carregarProduto()">Buscar</button>
         </div>
 
@@ -39,7 +41,7 @@
         </div>
 
         <div class="input-box">
-            <input type="number" id="categoria" placeholder="Código da Categoria" required>
+            <input type="number" id="categoria" placeholder="* Código da Categoria" required>
         </div>
     </form>
 
@@ -68,12 +70,12 @@ function carregarProduto() {
 }
 
 function atualizarProduto() {
-    const formData = new FormData();
-    const id = document.getElementById("idProduto").value;
-    const desc = document.getElementById("descricao").value;
-    const validade = document.getElementById("dtvalidade").value;
-    const valor = document.getElementById("valor").value;
-    const categoria = document.getElementById("categoria").value;
+    let formData = new FormData();
+    let id = document.getElementById("idProduto").value;
+    let desc = document.getElementById("descricao").value;
+    let validade = document.getElementById("dtvalidade").value;
+    let valor = document.getElementById("valor").value;
+    let categoria = document.getElementById("categoria").value;
 
     formData.append("prod_cod", id);
     formData.append("prod_desc", desc);

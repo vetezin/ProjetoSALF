@@ -60,8 +60,69 @@ public class ProdutoController {
         }
     }
 
+    public List<Map<String, Object>> getProdutosPorCategoria(int cat_cod) {
+        Conexao conexao = new Conexao();
+        String filtro = "cat_cod = " + cat_cod;
+        List<Produto> lista = produtoModel.consultar(filtro, conexao);
+        Categoria cAux = new Categoria();
 
-//testar depois o getbyIDD
+        if (lista.isEmpty())
+            return null;
+        else {
+            List<Map<String, Object>> prodList = new ArrayList<>();
+            for (Produto p : lista) {
+                Map<String, Object> json = new HashMap<>();
+                Map<String,Object> catJson = new HashMap<>();
+
+                json.put("id", p.getProd_cod());
+                json.put("nome", p.getProd_desc());
+                json.put("preco", p.getProd_valorun());
+                json.put("data", p.getProd_dtvalid());
+
+                cAux = categoriaModel.consultar(p.getCategoria());
+                catJson.put("id", cAux.getId());
+                catJson.put("desc", cAux.getDesc());
+
+                json.put("categoria", catJson);
+                prodList.add(json);
+            }
+            return prodList;
+        }
+    }
+
+    public List<Map<String, Object>> getProdutosMenorQue(float valorMax) {
+        Conexao conexao = new Conexao();
+        String filtro = "prod_valorun < " + valorMax;
+        List<Produto> lista = produtoModel.consultar(filtro, conexao);
+
+        if (lista.isEmpty())
+            return null;
+
+        List<Map<String, Object>> prodList = new ArrayList<>();
+        Categoria cAux = new Categoria();
+
+        for (Produto p : lista) {
+            Map<String, Object> json = new HashMap<>();
+            Map<String, Object> catJson = new HashMap<>();
+
+            json.put("id", p.getProd_cod());
+            json.put("nome", p.getProd_desc());
+            json.put("preco", p.getProd_valorun());
+            json.put("data", p.getProd_dtvalid());
+
+            cAux = categoriaModel.consultar(p.getCategoria());
+            catJson.put("id", cAux.getId());
+            catJson.put("desc", cAux.getDesc());
+
+            json.put("categoria", catJson);
+
+            prodList.add(json);
+        }
+        return prodList;
+    }
+
+
+    //testar depois o getbyIDD
     public Map<String, Object> getProd(int id){
         Conexao conexao = new Conexao();
         Produto produto =  produtoModel.consultar(id);

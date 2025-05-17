@@ -38,6 +38,29 @@ public class ProdutoView {
             return ResponseEntity.badRequest().body(new Mensagem("Produto não encontrado."));
     }
 
+
+    @GetMapping("/categoria/{cat_cod}")
+    public ResponseEntity<Object> getByCategoria(@PathVariable("cat_cod") int cat_cod) {
+        List<Map<String, Object>> produtos = produtoController.getProdutosPorCategoria(cat_cod);
+
+        if (produtos != null && !produtos.isEmpty()) {
+            return ResponseEntity.ok(produtos);
+        } else {
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhum produto encontrado para essa categoria."));
+        }
+    }
+
+    @GetMapping("/menor-que/{valor}")
+    public ResponseEntity<Object> getProdutosMenorQue(@PathVariable("valor") float valor) {
+        List<Map<String, Object>> produtos = produtoController.getProdutosMenorQue(valor);
+
+        if (produtos != null && !produtos.isEmpty()) {
+            return ResponseEntity.ok(produtos);
+        } else {
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhum produto encontrado com valor menor que " + valor));
+        }
+    }
+
     //fazer o getID
     @PostMapping
     public ResponseEntity<Object> addProduto(

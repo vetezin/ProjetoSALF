@@ -15,16 +15,18 @@
         <li><a href="procurarProduto.html">Procurar Produto</a></li>
         <li><a href="apagarProduto.html" class="active">Apagar Produto</a></li>
         <li><a href="atualizarProduto.html" >Atualizar Produto</a></li>
+         <li><a href="procurar.html">Busca Filtro</a></li>
+          <li><a href="procuraValor.html" >Produto Menor</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Conteúdo principal -->
+  
   <div class="container">
     <h2>Apagar Produto</h2>
     <form id="formApagarProduto" onsubmit="event.preventDefault(); apagarProduto();">
       <div class="input-box">
-        <input type="number" id="produtoId" placeholder="ID do Produto" required />
+        <input type="number" id="produtoId" placeholder="* ID do Produto" required />
       </div>
       <button type="submit">Apagar</button>
     </form>
@@ -33,7 +35,7 @@
 
   <script>
     function apagarProduto() {
-      const id = document.getElementById("produtoId").value;
+      let id = document.getElementById("produtoId").value;
       if (!id) {
         document.getElementById("mensagemApagar").textContent = "Informe o ID do produto.";
         return;

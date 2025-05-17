@@ -5,13 +5,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CasoftWebSpringApplication {
+public class AppProjetoSALF {
 
     public static void main(String[] args) {
         if(!SingletonDB.conectar()){
             System.out.println("Nao foi possivel conectar");
         }
-        SpringApplication.run(CasoftWebSpringApplication.class, args);
+        SpringApplication.run(AppProjetoSALF.class, args);
     }
 
 }
