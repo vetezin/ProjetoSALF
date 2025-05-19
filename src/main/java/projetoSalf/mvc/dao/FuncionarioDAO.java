@@ -1,5 +1,6 @@
 package projetoSalf.mvc.dao;
 
+import org.springframework.stereotype.Service;
 import projetoSalf.mvc.model.Funcionario;
 import projetoSalf.mvc.util.Conexao;
 import projetoSalf.mvc.util.SingletonDB;
@@ -11,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class FuncionarioDAO implements IDAO<Funcionario> {
 
 

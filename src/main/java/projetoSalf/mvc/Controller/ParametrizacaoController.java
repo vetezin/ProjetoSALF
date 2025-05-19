@@ -1,5 +1,6 @@
 package projetoSalf.mvc.Controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetoSalf.mvc.dao.ParametrizacaoDAO;
 import projetoSalf.mvc.model.Parametrizacao;
@@ -7,30 +8,20 @@ import projetoSalf.mvc.model.Parametrizacao;
 @Service
 public class ParametrizacaoController {
 
-    public ParametrizacaoController() {
-        this.PaDAO = new ParametrizacaoDAO();
-    }
-
-
+    @Autowired
     private ParametrizacaoDAO PaDAO;
 
     public boolean salvarOuAtualizar(Parametrizacao PA) {
-
-        if(PaDAO.existeRegistro(PA) == false){
+        if (!PaDAO.existeRegistro(PA)) {
             PaDAO.gravar(PA);
-            return true;
-        }
-        else
+            return true; // Novo
+        } else {
             PaDAO.alterar(PA);
-
-        return false;
+            return false; // Atualizado
+        }
     }
 
     public Parametrizacao get(String email) {
         return PaDAO.getRegistro(email);
     }
-
-
-
-
 }

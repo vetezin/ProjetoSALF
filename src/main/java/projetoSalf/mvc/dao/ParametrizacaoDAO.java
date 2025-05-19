@@ -1,39 +1,48 @@
 package projetoSalf.mvc.dao;
 
+import org.springframework.stereotype.Service;
 import projetoSalf.mvc.model.Parametrizacao;
 import projetoSalf.mvc.util.Conexao;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
-
+@Service
 public class ParametrizacaoDAO implements IDAO<Parametrizacao>{
-
 
 
     @Override
     public Object gravar(Parametrizacao pa) {
-        String SQL = "INSERT INTO parametrizacao (pa_nome_empresa, pa_cnpj, pa_endereco, pa_telefone, pa_email) VALUES (?,?,?,?,?)";
 
+        String SQL = "INSERT INTO parametrizacao (pa_nome_empresa, pa_cnpj, pa_endereco, pa_telefone, pa_email, pa_caminho_logotipo ) VALUES (?,?,?,?,?,?)";
 
         try{
-
-            Conexao conexao = new Conexao();
-            Connection con = conexao.getConnection();
-            PreparedStatement stmt = con.prepareStatement(SQL);
-
-            stmt.setString(1,pa.getNomeEmpresa());
-            stmt.setString(2,pa.getCnpj());
-            stmt.setString(3,pa.getEndereco());
-            stmt.setString(4,pa.getTelefone());
-            stmt.setString(5,pa.getEmail());
+            if(ExisteEmpresas() == false) {
+                Conexao conexao = new Conexao();
+                Connection con = conexao.getConnection();
+                PreparedStatement stmt = con.prepareStatement(SQL);
 
 
-            if(stmt.executeUpdate() > 0){
-                conexao.fechar();
-                return pa;
 
+                // Salvar dados no banco
+                stmt.setString(1, pa.getNomeEmpresa());
+                stmt.setString(2, pa.getCnpj());
+                stmt.setString(3, pa.getEndereco());
+                stmt.setString(4, pa.getTelefone());
+                stmt.setString(5, pa.getEmail());
+                stmt.setBytes(6,pa.getLogotipo());
+                if (stmt.executeUpdate() > 0) {
+                    conexao.fechar();
+                    return pa;
+
+                }
+            }
+            else{
+                System.out.println("Empresa já existente, não é possivel cadastrar outra empresa nesse sistema");
             }
 
         } catch (Exception e) {
@@ -47,7 +56,7 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao>{
     @Override
     public Object alterar(Parametrizacao pa) {
 
-        String SQL = "UPDATE parametrizacao SET pa_nome_empresa = ?, pa_cnpj = ?, pa_endereco = ?, pa_telefone = ?, pa_email = ? WHERE pa_id = ?";
+        String SQL = "UPDATE parametrizacao SET pa_nome_empresa = ?, pa_cnpj = ?, pa_endereco = ?, pa_telefone = ? WHERE pa_email = ?";
         try {
             Conexao conexao = new Conexao();
             Connection con = conexao.getConnection();
@@ -57,7 +66,7 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao>{
             stmt.setString(3, pa.getEndereco());
             stmt.setString(4, pa.getTelefone());
             stmt.setString(5, pa.getEmail());
-            stmt.setInt(6, pa.getId());
+
 
             if(stmt.executeUpdate() > 0){
                 conexao.fechar();
@@ -135,6 +144,8 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao>{
                 PA.setEndereco(rs.getString("pa_endereco"));
                 PA.setTelefone(rs.getString("pa_telefone"));
                 PA.setEmail(rs.getString("pa_email"));
+                byte[] logotipoBytes = rs.getBytes("pa_caminho_logotipo"); // nome da coluna exato do seu banco
+                PA.setLogotipo(logotipoBytes);
 
                 return PA;
 
@@ -148,4 +159,26 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao>{
         }
         return null;
     }
+
+
+    public boolean ExisteEmpresas() {
+        String SQL = "SELECT COUNT(*) FROM parametrizacao";
+
+        try {
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0; // só retorna true se houver 1 ou mais registros
+            }
+
+            return false; // caso não consiga ler o resultado
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

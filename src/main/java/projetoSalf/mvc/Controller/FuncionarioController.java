@@ -1,10 +1,11 @@
 package projetoSalf.mvc.Controller;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 import projetoSalf.mvc.dao.FuncionarioDAO;
 import projetoSalf.mvc.model.Funcionario;
 
-@Service
+@RestController
 public class FuncionarioController {
 
     private FuncionarioDAO dao = new FuncionarioDAO();
