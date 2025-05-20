@@ -255,6 +255,92 @@ public class ProdutoController {
         }
     }
 
+    public List<Map<String, Object>> getProdutosPorNome(String termo) {
+
+        Conexao conexao = new Conexao();
+        List<Produto> listaOriginal = produtoModel.consultar("", conexao);
+        List<Produto> listaFiltrada = new ArrayList<>();
+
+        // Filtro manual
+        for (Produto p : listaOriginal) {
+            if (p.getProd_desc().toLowerCase().contains(termo.toLowerCase())) {
+                listaFiltrada.add(p);
+            }
+        }
+
+        if (listaFiltrada.isEmpty()) return null;
+
+        List<Map<String, Object>> prodList = new ArrayList<>();
+        Categoria cAux = new Categoria();
+
+        for (Produto p : listaFiltrada) {
+            Map<String, Object> json = new HashMap<>();
+            Map<String, Object> catJson = new HashMap<>();
+
+            json.put("id", p.getProd_cod());
+            json.put("nome", p.getProd_desc());
+            json.put("preco", p.getProd_valorun());
+            json.put("data", p.getProd_dtvalid());
+
+            cAux = categoriaModel.consultar(p.getCategoria());
+            catJson.put("id", cAux.getId());
+            catJson.put("desc", cAux.getDesc());
+
+            json.put("categoria", catJson);
+
+            prodList.add(json);
+        }
+
+        return prodList;
+    }
+
+
+    public List<Map<String, Object>> getProdutosOrdenados() {
+        Conexao conexao = new Conexao();
+        List<Produto> lista = produtoModel.consultar("", conexao);
+        if (lista.isEmpty())
+            return null;
+
+        // Ordenação manual pelo nome (prod_desc) usando Bubble Sort
+        for (int i = 0; i < lista.size() - 1; i++) {
+            for (int j = 0; j < lista.size() - 1 - i; j++) {
+                // comparar os nomes ignorando caixa alta/baixa
+                String nome1 = lista.get(j).getProd_desc().toLowerCase();
+                String nome2 = lista.get(j + 1).getProd_desc().toLowerCase();
+
+                if (nome1.compareTo(nome2) > 0) {
+                    // troca de posição
+                    Produto temp = lista.get(j);
+                    lista.set(j, lista.get(j + 1));
+                    lista.set(j + 1, temp);
+                }
+            }
+        }
+
+        List<Map<String, Object>> prodList = new ArrayList<>();
+        Categoria cAux = new Categoria();
+
+        for (Produto p : lista) {
+            Map<String, Object> json = new HashMap<>();
+            Map<String, Object> catJson = new HashMap<>();
+
+            json.put("id", p.getProd_cod());
+            json.put("nome", p.getProd_desc());
+            json.put("preco", p.getProd_valorun());
+            json.put("data", p.getProd_dtvalid());
+
+            cAux = categoriaModel.consultar(p.getCategoria());
+            catJson.put("id", cAux.getId());
+            catJson.put("desc", cAux.getDesc());
+
+            json.put("categoria", catJson);
+
+            prodList.add(json);
+        }
+
+        return prodList;
+    }
+
 
 }
 

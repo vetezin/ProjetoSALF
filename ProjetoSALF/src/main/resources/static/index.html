@@ -8,16 +8,18 @@
 
   <title>Gerenciar Produtos</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+
 </head>
 
 <body>
   <main class="container">
-    <h1>Consulta de Produtos</h1>
+    <h1>Gerenciar Produtos</h1>
 
     <div class="top-bar">
       <input type="text" id="buscaNome" placeholder="Digite aqui..." />
       <div class="botoes-topo">
-        <button onclick="filtrarPorCategoria()">Filtrar por Categoria</button>
+       
         <button onclick="ordenarPorNome()">Ordenar A-Z</button>
         <button onclick="mostrarFormulario()">Novo</button>
       </div>
@@ -40,11 +42,12 @@
     </table>
   </main>
 
+  <div id="mensagemToast"></div>
   <div class="modal" id="modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2>Novo Produto</h2>
-        <span class="modal-close" onclick="fecharModal()">&times;</span>
+        <span class="modal-close" onclick="fecharModal('modal')">&times;</span>
       </div>
 
 
@@ -89,8 +92,57 @@
 
 
     </div>
+  </div>
 
-    <script src="produtoScript.js"></script>
+  <div class="modal" id="modalEdicao">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Editar Produto</h2>
+          <span class="modal-close" onclick="fecharModal('modalEdicao')">&times;</span>
+
+        </div>
+
+        <form id="formEditarProduto" class="needs-validation" novalidate onsubmit="return atualizarProduto(event)"
+          method="PUT">
+          <input type="hidden" id="idEdicao" name="id">
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="descricaoEdicao" name="prod_desc" required>
+            <label for="descricaoEdicao">Descrição</label>
+            <div class="invalid-feedback">Informe uma descrição.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="date" class="form-control" id="dtvalidadeEdicao" name="prod_dtvalid" required>
+            <label for="dtvalidadeEdicao">Data de Validade</label>
+            <div class="invalid-feedback">Informe uma data válida.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="valorEdicao" name="prod_valorun" required>
+            <label for="valorEdicao">Valor Unitário (R$)</label>
+            <div class="invalid-feedback">Informe o valor.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select class="form-select" id="categoriaEdicao" name="categoria" required>
+              <option value="">Selecione uma categoria</option>
+              <!-- opções JS -->
+            </select>
+            <label for="categoriaEdicao">Categoria</label>
+            <div class="invalid-feedback">Selecione uma categoria válida.</div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="button green">Atualizar</button>
+            <button type="button" class="button blue" onclick="fecharModalEdicao()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+
+
+    </div>
+  <script src="produtoScript.js"></script>
 </body>
 
 </html>

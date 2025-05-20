@@ -50,16 +50,28 @@ public class ProdutoView {
         }
     }
 
-    @GetMapping("/menor-que/{valor}")
-    public ResponseEntity<Object> getProdutosMenorQue(@PathVariable("valor") float valor) {
-        List<Map<String, Object>> produtos = produtoController.getProdutosMenorQue(valor);
+    @GetMapping("/busca-nome")
+    public ResponseEntity<Object> getPorNome(@RequestParam("termo") String termo) {
+        List<Map<String, Object>> produtos = produtoController.getProdutosPorNome(termo);
 
         if (produtos != null && !produtos.isEmpty()) {
             return ResponseEntity.ok(produtos);
         } else {
-            return ResponseEntity.badRequest().body(new Mensagem("Nenhum produto encontrado com valor menor que " + valor));
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhum produto encontrado com o termo informado."));
         }
     }
+
+
+    @GetMapping("/ordenados")
+    public ResponseEntity<Object> getProdutosOrdenados() {
+        List<Map<String, Object>> lista = produtoController.getProdutosOrdenados();
+        if (lista != null && !lista.isEmpty())
+            return ResponseEntity.ok(lista);
+        else
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhum produto encontrado."));
+    }
+
+
 
     //fazer o getID
     @PostMapping

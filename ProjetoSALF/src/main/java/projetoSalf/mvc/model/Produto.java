@@ -18,7 +18,7 @@ public class Produto {
     private String prod_dtvalid;
     private String prod_desc;
     private float prod_valorun;
-    //private Categoria categoria;
+
     private int cat_cod;
 
 
