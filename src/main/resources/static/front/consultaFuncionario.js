@@ -64,7 +64,8 @@ function atualizarTabela(funcionarios) {
         >Alterar</button>`;
     }
 
-    if (nivelAcesso >= 3) {
+    // Impede exclusão do usuário logado
+    if (nivelAcesso >= 3 && usuarioLogado?.id !== func_cod) {
       acoes += `<button class="delete-btn" data-id="${func_cod}">Excluir</button>`;
     }
 
@@ -114,6 +115,12 @@ btnFiltrarLogin.addEventListener('click', () => {
 });
 
 async function excluirFuncionario(id) {
+  // Bloqueia a exclusão do usuário logado
+  if (usuarioLogado?.id === id) {
+    alert('Você não pode excluir o usuário atualmente logado.');
+    return;
+  }
+
   if (!confirm(`Confirma exclusão do funcionário com ID: ${id}?`)) return;
 
   try {
