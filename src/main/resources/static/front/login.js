@@ -26,7 +26,7 @@ form.addEventListener('submit', async (e) => {
     localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
 
     // Redireciona para tela principal
-    window.location.href = 'ConsultaFuncionario.html';
+    window.location.href = 'menu.html';
 
   } catch (error) {
     loginMessage.textContent = 'Login ou senha incorretos.';
