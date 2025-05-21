@@ -6,14 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class SaidaDAO implements IDAO<Saida> {
-
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public Saida gravar(Saida saida) {
@@ -21,7 +18,7 @@ public class SaidaDAO implements IDAO<Saida> {
             INSERT INTO saida(s_dtsaida, s_motivo, func_cod)
             VALUES ('#1', '#2', '#3');
         """;
-        sql = sql.replace("#1", sdf.format(saida.getDataSaida()));
+        sql = sql.replace("#1", saida.getDataSaida());
         sql = sql.replace("#2", saida.getMotivo().replace("'", "''"));
         sql = sql.replace("#3", String.valueOf(saida.getCodFuncionario()));
 
@@ -42,7 +39,7 @@ public class SaidaDAO implements IDAO<Saida> {
                 func_cod = #3
             WHERE s_cod = #4;
         """;
-        sql = sql.replace("#1", sdf.format(saida.getDataSaida()));
+        sql = sql.replace("#1", saida.getDataSaida());
         sql = sql.replace("#2", saida.getMotivo().replace("'", "''"));
         sql = sql.replace("#3", String.valueOf(saida.getCodFuncionario()));
         sql = sql.replace("#4", String.valueOf(saida.getCod()));
@@ -63,7 +60,7 @@ public class SaidaDAO implements IDAO<Saida> {
             if (rs.next()) {
                 return new Saida(
                         rs.getInt("s_cod"),
-                        rs.getDate("s_dtsaida"),
+                        rs.getString("s_dtsaida"),
                         rs.getString("s_motivo"),
                         rs.getInt("func_cod")
                 );
@@ -86,7 +83,7 @@ public class SaidaDAO implements IDAO<Saida> {
             while (rs.next()) {
                 lista.add(new Saida(
                         rs.getInt("s_cod"),
-                        rs.getDate("s_dtsaida"),
+                        rs.getString("s_dtsaida"),
                         rs.getString("s_motivo"),
                         rs.getInt("func_cod")
                 ));

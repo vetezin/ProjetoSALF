@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.SaidaDAO;
 
-import java.util.Date;
 import java.util.List;
 
 @Component
 public class Saida {
     private int cod;
-    private Date dataSaida;
+    private String dataSaida;
     private String motivo;
     private int codFuncionario;
 
@@ -19,20 +18,19 @@ public class Saida {
 
     public Saida() {}
 
-    public Saida(int cod, Date dataSaida, String motivo, int codFuncionario) {
+    public Saida(int cod, String dataSaida, String motivo, int codFuncionario) {
         this.cod = cod;
         this.dataSaida = dataSaida;
         this.motivo = motivo;
         this.codFuncionario = codFuncionario;
     }
 
-    public Saida(Date dataSaida, String motivo, int codFuncionario) {
+    public Saida(String dataSaida, String motivo, int codFuncionario) {
         this.dataSaida = dataSaida;
         this.motivo = motivo;
         this.codFuncionario = codFuncionario;
     }
 
-    // Getters e Setters
     public int getCod() {
         return cod;
     }
@@ -41,11 +39,11 @@ public class Saida {
         this.cod = cod;
     }
 
-    public Date getDataSaida() {
+    public String getDataSaida() {
         return dataSaida;
     }
 
-    public void setDataSaida(Date dataSaida) {
+    public void setDataSaida(String dataSaida) {
         this.dataSaida = dataSaida;
     }
 
