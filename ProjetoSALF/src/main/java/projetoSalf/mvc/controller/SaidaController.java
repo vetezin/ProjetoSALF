@@ -2,7 +2,10 @@ package projetoSalf.mvc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import projetoSalf.mvc.model.Estoque;
+import projetoSalf.mvc.model.Produto;
 import projetoSalf.mvc.model.Saida;
+import projetoSalf.mvc.model.SaidaProd;
 
 import java.util.*;
 
@@ -11,6 +14,15 @@ public class SaidaController {
 
     @Autowired
     private Saida saidaModel;
+
+    @Autowired
+    private Produto produtoModel;
+
+    @Autowired
+    private Estoque estoqueModel;
+
+    @Autowired
+    private SaidaProd saidaProdModel;
 
     public List<Map<String, Object>> getSaidas() {
         List<Saida> lista = saidaModel.consultar("");
@@ -60,6 +72,68 @@ public class SaidaController {
             return Map.of("erro", "Erro ao cadastrar saída");
         }
     }
+
+
+
+
+    public Map<String, Object> registrarSaidaComProduto(
+            int codProduto,
+            int quantidadeSaida,
+            int codFuncionario,
+            String dataSaida,
+            String motivo
+    ) {
+        // Passo 1: Buscar o estoque do produto
+        List<Estoque> estoques = estoqueModel.consultar("WHERE produto_prod_cod = " + codProduto);
+        if (estoques.isEmpty()) {
+            return Map.of("erro", "Produto não encontrado no estoque");
+        }
+
+        Estoque estoque = estoques.get(0);
+        int qtdAtualEstoque = estoque.getEs_qtdprod();
+
+        // Passo 2: Verificar se há quantidade suficiente
+        if (quantidadeSaida <= 0 || quantidadeSaida > qtdAtualEstoque) {
+            return Map.of("erro", "Quantidade inválida ou insuficiente em estoque");
+        }
+
+        // Passo 3: Registrar a saída na tabela SAIDA
+        Saida novaSaida = new Saida(dataSaida, motivo, codFuncionario);
+        Saida saidaGravada = saidaModel.gravar(novaSaida);
+        if (saidaGravada == null || saidaGravada.getCod() == 0) {
+            return Map.of("erro", "Erro ao registrar a saída");
+        }
+
+        // Passo 4: Registrar na tabela SAIDA_PROD
+        SaidaProd novaSaidaProd = new SaidaProd(codProduto, saidaGravada.getCod(), quantidadeSaida);
+        SaidaProd saidaProdGravada = novaSaidaProd.gravar();
+        if (saidaProdGravada == null) {
+            return Map.of("erro", "Erro ao registrar a saída do produto");
+        }
+
+        // Passo 5: Atualizar o estoque
+        int novaQtd = qtdAtualEstoque - quantidadeSaida;
+        estoque.setEs_qtdprod(novaQtd);
+        estoqueModel.alterar(estoque);
+
+        // Passo 6: Se acabou o estoque, remover o produto
+        if (novaQtd == 0) {
+            Produto produto = produtoModel.consultar(codProduto);
+            if (produto != null) {
+                produtoModel.deletarProduto(produto); // remove da tabela produto
+            }
+        }
+
+        return Map.of(
+                "mensagem", "Saída registrada com sucesso",
+                "saida_id", saidaGravada.getCod(),
+                "produto_id", codProduto,
+                "quantidade_saida", quantidadeSaida,
+                "estoque_restante", novaQtd
+        );
+    }
+
+
 
     public Map<String, Object> updtSaida(int cod, String dataSaidaStr, String motivo, int codFuncionario) {
         if (cod <= 0 || dataSaidaStr == null || motivo == null || motivo.isBlank() || codFuncionario <= 0)
