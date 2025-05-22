@@ -89,6 +89,7 @@ public class EstoqueDAO implements IDAO<Estoque> {
         try {
             ResultSet rs = SingletonDB.getConexao().consultar(sql);
             while (rs.next()) {
+                System.out.println("estou aqui");
                 Estoque e = new Estoque(
                         rs.getInt("estoque_id"),
                         rs.getInt("es_qtdprod"),
