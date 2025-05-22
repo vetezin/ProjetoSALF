@@ -83,40 +83,49 @@ public class SaidaController {
             String dataSaida,
             String motivo
     ) {
-        // Passo 1: Buscar o estoque do produto
-        List<Estoque> estoques = estoqueModel.consultar("WHERE produto_prod_cod = " + codProduto);
-        if (estoques.isEmpty()) {
+        // buscar todos os estoques
+        List<Estoque> estoques = estoqueModel.consultar("");
+
+        // procurar o estoque do produto informado
+        Estoque estoqueEncontrado = null;
+        for (Estoque est : estoques) {
+            if (est.getProduto_prod_cod() == codProduto) {
+                estoqueEncontrado = est;
+                break;
+            }
+        }
+
+        if (estoqueEncontrado == null) {
             return Map.of("erro", "Produto não encontrado no estoque");
         }
 
-        Estoque estoque = estoques.get(0);
-        int qtdAtualEstoque = estoque.getEs_qtdprod();
+        int qtdAtualEstoque = estoqueEncontrado.getEs_qtdprod();
 
-        // Passo 2: Verificar se há quantidade suficiente
+        // verificar se há quantidade suficiente
         if (quantidadeSaida <= 0 || quantidadeSaida > qtdAtualEstoque) {
             return Map.of("erro", "Quantidade inválida ou insuficiente em estoque");
         }
 
-        // Passo 3: Registrar a saída na tabela SAIDA
+        // registrar a saída na tabela SAIDA
         Saida novaSaida = new Saida(dataSaida, motivo, codFuncionario);
         Saida saidaGravada = saidaModel.gravar(novaSaida);
         if (saidaGravada == null || saidaGravada.getCod() == 0) {
             return Map.of("erro", "Erro ao registrar a saída");
         }
 
-        // Passo 4: Registrar na tabela SAIDA_PROD
+        // registrar na tabela SAIDA_PROD
         SaidaProd novaSaidaProd = new SaidaProd(codProduto, saidaGravada.getCod(), quantidadeSaida);
         SaidaProd saidaProdGravada = novaSaidaProd.gravar();
         if (saidaProdGravada == null) {
             return Map.of("erro", "Erro ao registrar a saída do produto");
         }
 
-        // Passo 5: Atualizar o estoque
+        // atualizar o estoque
         int novaQtd = qtdAtualEstoque - quantidadeSaida;
-        estoque.setEs_qtdprod(novaQtd);
-        estoqueModel.alterar(estoque);
+        estoqueEncontrado.setEs_qtdprod(novaQtd);
+        estoqueModel.alterar(estoqueEncontrado);
 
-        // Passo 6: Se acabou o estoque, remover o produto
+        // se acabou o estoque, remover o produto
         if (novaQtd == 0) {
             Produto produto = produtoModel.consultar(codProduto);
             if (produto != null) {
@@ -132,6 +141,7 @@ public class SaidaController {
                 "estoque_restante", novaQtd
         );
     }
+
 
 
 
