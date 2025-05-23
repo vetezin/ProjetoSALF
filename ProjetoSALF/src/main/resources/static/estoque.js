@@ -59,14 +59,7 @@ async function listarEstoque() {
       document.getElementById("modalAcertoEstoque").style.display = "block";
     }
 
-    /*
-    function abrirModalSaida(id, qtdAtual) {
-      document.getElementById("saidaEstoqueId").value = id;
-      document.getElementById("quantidadeSaida").max = qtdAtual;
-      document.getElementById("quantidadeSaida").value = "";
-      document.getElementById("modalSaidaProduto").style.display = "block";
-    }
-*/
+
 
 function abrirModalSaida(estoqueId, qtdAtual, produtoId) {
   document.getElementById("saidaEstoqueId").value = estoqueId;
@@ -85,3 +78,43 @@ function abrirModalSaida(estoqueId, qtdAtual, produtoId) {
     }
 
    
+    async function registrarSaida(event) {
+  event.preventDefault();
+
+  const codProduto = document.getElementById('saidaProdutoId').value;
+  const quantidadeSaida = document.getElementById('quantidadeSaida').value;
+  const codFuncionario = document.getElementById('codigoFuncionario').value;
+  const dataSaida = document.getElementById('dataSaida').value;
+  const motivo = document.getElementById('motivoSaida').value;
+
+  try {
+    const resposta = await fetch('http://localhost:8080/apis/saida/registrar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        codProduto,
+        quantidadeSaida,
+        codFuncionario,
+        dataSaida,
+        motivo
+      })
+    });
+
+    const resultado = await resposta.json();
+
+    if (resposta.ok) {
+      alert(resultado.mensagem || "Saída registrada com sucesso!");
+      fecharModal('modalSaidaProduto');
+      listarEstoque();
+    } else {
+      alert("Erro: " + resultado.mensagem || "Falha ao registrar saída.");
+    }
+  } catch (erro) {
+    console.error("Erro ao registrar saída:", erro);
+    alert("Erro ao tentar registrar a saída.");
+  }
+
+  return false;
+}
