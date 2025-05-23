@@ -81,14 +81,14 @@ function abrirModalSaida(estoqueId, qtdAtual, produtoId) {
     async function registrarSaida(event) {
   event.preventDefault();
 
-  const codProduto = document.getElementById('saidaProdutoId').value;
-  const quantidadeSaida = document.getElementById('quantidadeSaida').value;
-  const codFuncionario = document.getElementById('codigoFuncionario').value;
-  const dataSaida = document.getElementById('dataSaida').value;
-  const motivo = document.getElementById('motivoSaida').value;
+  let codProduto = document.getElementById('saidaProdutoId').value;
+  let quantidadeSaida = document.getElementById('quantidadeSaida').value;
+  let codFuncionario = document.getElementById('codigoFuncionario').value;
+  let dataSaida = document.getElementById('dataSaida').value;
+  let motivo = document.getElementById('motivoSaida').value;
 
   try {
-    const resposta = await fetch('http://localhost:8080/apis/saida/registrar', {
+    let resposta = await fetch('http://localhost:8080/apis/saida/registrar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -102,7 +102,7 @@ function abrirModalSaida(estoqueId, qtdAtual, produtoId) {
       })
     });
 
-    const resultado = await resposta.json();
+    let resultado = await resposta.json();
 
     if (resposta.ok) {
       alert(resultado.mensagem || "Saída registrada com sucesso!");

@@ -107,7 +107,7 @@ public class SaidaController {
         }
 
         int qtdAtualEstoque = estoqueEncontrado.getEs_qtdprod();
-        System.out.println("quantidade no estoque "+qtdAtualEstoque);
+
         // verificar se há quantidade suficiente
         if (quantidadeSaida <= 0 || quantidadeSaida > qtdAtualEstoque) {
             return Map.of("erro", "Quantidade inválida ou insuficiente em estoque");
@@ -117,14 +117,9 @@ public class SaidaController {
         Saida novaSaida = new Saida(dataSaida, motivo, codFuncionario);
         int aux;
         Saida saidaGravada = saidaModel.gravar(novaSaida);
-       // aux=saidaModel.consultar();
-        if (saidaGravada == null || saidaGravada.getCod() == 0) {
-            System.out.println("codigo da saida "+saidaGravada.getCod());
-            System.out.println("erro, data nulo "+saidaGravada.getDataSaida());
-            System.out.println("erro, motivo nulo "+saidaGravada.getMotivo());
-            System.out.println("erro, funcionario nulo "+saidaGravada.getCodFuncionario());
 
-           // return Map.of("erro", "Erro ao registrar a saída");
+        if (saidaGravada == null || saidaGravada.getCod() == 0) {
+           return Map.of("erro", "Erro ao registrar a saída");
         }
 
         // registrar na tabela SAIDA_PROD

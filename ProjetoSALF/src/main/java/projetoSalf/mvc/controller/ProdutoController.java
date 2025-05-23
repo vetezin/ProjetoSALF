@@ -227,17 +227,17 @@ public class ProdutoController {
             return Map.of("erro", "Dados inválidos para atualização");
         }
 
-        // Buscar o produto antes de atualizar
+        // busca o produto antes de atualizar
         Produto existente = produtoModel.consultar(prod_cod);
         if (existente == null) {
             return Map.of("erro", "Produto não encontrado");
         }
 
-        // Atualiza apenas os campos necessários
+        // atualiza apenas os campos necessários
         existente.setProd_dtvalid(prod_dtvalid);
         existente.setProd_desc(prod_desc);
         existente.setProd_valorun(prod_valorun);
-        //Verificar a categoria
+        //verificar a categoria
         existente.setCategoria(cat_cod);
 
         // Usa o mesmo metodo
@@ -261,7 +261,7 @@ public class ProdutoController {
         List<Produto> listaOriginal = produtoModel.consultar("", conexao);
         List<Produto> listaFiltrada = new ArrayList<>();
 
-        // Filtro manual
+
         for (Produto p : listaOriginal) {
             if (p.getProd_desc().toLowerCase().contains(termo.toLowerCase())) {
                 listaFiltrada.add(p);
@@ -301,15 +301,15 @@ public class ProdutoController {
         if (lista.isEmpty())
             return null;
 
-        // Ordenação manual pelo nome (prod_desc) usando Bubble Sort
+        // ordenacao
         for (int i = 0; i < lista.size() - 1; i++) {
             for (int j = 0; j < lista.size() - 1 - i; j++) {
-                // comparar os nomes ignorando caixa alta/baixa
+
                 String nome1 = lista.get(j).getProd_desc().toLowerCase();
                 String nome2 = lista.get(j + 1).getProd_desc().toLowerCase();
 
                 if (nome1.compareTo(nome2) > 0) {
-                    // troca de posição
+
                     Produto temp = lista.get(j);
                     lista.set(j, lista.get(j + 1));
                     lista.set(j + 1, temp);

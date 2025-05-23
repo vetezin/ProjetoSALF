@@ -64,7 +64,7 @@ public class Estoque {
         this.produto_prod_cod = produto_prod_cod;
     }
 
-    // --- Métodos DAO ---
+    //  DAO
 
     public List<Estoque> consultar(String filtro) {
         return dao.get(filtro);
