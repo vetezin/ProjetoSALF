@@ -17,8 +17,6 @@ public class FuncionarioDAO implements IDAO<Funcionario> {
 
 
 
-
-
     @Override
     public Funcionario gravar(Funcionario func) {
         String SQL = "INSERT INTO funcionario(func_nome, func_cpf, func_senha, func_email, func_login, func_nivel) " +

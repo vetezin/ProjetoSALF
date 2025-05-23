@@ -58,4 +58,11 @@ public class ParametrizacaoView {
             return ResponseEntity.status(404).body("Parametrização não encontrada.");
         }
     }
+
+    @GetMapping("/existeEmpresa")
+    public ResponseEntity<Boolean> existeEmpresa() {
+        boolean existe = parametrizacaoController.listar();
+        return ResponseEntity.ok(existe);
+    }
+
 }

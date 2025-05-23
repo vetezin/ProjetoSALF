@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import projetoSalf.mvc.dao.ParametrizacaoDAO;
 import projetoSalf.mvc.model.Parametrizacao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ParametrizacaoController {
 
@@ -23,5 +26,10 @@ public class ParametrizacaoController {
 
     public Parametrizacao get(String email) {
         return PaDAO.getRegistro(email);
+    }
+
+    public boolean listar() {
+        return PaDAO.ExisteEmpresas();
+
     }
 }
