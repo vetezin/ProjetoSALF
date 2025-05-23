@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import projetoSalf.mvc.controller.SaidaController;
 import projetoSalf.mvc.util.Mensagem;
 
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -37,4 +38,14 @@ public class SaidaView {
         else
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
+
+    @GetMapping
+    public ResponseEntity<Object> getAll() {
+        List<Map<String, Object>> lista = saidaController.getSaidas();
+        if (lista != null && !lista.isEmpty())
+            return ResponseEntity.ok(lista);
+        else
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhuma saída encontrada."));
+    }
+
 }
