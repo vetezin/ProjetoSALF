@@ -15,7 +15,8 @@
     <h1>Controlar Estoque</h1>
 
     <div class="top-bar mb-3">
-      <input type="text" id="buscaEstoque" placeholder="Buscar produto no estoque..." class="form-control w-50 d-inline-block" />
+      <input type="text" id="buscaEstoque" placeholder="Buscar produto no estoque..."
+        class="form-control w-50 d-inline-block" />
       <div class="botoes-topo mt-2">
         <button onclick="ordenarPorNomeEstoque()" class="btn btn-primary me-2">Ordenar A-Z</button>
         <button onclick="window.location.href='index.html'" class="btn btn-secondary">Voltar para Produtos</button>
@@ -80,103 +81,7 @@
     </div>
   </div>
 
-  <script>
-    // Exemplo de dados para popular a tabela (deve substituir pela chamada real da API)
-    const estoqueDados = [
-      { id: 63, produto: "Arroz", quantidade: 100, validade: "2025-06-26" },
-      { id: 64, produto: "Feijão Carioca", quantidade: 50, validade: "2025-06-04" },
-      { id: 65, produto: "Feijão Paulista", quantidade: 20, validade: "2025-06-04" },
-    ];
-
-    function carregarTabelaEstoque(dados) {
-      const tbody = document.querySelector("#tabelaEstoque tbody");
-      tbody.innerHTML = "";
-      dados.forEach(item => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${item.id}</td>
-          <td>${item.produto}</td>
-          <td>${item.quantidade}</td>
-          <td>${item.validade}</td>
-          <td>
-            <button class="btn btn-warning btn-sm me-1" onclick="abrirModalAcerto(${item.id}, ${item.quantidade})">Acerto</button>
-            <button class="btn btn-danger btn-sm" onclick="abrirModalSaida(${item.id}, ${item.quantidade})">Saída</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function abrirModalAcerto(id, qtdAtual) {
-      document.getElementById("acertoEstoqueId").value = id;
-      document.getElementById("quantidadeAcerto").value = qtdAtual;
-      document.getElementById("modalAcertoEstoque").style.display = "block";
-    }
-
-    function abrirModalSaida(id, qtdAtual) {
-      document.getElementById("saidaEstoqueId").value = id;
-      document.getElementById("quantidadeSaida").max = qtdAtual;
-      document.getElementById("quantidadeSaida").value = "";
-      document.getElementById("modalSaidaProduto").style.display = "block";
-    }
-
-    function fecharModal(idModal) {
-      document.getElementById(idModal).style.display = "none";
-    }
-
-    function ajustarEstoque(event) {
-      event.preventDefault();
-      const id = document.getElementById("acertoEstoqueId").value;
-      const novaQtd = parseInt(document.getElementById("quantidadeAcerto").value);
-
-      // Aqui você deve fazer a requisição para o backend para atualizar o estoque
-      alert(`Estoque do ID ${id} ajustado para ${novaQtd}`);
-
-      fecharModal('modalAcertoEstoque');
-      // Atualizar a tabela após ajuste, simule:
-      // Atualize o array e recarregue a tabela
-      const item = estoqueDados.find(i => i.id == id);
-      if (item) item.quantidade = novaQtd;
-      carregarTabelaEstoque(estoqueDados);
-
-      return false;
-    }
-
-    function registrarSaida(event) {
-      event.preventDefault();
-      const id = document.getElementById("saidaEstoqueId").value;
-      const qtdSaida = parseInt(document.getElementById("quantidadeSaida").value);
-
-      // Aqui você deve fazer a requisição para o backend para registrar saída de produto
-      alert(`Saída de ${qtdSaida} unidades do estoque ID ${id} registrada.`);
-
-      fecharModal('modalSaidaProduto');
-      // Atualize o array e recarregue a tabela simulando saída:
-      const item = estoqueDados.find(i => i.id == id);
-      if (item) item.quantidade -= qtdSaida;
-      carregarTabelaEstoque(estoqueDados);
-
-      return false;
-    }
-
-    function ordenarPorNomeEstoque() {
-      estoqueDados.sort((a, b) => a.produto.localeCompare(b.produto));
-      carregarTabelaEstoque(estoqueDados);
-    }
-
-    // Inicializa tabela
-    carregarTabelaEstoque(estoqueDados);
-
-    // Implementar filtro básico
-    document.getElementById("buscaEstoque").addEventListener("input", function () {
-      const filtro = this.value.toLowerCase();
-      const filtrados = estoqueDados.filter(item =>
-        item.produto.toLowerCase().includes(filtro)
-      );
-      carregarTabelaEstoque(filtrados);
-    });
-  </script>
+  <script src="estoque.js">  </script>
 </body>
 
 </html>

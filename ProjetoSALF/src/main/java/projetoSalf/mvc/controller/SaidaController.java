@@ -86,7 +86,8 @@ public class SaidaController {
             int codFuncionario,
             String dataSaida,
             String motivo
-    ) {
+    )
+    {
         Conexao conexao = new Conexao();
         // buscar todos os estoques
         List<Estoque> estoques = estoqueModel.consultar("");

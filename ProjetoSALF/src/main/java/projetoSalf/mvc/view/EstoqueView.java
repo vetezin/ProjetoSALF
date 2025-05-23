@@ -76,21 +76,5 @@ public class EstoqueView {
         }
     }
 
-    // Extra (opcional): rota de acerto de estoque (caso queira tratar como operação especial)
-    /*
-    @PutMapping("/acerto")
-    public ResponseEntity<Object> acertoEstoque(
-            @RequestParam("estoque_id") int id,
-            @RequestParam("es_qtdprod") int qtd,
-            @RequestParam("es_dtvalidade") String validade,
-            @RequestParam("produtoId") int produtoId
-    ) {
-        Map<String, Object> json = estoqueController.acertoEstoque(id, qtd, validade, produtoId);
-        if (json.get("erro") == null) {
-            return ResponseEntity.ok(new Mensagem("Estoque ajustado com sucesso!"));
-        } else {
-            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
-        }
-    }
-*/
+
 }
