@@ -3,69 +3,70 @@ package projetoSalf.mvc.model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.ItensDAO;
+import projetoSalf.mvc.util.Conexao;
+
+import java.util.List;
 
 @Component
 public class Itens {
+
     @Autowired
     private ItensDAO dao;
 
-    private int itens_cod;
-    private int lc_cod;
-    private Produto produto;
-    private int qtd;
+    private int listaId;
+    private int produtoId;
+    private int quantidade;
 
-    public Itens() {
+    public Itens() {}
+
+    public Itens(int listaId, int produtoId, int quantidade) {
+        this.listaId = listaId;
+        this.produtoId = produtoId;
+        this.quantidade = quantidade;
     }
 
-    public Itens(ItensDAO dao, int itens_cod, int lc_cod, Produto produto, int qtd) {
-        this.dao = dao;
-        this.itens_cod = itens_cod;
-        this.lc_cod = lc_cod;
-        this.produto = produto;
-        this.qtd = qtd;
+    public int getListaId() {
+        return listaId;
     }
 
-    public ItensDAO getDao() {
-        return dao;
+    public void setListaId(int listaId) {
+        this.listaId = listaId;
     }
 
-    public void setDao(ItensDAO dao) {
-        this.dao = dao;
+    public int getProdutoId() {
+        return produtoId;
     }
 
-    public int getItens_cod() {
-        return itens_cod;
+    public void setProdutoId(int produtoId) {
+        this.produtoId = produtoId;
     }
 
-    public void setItens_cod(int itens_cod) {
-        this.itens_cod = itens_cod;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public int getLc_cod() {
-        return lc_cod;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public void setLc_cod(int lc_cod) {
-        this.lc_cod = lc_cod;
+    // Métodos com DAO
+    public Itens gravar(Itens novo) {
+        return dao.gravar(novo);
     }
 
-    public Produto getProduto() {
-        return produto;
+    public List<Itens> consultarPorLista(int listaId, Conexao conexao) {
+        return dao.getItensPorLista(listaId);
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public Itens consultar(int listaId, int produtoId) {
+        return dao.consultar(listaId, produtoId);
     }
 
-    public int getQtd() {
-        return qtd;
+    public Itens update(Itens atualizado) {
+        return dao.update(atualizado);
     }
 
-    public void setQtd(int qtd) {
-        this.qtd = qtd;
-    }
-
-    public int getProdutoCod() {
-        return produto.getId();
+    public boolean deletarListaCompraProd(Itens item) {
+        return dao.deletar(item);
     }
 }
