@@ -48,15 +48,15 @@ public class SaidaProd {
     }
 
 
-    public SaidaProd gravar() {
-        return dao.gravar(this);
+    public SaidaProd gravar(SaidaProd sp) {
+        return dao.gravar(sp);
     }
 
-    public SaidaProd alterar() {
-        return dao.alterar(this);
+    public SaidaProd alterar(SaidaProd sp) {
+        return dao.alterar(sp);
     }
 
-    public boolean deletar() {
+    public boolean deletar(SaidaProd sp) {
         return dao.apagar(this);
     }
 

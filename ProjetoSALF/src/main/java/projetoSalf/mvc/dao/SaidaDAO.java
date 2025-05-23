@@ -15,17 +15,24 @@
         @Override
         public Saida gravar(Saida saida) {
             String sql = """
-                INSERT INTO saida(s_dtsaida, s_motivo, func_cod)
-                VALUES ('#1', '#2', '#3');
-            """;
+        INSERT INTO saida(s_dtsaida, s_motivo, func_cod)
+        VALUES ('#1', '#2', '#3') RETURNING s_cod;
+    """;
             sql = sql.replace("#1", saida.getDataSaida());
             sql = sql.replace("#2", saida.getMotivo().replace("'", "''"));
             sql = sql.replace("#3", String.valueOf(saida.getCodFuncionario()));
 
-            if (SingletonDB.getConexao().manipular(sql)) {
-                return saida;
-            } else {
-                System.out.println("Erro ao gravar saída: " + SingletonDB.getConexao().getMensagemErro());
+            try {
+                ResultSet rs = SingletonDB.getConexao().consultar(sql);
+                if (rs != null && rs.next()) {
+                    saida.setCod(rs.getInt("s_cod")); // Preenche o ID
+                    return saida;
+                } else {
+                    System.out.println("Erro ao recuperar ID da saída.");
+                    return null;
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao gravar saída: " + e.getMessage());
                 return null;
             }
         }
@@ -55,10 +62,11 @@
         @Override
         public Saida get(int id) {
             String sql = "SELECT * FROM saida WHERE s_cod = " + id;
+            Saida s = null;
             try {
                 ResultSet rs = SingletonDB.getConexao().consultar(sql);
                 if (rs.next()) {
-                    return new Saida(
+                    s= new Saida(
                             rs.getInt("s_cod"),
                             rs.getString("s_dtsaida"),
                             rs.getString("s_motivo"),
@@ -68,7 +76,7 @@
             } catch (SQLException e) {
                 System.out.println("Erro ao buscar saída: " + e.getMessage());
             }
-            return null;
+            return s;
         }
 
         @Override

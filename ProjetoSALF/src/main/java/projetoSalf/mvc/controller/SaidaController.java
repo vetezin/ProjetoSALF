@@ -96,7 +96,7 @@ public class SaidaController {
         for (Estoque est : estoques) {
             if (est.getProduto_prod_cod() == codProduto) {
                 estoqueEncontrado = est;
-                break;
+
             }
         }
 
@@ -106,7 +106,7 @@ public class SaidaController {
         }
 
         int qtdAtualEstoque = estoqueEncontrado.getEs_qtdprod();
-
+        System.out.println("quantidade no estoque "+qtdAtualEstoque);
         // verificar se há quantidade suficiente
         if (quantidadeSaida <= 0 || quantidadeSaida > qtdAtualEstoque) {
             return Map.of("erro", "Quantidade inválida ou insuficiente em estoque");
@@ -114,7 +114,9 @@ public class SaidaController {
 
         // registrar a saída na tabela SAIDA
         Saida novaSaida = new Saida(dataSaida, motivo, codFuncionario);
+        int aux;
         Saida saidaGravada = saidaModel.gravar(novaSaida);
+       // aux=saidaModel.consultar();
         if (saidaGravada == null || saidaGravada.getCod() == 0) {
             System.out.println("codigo da saida "+saidaGravada.getCod());
             System.out.println("erro, data nulo "+saidaGravada.getDataSaida());
@@ -126,7 +128,7 @@ public class SaidaController {
 
         // registrar na tabela SAIDA_PROD
         SaidaProd novaSaidaProd = new SaidaProd(codProduto, saidaGravada.getCod(), quantidadeSaida);
-        SaidaProd saidaProdGravada = novaSaidaProd.gravar();
+        SaidaProd saidaProdGravada = saidaProdModel.gravar(novaSaidaProd);
         if (saidaProdGravada == null) {
 
             return Map.of("erro", "Erro ao registrar a saída do produto");
