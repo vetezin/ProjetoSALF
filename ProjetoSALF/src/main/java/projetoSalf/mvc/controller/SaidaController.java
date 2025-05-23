@@ -6,6 +6,7 @@ import projetoSalf.mvc.model.Estoque;
 import projetoSalf.mvc.model.Produto;
 import projetoSalf.mvc.model.Saida;
 import projetoSalf.mvc.model.SaidaProd;
+import projetoSalf.mvc.util.Conexao;
 
 import java.util.*;
 
@@ -25,6 +26,7 @@ public class SaidaController {
     private SaidaProd saidaProdModel;
 
     public List<Map<String, Object>> getSaidas() {
+        Conexao conexao = new Conexao();
         List<Saida> lista = saidaModel.consultar("");
         if (lista.isEmpty())
             return null;
@@ -42,6 +44,7 @@ public class SaidaController {
     }
 
     public Map<String, Object> getSaida(int id) {
+        Conexao conexao = new Conexao();
         Saida s = saidaModel.consultar(id);
         if (s == null)
             return Map.of("erro", "Saída não encontrada");
@@ -55,6 +58,7 @@ public class SaidaController {
     }
 
     public Map<String, Object> addSaida(String dataSaidaStr, String motivo, int codFuncionario) {
+        Conexao conexao = new Conexao();
         if (dataSaidaStr == null || motivo == null || motivo.isBlank() || codFuncionario <= 0)
             return Map.of("erro", "Dados inválidos para cadastro");
 
@@ -83,6 +87,7 @@ public class SaidaController {
             String dataSaida,
             String motivo
     ) {
+        Conexao conexao = new Conexao();
         // buscar todos os estoques
         List<Estoque> estoques = estoqueModel.consultar("");
 
@@ -94,6 +99,7 @@ public class SaidaController {
                 break;
             }
         }
+
 
         if (estoqueEncontrado == null) {
             return Map.of("erro", "Produto não encontrado no estoque");
@@ -110,13 +116,19 @@ public class SaidaController {
         Saida novaSaida = new Saida(dataSaida, motivo, codFuncionario);
         Saida saidaGravada = saidaModel.gravar(novaSaida);
         if (saidaGravada == null || saidaGravada.getCod() == 0) {
-            return Map.of("erro", "Erro ao registrar a saída");
+            System.out.println("codigo da saida "+saidaGravada.getCod());
+            System.out.println("erro, data nulo "+saidaGravada.getDataSaida());
+            System.out.println("erro, motivo nulo "+saidaGravada.getMotivo());
+            System.out.println("erro, funcionario nulo "+saidaGravada.getCodFuncionario());
+
+           // return Map.of("erro", "Erro ao registrar a saída");
         }
 
         // registrar na tabela SAIDA_PROD
         SaidaProd novaSaidaProd = new SaidaProd(codProduto, saidaGravada.getCod(), quantidadeSaida);
         SaidaProd saidaProdGravada = novaSaidaProd.gravar();
         if (saidaProdGravada == null) {
+
             return Map.of("erro", "Erro ao registrar a saída do produto");
         }
 
