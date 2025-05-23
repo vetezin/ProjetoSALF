@@ -147,13 +147,19 @@ public class SaidaController {
             }
         }
 
-        return Map.of(
-                "mensagem", "Saída registrada com sucesso",
-                "saida_id", saidaGravada.getCod(),
-                "produto_id", codProduto,
-                "quantidade_saida", quantidadeSaida,
-                "estoque_restante", novaQtd
-        );
+        Map<String, Object> json = new HashMap<>();
+        json.put("mensagem", "Saída registrada com sucesso");
+        json.put("saida_id", saidaGravada.getCod());
+        json.put("produto_id", codProduto);
+        json.put("quantidade_saida", quantidadeSaida);
+        json.put("estoque_restante", novaQtd);
+
+
+        json.put("data_saida", saidaGravada.getDataSaida());
+        json.put("motivo", saidaGravada.getMotivo());
+        json.put("funcionario_id", saidaGravada.getCodFuncionario());
+
+        return json;
     }
 
 
