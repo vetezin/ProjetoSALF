@@ -102,4 +102,8 @@ public class Produto {
     public Produto alterar(Produto produto) {
         return dao.alterar(produto);
     }
+
+    public int getId() {
+        return prod_cod;
+    }
 }

@@ -1,27 +1,26 @@
 package projetoSalf.mvc.dao;
 
 import org.springframework.stereotype.Repository;
-import projetoSalf.mvc.model.Funcionario;
 import projetoSalf.mvc.model.Itens;
-import projetoSalf.mvc.model.ListaCompra;
 import projetoSalf.mvc.util.SingletonDB;
 
 import java.util.List;
 
 @Repository
-public class ListaCompraDAO implements IDAO<ListaCompra> {
+public class ItensDAO implements IDAO<Itens>{
 
     @Override
-    public ListaCompra gravar(ListaCompra lc) {
+    public Object gravar(Itens itens) {
         String sql = """
-            INSERT INTO listacompra(lc_dtlista, func_cod)
-            VALUES ('#1', '#2');
+            INSERT INTO lc_prod(lc_prod_qtd, lc_cod, prod_cod)
+            VALUES ('#1', '#2', '#2');
         """;
-        sql = sql.replace("#1", lc.getFuncCod())
-                .replace("#2", lc.getLc_data());
+        sql = sql.replace("#1", String.valueOf(itens.getQtd()))
+                .replace("#2", String.valueOf(itens.getLc_cod()))
+                .replace("#3", String.valueOf(itens.getProdutoCod()));
 
         if (SingletonDB.getConexao().manipular(sql)) {
-            return lc;
+            return itens;
         } else {
             System.out.println("Erro: " + SingletonDB.getConexao().getMensagemErro());
             return null;
@@ -29,22 +28,23 @@ public class ListaCompraDAO implements IDAO<ListaCompra> {
     }
 
     @Override
-    public Object alterar(ListaCompra entidade) {
+    public Object alterar(Itens entidade) {
         return null;
     }
 
     @Override
-    public boolean apagar(ListaCompra entidade) {
+    public boolean apagar(Itens entidade) {
         return false;
     }
 
     @Override
-    public ListaCompra get(int id) {
+    public Itens get(int id) {
         return null;
     }
 
     @Override
-    public List<ListaCompra> get(String filtro) {
+    public List<Itens> get(String filtro) {
         return List.of();
     }
+
 }

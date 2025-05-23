@@ -10,33 +10,34 @@ import java.util.List;
 
 @Component
 public class ListaCompra {
-
     @Autowired
     private ListaCompraDAO dao;
 
     private int lc_cod;
-    private Date lc_dtlista;
-    private String lc_desc;
-    private int func_cod;
-    private List<ListaCompraProd> itens;
+    private Date lc_data;
+    private Funcionario lc_func;
+    private List<Itens> itens;
 
-    public ListaCompra() {}
-
-    public ListaCompra(int lc_cod, Date lc_dtlista, String lc_desc, int func_cod) {
+    public ListaCompra(ListaCompraDAO dao, int lc_cod, Date lc_data, Funcionario lc_func, List<Itens> itens) {
+        this.dao = dao;
         this.lc_cod = lc_cod;
-        this.lc_dtlista = lc_dtlista;
-        this.lc_desc = lc_desc;
-        this.func_cod = func_cod;
+        this.lc_data = lc_data;
+        this.lc_func = lc_func;
+        this.itens = itens;
     }
 
-    public ListaCompra(String desc, String dtlista, int funcCod) {
-        this.lc_desc = desc;
-        this.lc_dtlista = new Date(dtlista);
-        this.func_cod = funcCod;
+    public ListaCompra() {
     }
 
-    // Getters e Setters
-    public int getLc_cod() {
+    public ListaCompraDAO getDao() {
+        return dao;
+    }
+
+    public void setDao(ListaCompraDAO dao) {
+        this.dao = dao;
+    }
+
+    public CharSequence getLc_cod() {
         return lc_cod;
     }
 
@@ -44,64 +45,46 @@ public class ListaCompra {
         this.lc_cod = lc_cod;
     }
 
-    public Date getLc_dtlista() {
-        return lc_dtlista;
+    public CharSequence getLc_data() {
+        return lc_data;
     }
 
-    public void setLc_dtlista(Date lc_dtlista) {
-        this.lc_dtlista = lc_dtlista;
+    public void setLc_data(Date lc_data) {
+        this.lc_data = lc_data;
     }
 
-    public String getLc_desc() {
-        return lc_desc;
+    public Funcionario getLc_func() {
+        return lc_func;
     }
 
-    public void setLc_desc(String lc_desc) {
-        this.lc_desc = lc_desc;
+    public void setLc_func(Funcionario lc_func) {
+        this.lc_func = lc_func;
     }
 
-    public int getFunc_cod() {
-        return func_cod;
-    }
-
-    public void setFunc_cod(int func_cod) {
-        this.func_cod = func_cod;
-    }
-
-    public List<ListaCompraProd> getItens() {
+    public List<Itens> getItens() {
         return itens;
     }
 
-    public void setItens(List<ListaCompraProd> itens) {
+    public void setItens(List<Itens> itens) {
         this.itens = itens;
     }
-
-    // Métodos usando DAO
-    public ListaCompra gravar(ListaCompra lista) {
-        return dao.gravar(lista);
-    }
-
-    public boolean deletar(ListaCompra lista) {
-        return dao.apagar(lista);
-    }
-
-    public ListaCompra alterar(ListaCompra lista) {
-        return dao.alterar(lista);
-    }
-
-    public ListaCompra consultar(int lc_cod) {
-        return dao.get(lc_cod);
-    }
-
-    public List<ListaCompra> consultar(String filtro, Conexao conexao) {
+    public List<ListaCompra> consultar(String filtro, Conexao conexao){
         return dao.get(filtro);
     }
-
-    public boolean isEmpty() {
+    public ListaCompra consultar(int id){
+        return dao.get(id);
+    }
+    public boolean isEmpty(){
         return dao.get("").isEmpty();
     }
+    public ListaCompra gravar(ListaCompra lc) {
+        return this.dao.gravar(lc);
+    }
+    public boolean deletarListaCompra(ListaCompra lc){
+        return dao.apagar(lc);
+    }
 
-    public ListaCompra update(ListaCompra existente) {
-        return dao.alterar(existente);
+    public CharSequence getFuncCod() {
+        return lc_func.getId();
     }
 }
