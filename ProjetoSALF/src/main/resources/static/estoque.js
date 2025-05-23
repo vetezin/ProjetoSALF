@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   listarEstoque();
 });
 
-
+// <button class="btn btn-danger btn-sm" onclick="abrirModalSaida(${item.id}, ${item.quantidade})">Saída</button>
 
 async function listarEstoque() {
   let tbody = document.querySelector("#tabelaEstoque tbody");
@@ -28,12 +28,15 @@ async function listarEstoque() {
       let tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${item.id}</td>
+         <td>${item.produtoId}</td>
         <td>${item.produto.nome}</td>
         <td>${item.quantidade}</td>
         <td>${item.validade}</td>
         <td>
           <button class="btn btn-warning btn-sm me-1" onclick="abrirModalAcerto(${item.id}, ${item.quantidade})">Acerto</button>
-          <button class="btn btn-danger btn-sm" onclick="abrirModalSaida(${item.id}, ${item.quantidade})">Saída</button>
+         
+          <button class="btn btn-danger btn-sm" onclick="abrirModalSaida(${item.id}, ${item.quantidade}, ${item.produtoId})">Saída</button>
+
         </td>
       `;
       tbody.appendChild(tr);
@@ -56,12 +59,26 @@ async function listarEstoque() {
       document.getElementById("modalAcertoEstoque").style.display = "block";
     }
 
+    /*
     function abrirModalSaida(id, qtdAtual) {
       document.getElementById("saidaEstoqueId").value = id;
       document.getElementById("quantidadeSaida").max = qtdAtual;
       document.getElementById("quantidadeSaida").value = "";
       document.getElementById("modalSaidaProduto").style.display = "block";
     }
+*/
+
+function abrirModalSaida(estoqueId, qtdAtual, produtoId) {
+  document.getElementById("saidaEstoqueId").value = estoqueId;
+  document.getElementById("saidaProdutoId").value = produtoId;
+  document.getElementById("quantidadeSaida").max = qtdAtual;
+  document.getElementById("quantidadeSaida").value = "";
+  document.getElementById("codigoFuncionario").value = "";
+  document.getElementById("dataSaida").value = "";
+  document.getElementById("motivoSaida").value = "";
+  document.getElementById("modalSaidaProduto").style.display = "block";
+}
+
 
     function fecharModal(idModal) {
       document.getElementById(idModal).style.display = "none";
