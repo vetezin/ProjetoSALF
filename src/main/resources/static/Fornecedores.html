@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Fornecedores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,61 +49,25 @@
         }
         .container {
             padding: 20px;
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
         }
         .hidden {
             display: none;
         }
-        form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        .form-floating label.required::after {
+            content: " *";
+            color: red;
         }
-        form input {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        input:invalid {
+            border-color: #dc3545;
         }
-        form button {
-            padding: 10px;
-            background-color: #e71721;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .invalid-feedback {
+            display: none;
+            color: #dc3545;
         }
-        #mensagem {
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        table, th, td {
-            border: 1px solid #ccc;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        .actions button {
-            margin-right: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        .invalid {
-            border-color: red;
-            background-color: #ffe6e6;
+        input:invalid ~ .invalid-feedback {
+            display: block;
         }
     </style>
 </head>
@@ -115,29 +80,74 @@
     <button id="abaCadastro" class="active" onclick="mostrarAba('cadastro')">Cadastro</button>
     <button id="abaLista" onclick="mostrarAba('lista')">Lista de Fornecedores</button>
 </nav>
-
 <div class="container">
-    <div id="mensagem"></div>
+    <div id="mensagem" class="mb-3"></div>
 
     <div id="cadastro">
-        <form id="fornecedor-form">
+        <form id="fornecedor-form" class="row g-3 needs-validation" novalidate>
             <input type="hidden" id="forn_cod">
-            <input type="text" id="forn_nome" placeholder="Nome" required>
-            <input type="text" id="forn_end" placeholder="Endereço" required>
-            <input type="text" id="forn_cnpj" placeholder="CNPJ" required>
-            <input type="text" id="forn_telefone" placeholder="Telefone" required>
-            <button type="submit">Salvar</button>
+
+            <div class="col-md-6 form-floating">
+                <input type="text" class="form-control" id="forn_nome" placeholder="Nome" required>
+                <label for="forn_nome" class="required">Nome</label>
+                <div class="invalid-feedback">Nome é obrigatório.</div>
+            </div>
+            <div class="col-md-6 form-floating">
+                <input type="text" class="form-control" id="forn_cnpj" placeholder="CNPJ" required pattern="\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}">
+                <label for="forn_cnpj" class="required">CNPJ</label>
+                <div class="invalid-feedback">Informe um CNPJ válido (00.000.000/0000-00).</div>
+            </div>
+            <div class="col-md-6 form-floating">
+                <input type="text" class="form-control" id="forn_telefone" placeholder="Telefone" pattern="\(\d{2}\) \d{4,5}-\d{4}">
+                <label for="forn_telefone">Telefone</label>
+                <div class="invalid-feedback">Formato esperado: (00) 00000-0000.</div>
+            </div>
+            <div class="col-md-6 form-floating">
+                <input type="text" class="form-control" id="forn_contato" placeholder="Contato">
+                <label for="forn_contato">Contato</label>
+            </div>
+            <div class="col-md-6 form-floating">
+                <input type="email" class="form-control" id="forn_email" placeholder="E-mail">
+                <label for="forn_email">E-mail</label>
+                <div class="invalid-feedback">Informe um e-mail válido.</div>
+            </div>
+            <div class="col-md-6 form-floating">
+                <input type="text" class="form-control" id="forn_logradouro" placeholder="Logradouro">
+                <label for="forn_logradouro">Logradouro</label>
+            </div>
+            <div class="col-md-2 form-floating">
+                <input type="text" class="form-control" id="forn_numero" placeholder="Número">
+                <label for="forn_numero">Número</label>
+            </div>
+            <div class="col-md-4 form-floating">
+                <input type="text" class="form-control" id="forn_cidade" placeholder="Cidade" required>
+                <label for="forn_cidade" class="required">Cidade</label>
+                <div class="invalid-feedback">Cidade é obrigatória.</div>
+            </div>
+            <div class="col-md-3 form-floating">
+                <input type="text" class="form-control" id="forn_cep" placeholder="CEP" pattern="\d{5}-\d{3}">
+                <label for="forn_cep">CEP</label>
+                <div class="invalid-feedback">Formato esperado: 00000-000.</div>
+            </div>
+            <div class="col-md-3 form-floating">
+                <input type="text" class="form-control" id="forn_complemento" placeholder="Complemento">
+                <label for="forn_complemento">Complemento</label>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-secondary d-none" id="btnCancelar" onclick="limparFormulario()">Cancelar</button>
+            </div>
         </form>
     </div>
 
     <div id="lista" class="hidden">
-        <table>
-            <thead>
+        <table class="table table-bordered">
+            <thead class="table-dark">
             <tr>
                 <th>Nome</th>
-                <th>Endereço</th>
                 <th>CNPJ</th>
                 <th>Telefone</th>
+                <th>Logradouro</th>
                 <th>Ações</th>
             </tr>
             </thead>
@@ -145,157 +155,8 @@
         </table>
     </div>
 </div>
-
 <script>
     const apiBase = "http://localhost:8080/apis/fornecedor";
-    const mensagemEl = document.getElementById("mensagem");
-
-    document.addEventListener("DOMContentLoaded", () => {
-        carregarFornecedores();
-
-        const cnpjInput = document.getElementById("forn_cnpj");
-        const telInput = document.getElementById("forn_telefone");
-
-        cnpjInput.addEventListener("input", (e) => {
-            e.target.value = aplicarMascaraCNPJ(e.target.value);
-            validarCampoCNPJ(e.target);
-        });
-
-        telInput.addEventListener("input", (e) => {
-            e.target.value = aplicarMascaraTelefone(e.target.value);
-            validarCampoTelefone(e.target);
-        });
-
-        document.getElementById("fornecedor-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            mensagemEl.textContent = "";
-
-            validarCampoCNPJ(cnpjInput);
-            validarCampoTelefone(telInput);
-
-            if (cnpjInput.classList.contains("invalid") || telInput.classList.contains("invalid")) {
-                mensagemEl.style.color = "red";
-                mensagemEl.textContent = "Verifique os campos destacados.";
-                return;
-            }
-
-            const forn_cod = document.getElementById("forn_cod").value;
-            const dados = {
-                forn_nome: document.getElementById("forn_nome").value,
-                forn_end: document.getElementById("forn_end").value,
-                forn_cnpj: cnpjInput.value,
-                forn_telefone: telInput.value
-            };
-            if (forn_cod) dados.forn_cod = forn_cod;
-
-            const method = forn_cod ? "PUT" : "POST";
-
-            try {
-                const res = await fetch(apiBase, {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: new URLSearchParams(dados).toString()
-                });
-
-                const texto = await res.text();
-                let msg = texto;
-                try {
-                    const obj = JSON.parse(texto);
-                    if (obj.mensagem) msg = obj.mensagem;
-                } catch {}
-
-                if (!res.ok) throw new Error(msg);
-
-                document.getElementById("fornecedor-form").reset();
-                document.getElementById("forn_cod").value = "";
-                carregarFornecedores();
-                mensagemEl.style.color = "green";
-                mensagemEl.textContent = msg;
-            } catch (error) {
-                mensagemEl.style.color = "red";
-                mensagemEl.textContent = error.message;
-            }
-        });
-    });
-
-    async function carregarFornecedores() {
-        const res = await fetch(apiBase);
-        const fornecedores = await res.json();
-        const lista = document.getElementById("fornecedores-list");
-        lista.innerHTML = "";
-
-        fornecedores.forEach(f => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${f.nome}</td>
-              <td>${f.endereco}</td>
-              <td>${formatarCNPJ(f.cnpj)}</td>
-              <td>${formatarTelefone(f.telefone)}</td>
-              <td class="actions">
-                <button onclick='editar(${JSON.stringify(f)})'>Editar</button>
-                <button onclick='deletar(${f.id})'>Excluir</button>
-              </td>
-            `;
-            lista.appendChild(row);
-        });
-    }
-
-    function editar(f) {
-        mostrarAba('cadastro');
-        document.getElementById("forn_cod").value = f.id;
-        document.getElementById("forn_nome").value = f.nome;
-        document.getElementById("forn_end").value = f.endereco;
-        document.getElementById("forn_cnpj").value = aplicarMascaraCNPJ(f.cnpj);
-        document.getElementById("forn_telefone").value = aplicarMascaraTelefone(f.telefone);
-    }
-
-    async function deletar(id) {
-        if (confirm("Deseja realmente excluir este fornecedor?")) {
-            try {
-                const res = await fetch(`${apiBase}/${id}`, { method: "DELETE" });
-                const texto = await res.text();
-                let msg = texto;
-                try {
-                    const obj = JSON.parse(texto);
-                    if (obj.mensagem) msg = obj.mensagem;
-                } catch {}
-                if (!res.ok) throw new Error(msg);
-                carregarFornecedores();
-                mensagemEl.style.color = "green";
-                mensagemEl.textContent = msg;
-            } catch (error) {
-                mensagemEl.style.color = "red";
-                mensagemEl.textContent = error.message;
-            }
-        }
-    }
-
-    function mostrarAba(aba) {
-        document.getElementById("cadastro").classList.add("hidden");
-        document.getElementById("lista").classList.add("hidden");
-        document.getElementById("abaCadastro").classList.remove("active");
-        document.getElementById("abaLista").classList.remove("active");
-
-        document.getElementById(aba).classList.remove("hidden");
-        document.getElementById("aba" + aba.charAt(0).toUpperCase() + aba.slice(1)).classList.add("active");
-    }
-
-    function formatarCNPJ(cnpj) {
-        cnpj = cnpj.replace(/\D/g, "");
-        return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-    }
-
-    function formatarTelefone(telefone) {
-        telefone = telefone.replace(/\D/g, "");
-        if (telefone.length === 10) {
-            return telefone.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
-        } else if (telefone.length === 11) {
-            return telefone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-        }
-        return telefone;
-    }
 
     function aplicarMascaraCNPJ(valor) {
         valor = valor.replace(/\D/g, "");
@@ -313,18 +174,146 @@
         } else {
             valor = valor.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
         }
-        return valor.trim();
+        return valor;
     }
 
-    function validarCampoCNPJ(input) {
-        const val = input.value.replace(/\D/g, "");
-        input.classList.toggle("invalid", val.length !== 14);
+    function formatarCNPJ(cnpj) {
+        return aplicarMascaraCNPJ(cnpj);
     }
 
-    function validarCampoTelefone(input) {
-        const val = input.value.replace(/\D/g, "");
-        input.classList.toggle("invalid", val.length < 10 || val.length > 11);
+    function formatarTelefone(telefone) {
+        return aplicarMascaraTelefone(telefone);
     }
+
+    document.getElementById("forn_cnpj").addEventListener("input", (e) => {
+        e.target.value = aplicarMascaraCNPJ(e.target.value);
+    });
+
+    document.getElementById("forn_telefone").addEventListener("input", (e) => {
+        e.target.value = aplicarMascaraTelefone(e.target.value);
+    });
+
+
+    function mostrarAba(aba) {
+        document.getElementById("cadastro").classList.add("hidden");
+        document.getElementById("lista").classList.add("hidden");
+        document.getElementById("abaCadastro").classList.remove("active");
+        document.getElementById("abaLista").classList.remove("active");
+        document.getElementById(aba).classList.remove("hidden");
+        document.getElementById("aba" + aba.charAt(0).toUpperCase() + aba.slice(1)).classList.add("active");
+    }
+
+    function preencherFormulario(f) {
+        document.getElementById("forn_cod").value = f.id || f.forn_cod || "";
+        document.getElementById("forn_nome").value = f.nome || f.forn_nome || "";
+        document.getElementById("forn_cnpj").value = f.cnpj || f.forn_cnpj || "";
+        document.getElementById("forn_telefone").value = f.telefone || f.forn_telefone || "";
+        document.getElementById("forn_contato").value = f.contato || f.forn_contato || "";
+        document.getElementById("forn_email").value = f.email || f.forn_email || "";
+        document.getElementById("forn_logradouro").value = f.logradouro || f.forn_logradouro || "";
+        document.getElementById("forn_numero").value = f.numero || f.forn_numero || "";
+        document.getElementById("forn_cidade").value = f.cidade || f.forn_cidade || "";
+        document.getElementById("forn_cep").value = f.cep || f.forn_cep || "";
+        document.getElementById("forn_complemento").value = f.complemento || f.forn_complemento || "";
+        document.getElementById("btnCancelar").classList.remove("d-none");
+    }
+
+    async function carregarFornecedores() {
+        const res = await fetch(apiBase);
+        const fornecedores = await res.json();
+        const lista = document.getElementById("fornecedores-list");
+        lista.innerHTML = "";
+        fornecedores.forEach(f => {
+            const nome = f.nome || f.forn_nome;
+            const cnpj = formatarCNPJ(f.cnpj || f.forn_cnpj || "");
+            const telefone = formatarTelefone(f.telefone || f.forn_telefone || "");
+            const logradouro = f.logradouro || f.forn_logradouro || "";
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${nome}</td>
+                <td>${cnpj}</td>
+                <td>${telefone}</td>
+                <td>${logradouro}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick='editar(${JSON.stringify(f)})'>Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick='deletar(${f.id || f.forn_cod})'>Excluir</button>
+                </td>`;
+            lista.appendChild(row);
+        });
+    }
+
+    function editar(f) {
+        mostrarAba("cadastro");
+        preencherFormulario(f);
+    }
+
+    async function deletar(id) {
+        if (!confirm("Deseja realmente excluir este fornecedor?")) return;
+        try {
+            const res = await fetch(`${apiBase}/${id}`, { method: "DELETE" });
+            const json = await res.json();
+            const msg = json.mensagem || json.erro || "Operação realizada";
+            document.getElementById("mensagem").textContent = msg;
+            document.getElementById("mensagem").className = res.ok ? "alert alert-success" : "alert alert-danger";
+            if (res.ok) carregarFornecedores();
+        } catch (err) {
+            document.getElementById("mensagem").textContent = err.message;
+            document.getElementById("mensagem").className = "alert alert-danger";
+        }
+    }
+
+    function limparFormulario() {
+        document.getElementById("fornecedor-form").reset();
+        document.getElementById("forn_cod").value = "";
+        document.getElementById("btnCancelar").classList.add("d-none");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarFornecedores();
+        document.getElementById("fornecedor-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            if (!form.checkValidity()) {
+                e.stopPropagation();
+                form.classList.add("was-validated");
+                return;
+            }
+
+            const campos = ["forn_cod", "forn_nome", "forn_cnpj", "forn_telefone", "forn_contato", "forn_email", "forn_logradouro", "forn_numero", "forn_cidade", "forn_cep", "forn_complemento"];
+            const dados = {};
+            campos.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) dados[id] = el.value || "";
+            });
+
+            const method = dados.forn_cod ? "PUT" : "POST";
+            if (!dados.forn_cod) delete dados.forn_cod;
+            console.log("Enviando:", dados, "method:", method);
+            console.log("Dados serializados:", new URLSearchParams(dados).toString());
+
+            try {
+                const res = await fetch(apiBase, {
+                    method,
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams(dados).toString()
+                });
+                const json = await res.json();
+                const msg = json.mensagem || json.erro || "Operação realizada";
+                document.getElementById("mensagem").textContent = msg;
+                document.getElementById("mensagem").className = res.ok ? "alert alert-success" : "alert alert-danger";
+
+                if (res.ok) {
+                    limparFormulario();
+                    carregarFornecedores();
+                    mostrarAba("lista");
+                }
+            } catch (err) {
+                document.getElementById("mensagem").textContent = err.message;
+                document.getElementById("mensagem").className = "alert alert-danger";
+            }
+        });
+    });
 </script>
 </body>
 </html>

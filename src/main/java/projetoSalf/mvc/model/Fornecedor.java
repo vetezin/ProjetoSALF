@@ -1,40 +1,50 @@
 package projetoSalf.mvc.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.FornecedorDAO;
 import projetoSalf.mvc.util.Conexao;
 
 import java.util.List;
 
-@Component
 public class Fornecedor {
-
-    @Autowired
-    private FornecedorDAO dao;
 
     private int forn_cod;
     private String forn_nome;
-    private String forn_end;
+    private String forn_logradouro;
+    private String forn_numero;
+    private String forn_cep;
+    private String forn_cidade;
+    private String forn_complemento;
     private String forn_cnpj;
     private String forn_telefone;
+    private String forn_contato;
+    private String forn_email;
 
     public Fornecedor() {}
 
-    public Fornecedor(int forn_cod, String forn_nome, String forn_end, String forn_cnpj, String forn_telefone) {
+    public Fornecedor(int forn_cod, String forn_nome, String forn_logradouro, String forn_numero, String forn_cep,
+                      String forn_cidade, String forn_complemento, String forn_cnpj, String forn_telefone,
+                      String forn_contato, String forn_email) {
         this.forn_cod = forn_cod;
         this.forn_nome = forn_nome;
-        this.forn_end = forn_end;
+        this.forn_logradouro = forn_logradouro;
+        this.forn_numero = forn_numero;
+        this.forn_cep = forn_cep;
+        this.forn_cidade = forn_cidade;
+        this.forn_complemento = forn_complemento;
         this.forn_cnpj = forn_cnpj;
         this.forn_telefone = forn_telefone;
+        this.forn_contato = forn_contato;
+        this.forn_email = forn_email;
     }
 
-    public Fornecedor(String forn_nome, String forn_end, String forn_cnpj, String forn_telefone) {
-        this.forn_nome = forn_nome;
-        this.forn_end = forn_end;
-        this.forn_cnpj = forn_cnpj;
-        this.forn_telefone = forn_telefone;
+    public Fornecedor(String forn_nome, String forn_logradouro, String forn_numero, String forn_cep,
+                      String forn_cidade, String forn_complemento, String forn_cnpj, String forn_telefone,
+                      String forn_contato, String forn_email) {
+        this(0, forn_nome, forn_logradouro, forn_numero, forn_cep, forn_cidade, forn_complemento,
+                forn_cnpj, forn_telefone, forn_contato, forn_email);
     }
+
+    // Getters e Setters
 
     public int getForn_cod() {
         return forn_cod;
@@ -52,12 +62,44 @@ public class Fornecedor {
         this.forn_nome = forn_nome;
     }
 
-    public String getForn_end() {
-        return forn_end;
+    public String getForn_logradouro() {
+        return forn_logradouro;
     }
 
-    public void setForn_end(String forn_end) {
-        this.forn_end = forn_end;
+    public void setForn_logradouro(String forn_logradouro) {
+        this.forn_logradouro = forn_logradouro;
+    }
+
+    public String getForn_numero() {
+        return forn_numero;
+    }
+
+    public void setForn_numero(String forn_numero) {
+        this.forn_numero = forn_numero;
+    }
+
+    public String getForn_cep() {
+        return forn_cep;
+    }
+
+    public void setForn_cep(String forn_cep) {
+        this.forn_cep = forn_cep;
+    }
+
+    public String getForn_cidade() {
+        return forn_cidade;
+    }
+
+    public void setForn_cidade(String forn_cidade) {
+        this.forn_cidade = forn_cidade;
+    }
+
+    public String getForn_complemento() {
+        return forn_complemento;
+    }
+
+    public void setForn_complemento(String forn_complemento) {
+        this.forn_complemento = forn_complemento;
     }
 
     public String getForn_cnpj() {
@@ -76,24 +118,51 @@ public class Fornecedor {
         this.forn_telefone = forn_telefone;
     }
 
-    public List<Fornecedor> consultar(String filtro, Conexao conexao){
-        return dao.get(filtro);
+    public String getForn_contato() {
+        return forn_contato;
     }
-    public Fornecedor consultar(int id){
-        return dao.get(id);
-    }
-    public boolean isEmpty(){return dao.get("").isEmpty();}
-    public Fornecedor gravar(Fornecedor fornecedor){return dao.gravar(fornecedor);}
-    public boolean deletar(Fornecedor fornecedor){return dao.apagar(fornecedor);}
 
-    public Fornecedor inserir() {
+    public void setForn_contato(String forn_contato) {
+        this.forn_contato = forn_contato;
+    }
+
+    public String getForn_email() {
+        return forn_email;
+    }
+
+    public void setForn_email(String forn_email) {
+        this.forn_email = forn_email;
+    }
+
+    // Métodos que usam DAO, mas com conexão externa passada
+
+    public static List<Fornecedor> consultarTodos(Conexao conexao) {
         FornecedorDAO dao = new FornecedorDAO();
-        return dao.gravar(this);
+        return dao.get("", conexao);
     }
 
-    public Fornecedor alterar() {
+    public static Fornecedor consultarPorId(int id, Conexao conexao) {
         FornecedorDAO dao = new FornecedorDAO();
-        return dao.alterar(this);
+        return dao.get(id, conexao);
     }
 
+    public static List<Fornecedor> consultarComFiltro(String filtro, Conexao conexao) {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.get(filtro, conexao);
+    }
+
+    public static boolean deletar(Fornecedor fornecedor, Conexao conexao) {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.apagar(fornecedor, conexao);
+    }
+
+    public Fornecedor inserir(Conexao conexao) {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.gravar(this, conexao);
+    }
+
+    public Fornecedor alterar(Conexao conexao) {
+        FornecedorDAO dao = new FornecedorDAO();
+        return dao.alterar(this, conexao);
+    }
 }

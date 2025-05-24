@@ -1,130 +1,91 @@
 package projetoSalf.mvc.controller;
 
-import org.springframework.stereotype.Service;
-import projetoSalf.mvc.dao.FornecedorDAO;
-import projetoSalf.mvc.model.Fornecedor;
-import projetoSalf.mvc.util.FormatUtils;
-import projetoSalf.mvc.util.FormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import projetoSalf.mvc.service.FornecedorService;
+import projetoSalf.mvc.util.Conexao;
+import projetoSalf.mvc.util.SingletonDB;
+import projetoSalf.mvc.util.Mensagem;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-@Service
+@CrossOrigin
+@RestController
+@RequestMapping("apis/fornecedor")
 public class FornecedorController {
 
-    private final FornecedorDAO dao = new FornecedorDAO();
+    @Autowired
+    private FornecedorService fornecedorService;
 
-    public List<Map<String, Object>> getFornecedor() {
-        List<Fornecedor> lista = dao.get("");
+    @GetMapping
+    public ResponseEntity<Object> getAll() {
+        Conexao conexao = SingletonDB.getConexao();
+        List<Map<String, Object>> lista = fornecedorService.getFornecedor(conexao);
 
-        if (lista.isEmpty()) {
-            return null;
-        }
-
-        List<Map<String, Object>> prodList = new ArrayList<>();
-        for (Fornecedor f : lista) {
-            Map<String, Object> json = new HashMap<>();
-            json.put("id", f.getForn_cod());
-            json.put("nome", f.getForn_nome());
-            json.put("endereco", f.getForn_end());
-            json.put("cnpj", f.getForn_cnpj());
-            json.put("telefone", f.getForn_telefone());
-            prodList.add(json);
-        }
-        return prodList;
-    }
-
-    public Map<String, Object> getForn(int id) {
-        Fornecedor fornecedor = dao.get(id);
-        if (fornecedor == null) {
-            return Map.of("erro", "Fornecedor não encontrado");
-        }
-
-        Map<String, Object> json = new HashMap<>();
-        json.put("id", fornecedor.getForn_cod());
-        json.put("nome", fornecedor.getForn_nome());
-        json.put("endereco", fornecedor.getForn_end());
-        json.put("cnpj", fornecedor.getForn_cnpj());
-        json.put("telefone", fornecedor.getForn_telefone());
-        return json;
-    }
-
-    public Map<String, Object> deletarFornecedor(int id) {
-        Fornecedor fornecedor = dao.get(id);
-        if (fornecedor == null) {
-            return Map.of("erro", "Fornecedor não encontrado");
-        }
-
-        boolean deletado = dao.apagar(fornecedor);
-        if (deletado) {
-            return Map.of("mensagem", "Fornecedor removido com sucesso");
+        if (lista != null && !lista.isEmpty()) {
+            return ResponseEntity.ok(lista);
         } else {
-            return Map.of("erro", "Erro ao remover fornecedor");
+            return ResponseEntity.badRequest().body(new Mensagem("Nenhum Fornecedor encontrado."));
         }
     }
 
-    public Map<String, Object> addFornecedor(String forn_nome, String forn_endereco, String forn_cnpj, String forn_telefone) {
-        if (forn_nome.isBlank() || forn_endereco.isBlank() || forn_cnpj.isBlank() || forn_telefone.isBlank()) {
-            return Map.of("erro", "Dados inválidos");
-        }
+    @PostMapping
+    public ResponseEntity<Object> addFornecedor(
+            @RequestParam("forn_nome") String nome,
+            @RequestParam("forn_logradouro") String logradouro,
+            @RequestParam("forn_numero") String numero,
+            @RequestParam("forn_cep") String cep,
+            @RequestParam("forn_cidade") String cidade,
+            @RequestParam("forn_complemento") String complemento,
+            @RequestParam("forn_cnpj") String cnpj,
+            @RequestParam("forn_telefone") String telefone,
+            @RequestParam("forn_contato") String contato,
+            @RequestParam("forn_email") String email
+    ) {
+        Conexao conexao = SingletonDB.getConexao();
+        Map<String, Object> json = fornecedorService.addFornecedor(
+                nome, logradouro, numero, cep, cidade, complemento, cnpj, telefone, contato, email, conexao);
 
-        forn_cnpj = FormatUtils.limparCNPJ(forn_cnpj);
-        if (!FormatUtils.validarCNPJ(forn_cnpj)) {
-            return Map.of("erro", "CNPJ inválido.");
-        }
-
-        forn_telefone = FormatUtils.limparTelefone(forn_telefone); // remove tudo que não é número
-        if(!FormatUtils.validarTelefone(forn_telefone)){
-            return Map.of("erro", "Telefone inválido");
-        }
-
-        Fornecedor novo = new Fornecedor(forn_nome, forn_endereco, forn_cnpj, forn_telefone);
-        Fornecedor gravado = dao.gravar(novo);
-
-        if (gravado != null) {
-            return Map.of(
-                    "id", gravado.getForn_cod(),
-                    "nome", gravado.getForn_nome(),
-                    "endereco", gravado.getForn_end(),
-                    "cnpj", gravado.getForn_cnpj(),
-                    "telefone", gravado.getForn_telefone()
-            );
-        } else {
-            return Map.of("erro", "Erro ao cadastrar fornecedor");
-        }
+        if (json.get("erro") == null)
+            return ResponseEntity.ok(new Mensagem("Fornecedor cadastrado com sucesso!"));
+        else
+            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
 
-    public Map<String, Object> updateFornecedor(int forn_cod, String forn_nome, String forn_endereco, String forn_cnpj, String forn_telefone) {
-        if (forn_cod <= 0 || forn_nome.isBlank() || forn_cnpj.isBlank() || forn_telefone.isBlank()) {
-            return Map.of("erro", "Dados inválidos");
-        }
+    @PutMapping
+    public ResponseEntity<Object> updateFornecedor(
+            @RequestParam("forn_cod") int cod,
+            @RequestParam("forn_nome") String nome,
+            @RequestParam("forn_logradouro") String logradouro,
+            @RequestParam("forn_numero") String numero,
+            @RequestParam(value = "forn_cep", required = false) String cep,
+            @RequestParam("forn_cidade") String cidade,
+            @RequestParam(value = "forn_complemento", required = false) String complemento,
+            @RequestParam("forn_cnpj") String cnpj,
+            @RequestParam(value = "forn_telefone", required = false) String telefone,
+            @RequestParam(value = "forn_contato", required = false) String contato,
+            @RequestParam(value = "forn_email", required = false) String email
+    ) {
+        Conexao conexao = SingletonDB.getConexao();
+        Map<String, Object> json = fornecedorService.updateFornecedor(
+                cod, nome, logradouro, numero, cep, cidade, complemento, cnpj, telefone, contato, email, conexao);
 
-        forn_cnpj = FormatUtils.limparCNPJ(forn_cnpj);
-        if (!FormatUtils.validarCNPJ(forn_cnpj)) {
-            return Map.of("erro", "CNPJ inválido.");
-        }
+        if (json.get("erro") == null)
+            return ResponseEntity.ok(new Mensagem("Fornecedor alterado com sucesso!"));
+        else
+            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
+    }
 
-        Fornecedor existente = dao.get(forn_cod);
-        if (existente == null) {
-            return Map.of("erro", "Fornecedor não encontrado");
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteFornecedor(@PathVariable int id) {
+        Conexao conexao = SingletonDB.getConexao();
+        Map<String, Object> json = fornecedorService.deletarFornecedor(id, conexao);
 
-        existente.setForn_nome(forn_nome);
-        existente.setForn_end(forn_endereco);
-        existente.setForn_cnpj(forn_cnpj);
-        existente.setForn_telefone(forn_telefone);
-
-        Fornecedor atualizado = dao.alterar(existente);
-
-        if (atualizado != null) {
-            return Map.of(
-                    "id", atualizado.getForn_cod(),
-                    "nome", atualizado.getForn_nome(),
-                    "endereco", atualizado.getForn_end(),
-                    "cnpj", atualizado.getForn_cnpj(),
-                    "telefone", atualizado.getForn_telefone()
-            );
-        } else {
-            return Map.of("erro", "Erro ao atualizar fornecedor");
-        }
+        if (json.get("erro") == null)
+            return ResponseEntity.ok(new Mensagem("Fornecedor deletado com sucesso!"));
+        else
+            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
 }
