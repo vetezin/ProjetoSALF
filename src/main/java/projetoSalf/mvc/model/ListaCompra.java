@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.ListaCompraDAO;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -15,19 +14,19 @@ public class ListaCompra {
 
     private int id;
     private String descricao;
-    private LocalDate dataCriacao;
+    private String dataCriacao;
     private int funcionarioId;
 
     public ListaCompra() {}
 
-    public ListaCompra(int id, String descricao, LocalDate dataCriacao, int funcionarioId) {
+    public ListaCompra(int id, String descricao, String dataCriacao, int funcionarioId) {
         this.id = id;
         this.descricao = descricao;
         this.dataCriacao = dataCriacao;
         this.funcionarioId = funcionarioId;
     }
 
-    public ListaCompra(String descricao, LocalDate dataCriacao, int funcionarioId) {
+    public ListaCompra(String descricao, String dataCriacao, int funcionarioId) {
         this.descricao = descricao;
         this.dataCriacao = dataCriacao;
         this.funcionarioId = funcionarioId;
@@ -53,11 +52,11 @@ public class ListaCompra {
         this.descricao = descricao;
     }
 
-    public LocalDate getDataCriacao() {
+    public String getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(LocalDate dataCriacao) {
+    public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
@@ -69,18 +68,6 @@ public class ListaCompra {
         this.funcionarioId = funcionarioId;
     }
 
-    public ListaCompra gravar(ListaCompra nova) {
-        return dao.gravar(this);
-    }
-
-    public ListaCompra alterar(ListaCompra existente) {
-        return dao.alterar(this);
-    }
-
-    public boolean apagar(ListaCompra lista) {
-        return dao.apagar(this);
-    }
-
     public ListaCompra consultar(int id) {
         return dao.get(id);
     }
@@ -88,4 +75,16 @@ public class ListaCompra {
     public List<ListaCompra> consultar(String filtro) {
         return dao.get(filtro);
     }
+    public ListaCompra gravar() {
+        return dao.gravar(this);
+    }
+
+    public ListaCompra alterar() {
+        return dao.alterar(this);
+    }
+
+    public boolean apagar(ListaCompra lista) {
+        return dao.apagar(this);
+    }
+
 }

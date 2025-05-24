@@ -14,7 +14,7 @@ public class ItensDAO implements IDAO<Itens>{
 
     public Itens gravar(Itens item) {
         String sql = """
-            INSERT INTO lista_compra_prod(lista_id, produto_id, quantidade)
+            INSERT INTO lc_prod(lc_cod, prod_cod, lc_prod_qtd)
             VALUES (#1, #2, #3);
         """;
         sql = sql.replace("#1", String.valueOf(item.getListaId()))
@@ -31,7 +31,7 @@ public class ItensDAO implements IDAO<Itens>{
     @Override
     public Object alterar(Itens item) {
         String sql = String.format(
-                "UPDATE lista_compra_prod SET quantidade = %d WHERE lista_id = %d AND produto_id = %d",
+                "UPDATE lc_prod SET lc_prod_qtd = %d WHERE lc_cod = %d AND prod_cod = %d",
                 item.getQuantidade(), item.getListaId(), item.getProdutoId()
         );
         if (SingletonDB.getConexao().manipular(sql)) {
@@ -44,7 +44,7 @@ public class ItensDAO implements IDAO<Itens>{
 
     @Override
     public boolean apagar(Itens entidade) {
-        String sql = String.format("DELETE FROM lista_compra_prod WHERE lista_id = %d AND produto_id = %d",
+        String sql = String.format("DELETE FROM lc_prod WHERE lc_cod = %d AND prod_cod = %d",
                 entidade.getListaId(), entidade.getProdutoId());
         return SingletonDB.getConexao().manipular(sql);
     }
@@ -60,20 +60,20 @@ public class ItensDAO implements IDAO<Itens>{
     }
 
     public boolean apagarPorLista(int listaId) {
-        String sql = "DELETE FROM lista_compra_prod WHERE lista_id = " + listaId;
+        String sql = "DELETE FROM lc_prod WHERE lc_cod = " + listaId;
         return SingletonDB.getConexao().manipular(sql);
     }
 
     public List<Itens> getItensPorLista(int listaId) {
         List<Itens> itens = new ArrayList<>();
-        String sql = "SELECT * FROM lista_compra_prod WHERE lista_id = " + listaId;
+        String sql = "SELECT * FROM lc_prod WHERE lc_cod = " + listaId;
         ResultSet rs = SingletonDB.getConexao().consultar(sql);
         try {
             while (rs.next()) {
                 Itens item = new Itens();
-                item.setListaId(rs.getInt("lista_id"));
-                item.setProdutoId(rs.getInt("produto_id"));
-                item.setQuantidade(rs.getInt("quantidade"));
+                item.setListaId(rs.getInt("lc_cod"));
+                item.setProdutoId(rs.getInt("prod_cod"));
+                item.setQuantidade(rs.getInt("lc_prod_qtd"));
                 itens.add(item);
             }
         } catch (SQLException e) {
@@ -83,14 +83,14 @@ public class ItensDAO implements IDAO<Itens>{
     }
 
     public Itens consultar(int listaId, int produtoId) {
-        String sql = "SELECT * FROM lista_compra_prod WHERE lista_id = " + listaId + " AND produto_id = " + produtoId;
+        String sql = "SELECT * FROM lc_prod WHERE lc_cod = " + listaId + " AND prod_cod = " + produtoId;
         ResultSet rs = SingletonDB.getConexao().consultar(sql);
         try {
             if (rs.next()) {
                 return new Itens(
-                        rs.getInt("lista_id"),
-                        rs.getInt("produto_id"),
-                        rs.getInt("quantidade")
+                        rs.getInt("lc_cod"),
+                        rs.getInt("prod_cod"),
+                        rs.getInt("lc_prod_qtd")
                 );
             }
         } catch (SQLException e) {
@@ -101,7 +101,7 @@ public class ItensDAO implements IDAO<Itens>{
 
     public Itens update(Itens item) {
         String sql = String.format(
-                "UPDATE lista_compra_prod SET quantidade = %d WHERE lista_id = %d AND produto_id = %d",
+                "UPDATE lc_prod SET lc_prod_qtd = %d WHERE lc_cod = %d AND prod_cod = %d",
                 item.getQuantidade(), item.getListaId(), item.getProdutoId()
         );
         if (SingletonDB.getConexao().manipular(sql)) {
@@ -113,7 +113,7 @@ public class ItensDAO implements IDAO<Itens>{
     }
 
     public boolean deletar(Itens item) {
-        String sql = String.format("DELETE FROM lista_compra_prod WHERE lista_id = %d AND produto_id = %d",
+        String sql = String.format("DELETE FROM lc_prod WHERE lc_cod = %d AND prod_cod = %d",
                 item.getListaId(), item.getProdutoId());
         return SingletonDB.getConexao().manipular(sql);
     }

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de Lista de Compras</title>
+  <link rel="stylesheet" href="styleCadastro.css" />
+  <style>
+    /* Seu estilo CSS escuro e moderno aqui */
+    body {
+      margin: 0;
+      padding-top: 60px;
+      background-color: #0d0d18;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #1a1a2e;
+      box-shadow: 0 2px 10px rgba(128, 0, 128, 0.4);
+      padding: 14px 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-link {
+      color: #b084f7;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: rgba(176, 132, 247, 0.15);
+    }
+
+    .nav-link:hover {
+      color: #7834c7;
+      background: rgba(120, 52, 199, 0.3);
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .form-container {
+      background-color: #1e1e2f;
+      padding: 40px 35px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(128, 0, 128, 0.25);
+      max-width: 480px;
+      width: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    .form-container:hover {
+      transform: scale(1.01);
+    }
+
+    h1 {
+      color: #b084f7;
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 28px;
+      letter-spacing: 1.1px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #d1c4f9;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      background-color: #2c2c44;
+      border: 1.5px solid #5e5e80;
+      color: #f0f0f0;
+      font-size: 1rem;
+      border-radius: 8px;
+      box-shadow: none;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    input[type="date"]:focus,
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: #b084f7;
+      background-color: #2c2c55;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(176, 132, 247, 0.4);
+      outline: none;
+    }
+
+    .produto {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #e0d9f9;
+    }
+
+    .produto label {
+      flex-grow: 1;
+      cursor: pointer;
+    }
+
+    .quantidade {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1.5px solid #5e5e80;
+      background-color: #2c2c44;
+      color: #f0f0f0;
+      display: none;
+      font-size: 1rem;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .quantidade:focus {
+      border-color: #b084f7;
+      background-color: #2c2c55;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(176, 132, 247, 0.4);
+      outline: none;
+    }
+
+    .btn-gradient {
+      background: linear-gradient(90deg, #7e57c2, #b084f7);
+      border: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 12px 0;
+      border-radius: 10px;
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+      color: #fff;
+      width: 100%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(176, 132, 247, 0.5);
+      margin-top: 10px;
+    }
+
+    .btn-gradient:hover,
+    .btn-gradient:focus {
+      background: linear-gradient(90deg, #9a78d4, #d1b3ff);
+      box-shadow: 0 6px 18px rgba(200, 150, 255, 0.8);
+      outline: none;
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 30px 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav>
+      <a href="ConsultaListaCompra.html" class="nav-link">Ir para Consulta de Listas</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <h1>Nova Lista de Compras</h1>
+      <form id="listaCompraForm" novalidate>
+        <label for="dataCompra">Data da Compra:</label>
+        <input type="date" id="dataCompra" name="dataCompra" required />
+
+        <label for="codFuncionario">Código do Funcionário:</label>
+        <input type="number" id="codFuncionario" name="codFuncionario" min="1" required />
+
+        <h3>Produtos:</h3>
+        <div id="listaProdutos">
+          <!-- Produtos vão aparecer aqui -->
+        </div>
+
+        <button type="submit" class="btn-gradient">Salvar Lista de Compras</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Importa o script externo -->
+  <script src="CadastroListaCompra.js"></script>
+</body>
+</html>
