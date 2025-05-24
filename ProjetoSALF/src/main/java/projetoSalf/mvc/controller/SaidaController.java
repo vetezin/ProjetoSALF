@@ -2,10 +2,7 @@ package projetoSalf.mvc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import projetoSalf.mvc.model.Estoque;
-import projetoSalf.mvc.model.Produto;
-import projetoSalf.mvc.model.Saida;
-import projetoSalf.mvc.model.SaidaProd;
+import projetoSalf.mvc.model.*;
 import projetoSalf.mvc.util.Conexao;
 
 import java.util.*;
@@ -25,6 +22,9 @@ public class SaidaController {
     @Autowired
     private SaidaProd saidaProdModel;
 
+    @Autowired
+    private Funcionario funcionarioModel;
+
     public List<Map<String, Object>> getSaidas() {
         Conexao conexao = new Conexao();
         List<Saida> lista = saidaModel.consultar("");
@@ -37,7 +37,15 @@ public class SaidaController {
             json.put("id", s.getCod());
             json.put("data", s.getDataSaida());
             json.put("motivo", s.getMotivo());
-            json.put("funcionarioId", s.getCodFuncionario());
+
+            // criando objeto de funcionário
+            Funcionario funcionario = funcionarioModel.consultar(s.getCodFuncionario());
+            Map<String, Object> funcionarioJson = new HashMap<>();
+            funcionarioJson.put("id", funcionario.getId());
+            funcionarioJson.put("nome", funcionario.getNome());
+
+            json.put("funcionario", funcionarioJson);
+
             saidaList.add(json);
         }
         return saidaList;

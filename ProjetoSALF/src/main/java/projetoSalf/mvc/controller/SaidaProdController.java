@@ -1,5 +1,7 @@
+/*
 package projetoSalf.mvc.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import projetoSalf.mvc.model.Categoria;
 import projetoSalf.mvc.model.Produto;
 import projetoSalf.mvc.util.Conexao;
@@ -9,46 +11,51 @@ import java.util.Map;
 
 public class SaidaProdController {
 
-    //Função fundamental, efetuar acerto de estoque
-    /*
+    @Autowired
+    private SaidaProdModel saidaProdModel;
 
-    */
-    /*
-    public Map<String, Object> addProd(
-            String prod_desc,
-            String prod_dtvalid,
+    @Autowired
+    private ProdutoModel produtoModel;
 
-            float prod_valorun,
-            int cat_cod)
-    {
-        Categoria cAux = new Categoria();
-        cAux= categoriaModel.consultar(cat_cod);
+    @Autowired
+    private CategoriaModel categoriaModel;
 
-        if (prod_dtvalid == null || prod_desc.isBlank() || prod_valorun <= 0 || cat_cod <= 0 ||cAux == null) {
-            return Map.of("erro", "Dados inválidos para cadastro");
-        }
-
+    public Map<String, Object> getSaidaProd(int saida_cod) {
         Conexao conexao = new Conexao();
-        Produto novo = new Produto(prod_dtvalid, prod_desc, prod_valorun,cat_cod);
 
-        Produto gravado = produtoModel.gravar(novo);
-        //fazer verificacao para ver se a categoria existe
+        SaidaProd sp = saidaProdModel.consultarPorSaidaId(saida_cod);
+        if (sp == null)
+            return null;
 
-        if (gravado != null) {
-            Map<String, Object> json = new HashMap<>();
-            json.put("id", gravado.getProd_cod());
-            json.put("nome", gravado.getProd_desc());
-            json.put("preco", gravado.getProd_valorun());
-            json.put("data", gravado.getProd_dtvalid());
+        Produto produto = produtoModel.consultarPorCodigo(sp.getCodProduto(), conexao);
+        if (produto == null)
+            return null;
 
+        Categoria categoria = categoriaModel.consultar(produto.getCategoria());
+        if (categoria == null)
+            return null;
 
-            json.put("categoria", gravado.getCategoria());
-            json.put("descricao",cAux.getDesc());
-            return json;
-        } else {
-            return Map.of("erro", "Erro ao cadastrar o produto");
-        }
+        // JSON do produto com categoria embutida
+        Map<String, Object> produtoJson = new HashMap<>();
+        produtoJson.put("id", produto.getProd_cod());
+        produtoJson.put("nome", produto.getProd_desc());
+        produtoJson.put("preco", produto.getProd_valorun());
+        produtoJson.put("data", produto.getProd_dtvalid());
+
+        Map<String, Object> categoriaJson = new HashMap<>();
+        categoriaJson.put("id", categoria.getId());
+        categoriaJson.put("desc", categoria.getDesc());
+
+        produtoJson.put("categoria", categoriaJson);
+
+        // JSON do saidaProd com produto embutido
+        Map<String, Object> saidaProdJson = new HashMap<>();
+        saidaProdJson.put("quantidade", s);
+        saidaProdJson.put("produto", produtoJson);
+
+        return saidaProdJson;
     }
-    
-     */
+
+
 }
+*/
