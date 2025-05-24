@@ -85,6 +85,78 @@ public class SaidaController {
         }
     }
 
+    public Map<String, Object> registrarSaidaComProdutos(
+            List<Map<String, Integer>> produtos, // lista de {codProduto, quantidadeSaida}
+            int codFuncionario,
+            String dataSaida,
+            String motivo
+    ) {
+        if (produtos == null || produtos.isEmpty() || codFuncionario <= 0 || dataSaida == null || motivo == null || motivo.isBlank()) {
+            return Map.of("erro", "Dados inválidos para registrar a saída");
+        }
+
+        // 1. Cria a saída principal
+        Saida novaSaida = new Saida(dataSaida, motivo, codFuncionario);
+        Saida saidaGravada = saidaModel.gravar(novaSaida);
+
+        if (saidaGravada == null || saidaGravada.getCod() == 0) {
+            return Map.of("erro", "Erro ao registrar a saída");
+        }
+
+        // 2. Processa todos os produtos
+        List<Map<String, Object>> produtosRegistrados = new ArrayList<>();
+
+        for (Map<String, Integer> produtoInfo : produtos) {
+            int codProduto = produtoInfo.get("codProduto");
+            int quantidadeSaida = produtoInfo.get("quantidade");
+
+            // Consulta estoque atual do produto
+            Estoque estoque = estoqueModel.consultar("").stream()
+                    .filter(e -> e.getProduto_prod_cod() == codProduto)
+                    .findFirst().orElse(null);
+
+            if (estoque == null || quantidadeSaida <= 0 || quantidadeSaida > estoque.getEs_qtdprod()) {
+                return Map.of("erro", "Produto com ID " + codProduto + " não encontrado ou quantidade inválida");
+            }
+
+            // 3. Grava saída do produto (1 a 1 na tabela saida_prod)
+            SaidaProd novaSaidaProd = new SaidaProd(codProduto, saidaGravada.getCod(), quantidadeSaida);
+            SaidaProd saidaProdGravada = saidaProdModel.gravar(novaSaidaProd);
+            if (saidaProdGravada == null) {
+                return Map.of("erro", "Erro ao registrar saída do produto ID " + codProduto);
+            }
+
+            // 4. Atualiza estoque
+            int novaQtd = estoque.getEs_qtdprod() - quantidadeSaida;
+            estoque.setEs_qtdprod(novaQtd);
+            estoqueModel.alterar(estoque);
+
+            // 5. Remove produto se estoque zerado
+            if (novaQtd == 0) {
+                Produto produto = produtoModel.consultar(codProduto);
+                if (produto != null) {
+                    produtoModel.deletarProduto(produto);
+                }
+            }
+
+            // 6. Adiciona ao resultado final
+            produtosRegistrados.add(Map.of(
+                    "produto_id", codProduto,
+                    "quantidade_saida", quantidadeSaida,
+                    "estoque_restante", novaQtd
+            ));
+        }
+
+        // 7. Retorna resposta final
+        return Map.of(
+                "mensagem", "Saída registrada com sucesso",
+                "saida_id", saidaGravada.getCod(),
+                "data_saida", saidaGravada.getDataSaida(),
+                "motivo", saidaGravada.getMotivo(),
+                "funcionario_id", saidaGravada.getCodFuncionario(),
+                "produtos", produtosRegistrados
+        );
+    }
 
 
 

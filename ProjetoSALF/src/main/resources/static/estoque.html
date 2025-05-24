@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,101 +10,84 @@
 </head>
 
 <body>
-  <main class="container">
-    <h1>Controlar Estoque</h1>
+<main class="container">
+  <h1 class="mb-4">Controlar Estoque</h1>
 
-    <div class="top-bar mb-3">
-      <input type="text" id="buscaEstoque" placeholder="Buscar produto no estoque..."
-        class="form-control w-50 d-inline-block" />
-      <div class="botoes-topo mt-2">
-
-        <button onclick="window.location.href='index.html'" class="btn btn-secondary">Voltar para Produtos</button>
-      </div>
+  <!-- Dados da saída -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <label for="dataSaida" class="form-label">Data da Saída</label>
+      <input type="date" id="dataSaida" class="form-control" required />
     </div>
-
-    <table id="tabelaEstoque" class="table table-striped table-bordered">
-      <thead>
-        <tr>
-          <th>ID Estoque</th>
-          <th>ID Produto</th>
-          <th>Produto</th>
-          <th>Quantidade</th>
-          <th>Data de Validade</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- JS insere os itens do estoque aqui -->
-      </tbody>
-    </table>
-  </main>
-
-  <!-- Modal para Acerto de Estoque -->
-  <div class="modal" id="modalAcertoEstoque" tabindex="-1" style="display:none;">
-    <div class="modal-content p-4">
-      <div class="modal-header">
-        <h2>Acerto de Estoque</h2>
-        <button class="btn-close" onclick="fecharModal('modalAcertoEstoque')"></button>
-      </div>
-      <form id="formAcertoEstoque" onsubmit="return ajustarEstoque(event)">
-        <input type="hidden" id="acertoEstoqueId" />
-        <div class="mb-3">
-          <label for="quantidadeAcerto" class="form-label">Nova Quantidade</label>
-          <input type="number" id="quantidadeAcerto" class="form-control" min="0" required />
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Salvar</button>
-          <button type="button" class="btn btn-secondary" onclick="fecharModal('modalAcertoEstoque')">Cancelar</button>
-        </div>
-      </form>
+    <div class="col-md-3">
+      <label for="codigoFuncionario" class="form-label">Funcionário (ID)</label>
+      <input type="number" id="codigoFuncionario" class="form-control" min="1" required />
+    </div>
+    <div class="col-md-6">
+      <label for="motivoSaida" class="form-label">Motivo</label>
+      <input type="text" id="motivoSaida" class="form-control" required />
     </div>
   </div>
 
-  <!-- Modal para Saída de Produto -->
-  <div class="modal" id="modalSaidaProduto" tabindex="-1" style="display:none;">
-    <div class="modal-content p-4">
-      <div class="modal-header">
-        <h2>Saída de Produto</h2>
-        <button class="btn-close" onclick="fecharModal('modalSaidaProduto')"></button>
-      </div>
-      <form id="formSaidaProduto" onsubmit="return registrarSaida(event)">
-        <input type="hidden" id="saidaEstoqueId" />
-
-        <div class="mb-3">
-          <label for="saidaProdutoId" class="form-label">Código do Produto</label>
-          <input type="number" id="saidaProdutoId" class="form-control" readonly />
-        </div>
-
-        <div class="mb-3">
-          <label for="quantidadeSaida" class="form-label">*Quantidade para Saída</label>
-          <input type="number" id="quantidadeSaida" class="form-control" min="1" required />
-        </div>
-
-        <div class="mb-3">
-          <label for="codigoFuncionario" class="form-label">Código do Funcionário</label>
-          <input type="number" id="codigoFuncionario" class="form-control" min="1" required />
-        </div>
-
-        <div class="mb-3">
-          <label for="dataSaida" class="form-label">Data da Saída</label>
-          <input type="date" id="dataSaida" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-          <label for="motivoSaida" class="form-label">Motivo</label>
-          <textarea id="motivoSaida" class="form-control" rows="2" required></textarea>
-        </div>
-
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-danger">Registrar Saída</button>
-          <button type="button" class="btn btn-secondary" onclick="fecharModal('modalSaidaProduto')">Cancelar</button>
-        </div>
-      </form>
+  <!-- Botão adicionar itens e campo de quantidade -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-3">
+      <label for="quantidadeItem" class="form-label">Quantidade</label>
+      <input type="number" id="quantidadeItem" class="form-control" min="1" />
+    </div>
+    <div class="col-md-9 d-flex align-items-end justify-content-between">
+      
+      <input type="text" id="buscaEstoque" placeholder="Buscar produto no estoque..." class="form-control w-50" />
+      <button class="btn btn-primary" onclick="adicionarSelecionados()">Adicionar Itens</button>
     </div>
   </div>
 
+  <div class="row">
+    <!-- Tabela do estoque -->
+    <div class="col-md-7">
+      <table id="tabelaEstoque" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>ID Estoque</th>
+            <th>ID Produto</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Data de Validade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Itens do estoque serão inseridos aqui pelo JS -->
+        </tbody>
+      </table>
+    </div>
 
-  <script src="estoque.js">  </script>
+    <!-- Tabela de itens adicionados -->
+    <div class="col-md-5">
+      <h5>Produtos Selecionados</h5>
+      <table id="tabelaItensSelecionados" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID Produto</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Selecionar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Itens adicionados aparecerão aqui -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Botão para gravar saída no banco -->
+  <div class="text-end mt-4">
+    <button class="btn btn-success" onclick="registrarSaidaFinal()">Gravar Saída</button>
+    <button onclick="window.location.href='index.html'" class="btn btn-secondary">Voltar para Produtos</button>
+  </div>
+</main>
+
+<script src="estoque.js"></script>
 </body>
-
 </html>

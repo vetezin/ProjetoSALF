@@ -39,6 +39,23 @@ public class SaidaView {
             return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
     }
 
+    @PostMapping("/registrarMultiplos")
+    public ResponseEntity<Object> registrarSaidaComProdutos(@RequestBody Map<String, Object> dados) {
+        List<Map<String, Integer>> produtos = (List<Map<String, Integer>>) dados.get("produtos");
+        int codFuncionario = (int) dados.get("codFuncionario");
+        String dataSaida = (String) dados.get("dataSaida");
+        String motivo = (String) dados.get("motivo");
+
+        Map<String, Object> json = saidaController.registrarSaidaComProdutos(produtos, codFuncionario, dataSaida, motivo);
+
+        if (json.get("erro") == null)
+            return ResponseEntity.ok(json);
+        else
+            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
+    }
+
+
+
     @GetMapping
     public ResponseEntity<Object> getAll() {
         List<Map<String, Object>> lista = saidaController.getSaidas();
