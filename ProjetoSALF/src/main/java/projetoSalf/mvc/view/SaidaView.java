@@ -65,4 +65,24 @@ public class SaidaView {
             return ResponseEntity.badRequest().body(new Mensagem("Nenhuma saída encontrada."));
     }
 
+    @GetMapping("/listar-com-produtos")
+    public ResponseEntity<Object> getSaidasComProdutos() {
+        List<Map<String, Object>> resultado = saidaController.getSaidasComProdutos();
+        if (resultado == null || resultado.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of("erro", "Nenhuma saída encontrada"));
+        }
+        return ResponseEntity.ok(resultado);
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<Object> deletarSaidaComProdutos(@PathVariable int id) {
+        Map<String, Object> resultado = saidaController.deletarSaidaComProdutos(id);
+
+        if (resultado.get("erro") == null) {
+            return ResponseEntity.ok(new Mensagem(resultado.get("mensagem").toString()));
+        } else {
+            return ResponseEntity.badRequest().body(new Mensagem(resultado.get("erro").toString()));
+        }
+    }
+
 }

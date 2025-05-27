@@ -25,6 +25,114 @@ public class SaidaController {
     @Autowired
     private Funcionario funcionarioModel;
 
+
+    public Map<String, Object> deletarSaidaComProdutos(int id) {
+        // 1. Consulta a saída para verificar se existe
+        Saida existente = saidaModel.consultar(id);
+        if (existente == null)
+            return Map.of("erro", "Saída não encontrada");
+
+        // 2. Busca todos os SaidaProd relacionados a essa saída
+        List<SaidaProd> produtosDaSaida = saidaProdModel.consultar("saida_s_cod = " + id);
+
+        // 3. Para cada SaidaProd, repor a quantidade no estoque
+        for (SaidaProd sp : produtosDaSaida) {
+            int codProduto = sp.getProdutoCod();
+            int qtdSaida = sp.getQtd();
+
+            // Consulta o estoque do produto
+            Estoque estoque = estoqueModel.consultar("").stream()
+                    .filter(e -> e.getProduto_prod_cod() == codProduto)
+                    .findFirst()
+                    .orElse(null);
+
+            if (estoque != null) {
+                // Repor quantidade no estoque
+                estoque.setEs_qtdprod(estoque.getEs_qtdprod() + qtdSaida);
+                estoqueModel.alterar(estoque);
+            } else {
+                // Caso não tenha estoque, cria um novo registro (se aplicável)
+                Estoque novoEstoque = new Estoque();
+                novoEstoque.setProduto_prod_cod(codProduto);
+                novoEstoque.setEs_qtdprod(qtdSaida);
+                estoqueModel.gravar(novoEstoque);
+            }
+        }
+
+        // 4. Excluir todos os SaidaProd vinculados de uma vez usando o novo método
+        saidaProdModel.deletarPorSaida(id);  // método deve chamar apagar(int saidaCod)
+
+        // 5. Excluir a saída
+        boolean deletado = saidaModel.deletar(existente);
+        if (deletado) {
+            return Map.of("mensagem", "Saída e seus produtos removidos com sucesso, e estoque atualizado!");
+        } else {
+            return Map.of("erro", "Erro ao remover saída");
+        }
+    }
+
+
+    public List<Map<String, Object>> getSaidasComProdutos() {
+        // 1. Recupera todas as saídas normalmente
+        List<Saida> listaSaidas = saidaModel.consultar("");
+        if (listaSaidas.isEmpty()) return null;
+
+        // 2. Recupera todos os SaidaProd SEM filtro (todos os registros da tabela)
+        List<SaidaProd> todosProdutosSaida = saidaProdModel.consultar("");
+
+        List<Map<String, Object>> saidasComProdutos = new ArrayList<>();
+
+        // 3. Para cada saída, filtra os produtos que pertencem a ela
+        for (Saida s : listaSaidas) {
+            Map<String, Object> saidaJson = new HashMap<>();
+            saidaJson.put("id", s.getCod());
+            saidaJson.put("data", s.getDataSaida());
+            saidaJson.put("motivo", s.getMotivo());
+
+            // Buscar funcionário
+            Funcionario funcionario = funcionarioModel.consultar(s.getCodFuncionario());
+            if (funcionario != null) {
+                Map<String, Object> funcionarioJson = new HashMap<>();
+                funcionarioJson.put("id", funcionario.getId());
+                funcionarioJson.put("nome", funcionario.getNome());
+                saidaJson.put("funcionario", funcionarioJson);
+            }
+
+            // Filtra os produtos que tem saida_s_cod == s.getCod()
+            List<SaidaProd> produtosDaSaida = new ArrayList<>();
+            for (SaidaProd sp : todosProdutosSaida) {
+                if (sp.getSaidaCod() == s.getCod()) { // supondo que o método getSaidaCod() retorna saida_s_cod
+                    produtosDaSaida.add(sp);
+                }
+            }
+
+            List<Map<String, Object>> produtosJson = new ArrayList<>();
+
+            for (SaidaProd sp : produtosDaSaida) {
+                Produto p = produtoModel.consultar(sp.getProdutoCod());
+
+                Map<String, Object> produtoJson = new HashMap<>();
+                produtoJson.put("produto_id", sp.getProdutoCod());
+                produtoJson.put("quantidade", sp.getQtd());
+
+                if (p != null) {
+                    produtoJson.put("nome", p.getProd_desc());
+                    produtoJson.put("categoria", p.getCategoria());
+                    produtoJson.put("valor", p.getProd_valorun());
+                    // Adicione mais campos conforme necessário
+                }
+
+                produtosJson.add(produtoJson);
+            }
+
+            saidaJson.put("produtos", produtosJson);
+            saidasComProdutos.add(saidaJson);
+        }
+
+        return saidasComProdutos;
+    }
+
+
     public List<Map<String, Object>> getSaidas() {
         Conexao conexao = new Conexao();
         List<Saida> lista = saidaModel.consultar("");
@@ -132,13 +240,14 @@ public class SaidaController {
             estoqueModel.alterar(estoque);
 
             // 5. Remove produto se estoque zerado
+            /*
             if (novaQtd == 0) {
                 Produto produto = produtoModel.consultar(codProduto);
                 if (produto != null) {
                     produtoModel.deletarProduto(produto);
                 }
             }
-
+            */
             // 6. Adiciona ao resultado final
             produtosRegistrados.add(Map.of(
                     "produto_id", codProduto,

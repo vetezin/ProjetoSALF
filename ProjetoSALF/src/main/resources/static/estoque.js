@@ -156,6 +156,8 @@ function adicionarSelecionados() {
     tabelaDestino.appendChild(novaLinha);
     cb.checked = false; // desmarca o checkbox após adicionar
   });
+
+    document.getElementById("quantidadeItem").value = "";
 }
 
 async function registrarSaidaFinal() {

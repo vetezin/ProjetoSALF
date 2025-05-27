@@ -588,3 +588,47 @@ async function ordenarPorNome() {
     tbody.innerHTML = "<tr><td colspan='6'>Erro ao buscar produtos.</td></tr>";
   }
 }
+
+async function ordenarPorData() {
+  let tbody = document.querySelector("#tabelaProdutos tbody");
+  tbody.innerHTML = "";
+
+  try {
+    let response = await fetch("http://localhost:8080/apis/produto");
+    let produtos = await response.json();
+
+    if (!Array.isArray(produtos)) {
+      tbody.innerHTML = `<tr><td colspan="6">${produtos.mensagem || "Erro ao buscar produtos."}</td></tr>`;
+      return;
+    }
+
+    if (produtos.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='6'>Nenhum produto encontrado.</td></tr>";
+      return;
+    }
+
+    // Ordena os produtos por data (do mais recente para o mais antigo)
+    produtos.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+
+    produtos.forEach((produto) => {
+      let tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${produto.id}</td>
+        <td>${produto.nome}</td>
+        <td>${formatarData(produto.data)}</td>
+        <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
+        <td>${produto.categoria.desc}</td>
+        <td class="acoes">
+          <button class="editar" onclick="editarProduto(${produto.id})">Editar</button>
+          <button class="excluir" onclick="apagarProduto(${produto.id})">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (erro) {
+    console.error("Erro ao buscar produtos:", erro);
+    tbody.innerHTML = "<tr><td colspan='6'>Erro ao buscar produtos.</td></tr>";
+  }
+}
+

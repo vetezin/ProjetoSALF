@@ -54,10 +54,40 @@ public class SaidaProdDAO {
         return SingletonDB.getConexao().manipular(sql);
     }
 
+    public boolean apagar(int saidaCod) {
+        String sql = String.format(
+                "DELETE FROM saida_prod WHERE saida_s_cod = %d",
+                saidaCod
+        );
+        return SingletonDB.getConexao().manipular(sql);
+    }
+
+
+
     public SaidaProd get(int produtoCod, int saidaCod) {
         String sql = String.format(
                 "SELECT * FROM saida_prod WHERE produto_prod_cod = %d AND saida_s_cod = %d",
                 produtoCod, saidaCod
+        );
+        try {
+            ResultSet rs = SingletonDB.getConexao().consultar(sql);
+            if (rs.next()) {
+                return new SaidaProd(
+                        rs.getInt("produto_prod_cod"),
+                        rs.getInt("saida_s_cod"),
+                        rs.getInt("sp_qtd")
+                );
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar SaidaProd: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public SaidaProd get(int saidaCod) {
+        String sql = String.format(
+                "SELECT * FROM saida_prod WHERE saida_s_cod = %d",
+                 saidaCod
         );
         try {
             ResultSet rs = SingletonDB.getConexao().consultar(sql);

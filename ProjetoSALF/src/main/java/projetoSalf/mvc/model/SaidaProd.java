@@ -60,6 +60,18 @@ public class SaidaProd {
         return dao.apagar(this);
     }
 
+    public List<SaidaProd> consultar(String filtro) {
+        return dao.get(filtro);
+    }
+
+    public SaidaProd consultar(int id) {
+        return dao.get(id);
+    }
+
+    public boolean deletarPorSaida(int saidaCod) {
+        return dao.apagar(saidaCod);
+    }
+
 
 
     /*
