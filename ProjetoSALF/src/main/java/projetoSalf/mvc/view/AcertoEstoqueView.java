@@ -61,28 +61,5 @@ public class AcertoEstoqueView {
     }
 
 
-    // Lista todos os acertos registrados
-    /*
-    @GetMapping
-    public ResponseEntity<Object> getAll() {
-        List<Map<String, Object>> lista = acertoController.getAcertos();
-        if (lista != null && !lista.isEmpty()) {
-            return ResponseEntity.ok(lista);
-        } else {
-            return ResponseEntity.badRequest().body(new Mensagem("Nenhum acerto encontrado."));
-        }
-    }
 
-    // Busca acerto por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable int id) {
-        Map<String, Object> acerto = acertoController.getAcertoById(id);
-        if (acerto != null) {
-            return ResponseEntity.ok(acerto);
-        } else {
-            return ResponseEntity.badRequest().body(new Mensagem("Acerto não encontrado."));
-        }
-    }
-
-     */
 }
