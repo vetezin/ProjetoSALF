@@ -8,9 +8,10 @@ import projetoSalf.mvc.model.CategoriaProduto;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/categorias")
-@CrossOrigin(origins = "*")
+
 public class CategoriaController {
 
     @Autowired
@@ -18,7 +19,7 @@ public class CategoriaController {
 
     @GetMapping
     public List<CategoriaProduto> listar() {
-        return dao.listar();
+        return dao.consultarTodos();
     }
 
     @PostMapping
@@ -32,4 +33,10 @@ public class CategoriaController {
         dao.excluir(id);
         return ResponseEntity.ok().build();
     }
+    @PutMapping
+    public ResponseEntity<?> atualizar(@RequestBody CategoriaProduto categoria) {
+        dao.atualizar(categoria);
+        return ResponseEntity.ok().build();
+    }
+
 }
