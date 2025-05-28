@@ -1,0 +1,60 @@
+package projetoSalf.mvc.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import projetoSalf.mvc.controller.CestaBasicaController;
+import projetoSalf.mvc.model.CestaBasica;
+import projetoSalf.mvc.model.CbProd;
+import projetoSalf.mvc.util.Conexao;
+import projetoSalf.mvc.util.SingletonDB;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/apis/cesta")
+public class CestaBasicaControllerRest {
+
+    @PostMapping("/registrar")
+    public ResponseEntity<String> registrarCesta(@RequestBody Map<String, Object> dados) {
+        try {
+            Map<String, Object> cestaMap = (Map<String, Object>) dados.get("cesta");
+            List<Map<String, Object>> produtosMap = (List<Map<String, Object>>) dados.get("listaProdutos");
+
+            CestaBasica cesta = new CestaBasica();
+            cesta.setCb_motivo((String) cestaMap.get("cb_motivo"));
+            cesta.setCb_dtcriacao(Date.valueOf((String) cestaMap.get("cb_dtcriacao")));
+            cesta.setCb_dtdoacao(Date.valueOf((String) cestaMap.get("cb_dtdoacao")));
+            cesta.setCb_codfunc((int) cestaMap.get("cb_codfunc"));
+            cesta.setPessoa_carente_pc_cod((int) cestaMap.get("cb_pessoacod"));
+
+            List<CbProd> produtos = new ArrayList<>();
+            for (Map<String, Object> p : produtosMap) {
+                CbProd prod = new CbProd();
+                prod.setProduto_prod_cod((int) p.get("produto_prod_cod"));
+                prod.setProd_qtd((int) p.get("prod_qtd"));
+                produtos.add(prod);
+            }
+
+            if (!SingletonDB.conectar()) {
+                return ResponseEntity.status(500).body("Erro ao conectar no banco.");
+            }
+
+            Conexao conexao = SingletonDB.getConexao();
+            CestaBasicaController controller = new CestaBasicaController();
+            boolean sucesso = controller.registrarCesta(cesta, produtos, conexao);
+
+            if (sucesso) {
+                return ResponseEntity.ok(" Cesta registrada com sucesso!");
+            } else {
+                return ResponseEntity.status(500).body(" Falha ao registrar cesta.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(" Erro no processamento da requisição.");
+        }
+    }
+}
