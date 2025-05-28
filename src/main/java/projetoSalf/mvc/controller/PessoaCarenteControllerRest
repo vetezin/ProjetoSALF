@@ -1,0 +1,78 @@
+package projetoSalf.mvc.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import projetoSalf.mvc.model.PessoaCarente;
+import projetoSalf.mvc.util.SingletonDB;
+import projetoSalf.mvc.util.Conexao;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
+@RestController
+@RequestMapping("/apis/pessoa_carente")
+public class PessoaCarenteControllerRest {
+
+    // Buscar pessoa carente por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> buscarPessoaPorId(@PathVariable("id") int id) {
+        if (!SingletonDB.conectar()) {
+            return ResponseEntity.status(500).body("Erro ao conectar.");
+        }
+
+        try {
+            Conexao con = SingletonDB.getConexao();
+            String sql = "SELECT * FROM pessoa_carente WHERE pc_cod = ?";
+            PreparedStatement stmt = con.getConnect().prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                PessoaCarente pc = new PessoaCarente();
+                pc.setCod(rs.getInt("pc_cod"));
+                pc.setNome(rs.getString("pc_nome"));
+                pc.setCpf(rs.getString("pc_cpf"));
+                pc.setEndereco(rs.getString("pc_endereco"));
+                pc.setTelefone(rs.getString("pc_telefone"));
+                return ResponseEntity.ok(pc);
+            } else {
+                return ResponseEntity.status(404).body("Pessoa não encontrada.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erro ao buscar pessoa: " + e.getMessage());
+        }
+    }
+
+    // Cadastrar nova pessoa carente
+    @PostMapping("/cadastrar")
+    public ResponseEntity<String> cadastrarPessoa(@RequestBody PessoaCarente pc) {
+        if (!SingletonDB.conectar())
+            return ResponseEntity.status(500).body("Erro ao conectar.");
+
+        try {
+            Conexao con = SingletonDB.getConexao();
+
+            int novoCod = con.getMaxPK("pessoa_carente", "pc_cod") + 1;
+
+            String sql = """
+                INSERT INTO pessoa_carente (pc_cod, pc_nome, pc_endereco, pc_telefone, pc_cpf)
+                VALUES (?, ?, ?, ?, ?)
+            """;
+
+            PreparedStatement stmt = con.getConnect().prepareStatement(sql);
+            stmt.setInt(1, novoCod);
+            stmt.setString(2, pc.getNome());
+            stmt.setString(3, pc.getEndereco());
+            stmt.setString(4, pc.getTelefone());
+            stmt.setString(5, pc.getCpf());
+
+            int linhas = stmt.executeUpdate();
+            return linhas > 0 ? ResponseEntity.ok(" Pessoa cadastrada com sucesso!") :
+                    ResponseEntity.status(500).body(" Erro ao salvar.");
+
+        } catch (SQLException e) {
+            return ResponseEntity.status(500).body("Erro SQL: " + e.getMessage());
+        }
+    }
+}
