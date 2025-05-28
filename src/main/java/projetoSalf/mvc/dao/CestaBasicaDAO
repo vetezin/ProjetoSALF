@@ -1,0 +1,33 @@
+package projetoSalf.mvc.dao;
+
+import projetoSalf.mvc.model.CestaBasica;
+import projetoSalf.mvc.util.Conexao;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class CestaBasicaDAO {
+
+    public boolean inserir(CestaBasica cesta, Conexao conexao) {
+        String sql = "INSERT INTO cesta_basica " +
+                "(cb_motivo, cb_dtcriacao, pessoa_carente_pc_cod, cb_codfunc, funcionario_func_cod, cb_dtdoacao) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try {
+            PreparedStatement stmt = conexao.getConnect().prepareStatement(sql);
+            stmt.setString(1, cesta.getCb_motivo());
+            stmt.setDate(2, cesta.getCb_dtcriacao());
+            stmt.setInt(3, cesta.getPessoa_carente_pc_cod());
+            stmt.setInt(4, cesta.getCb_codfunc());
+            stmt.setInt(5, cesta.getCb_codfunc()); // mesmo valor para os dois campos de funcionário
+            stmt.setDate(6, cesta.getCb_dtdoacao());
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao inserir cesta básica: " + e.getMessage());
+            return false;
+        }
+    }
+}
