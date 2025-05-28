@@ -59,11 +59,11 @@ public class CategoriaProdutoController {
             stmt.setString(1, categoria.getDesc());
             stmt.executeUpdate();
 
-            return ResponseEntity.ok("✅ Categoria cadastrada com sucesso!");
+            return ResponseEntity.ok(" Categoria cadastrada com sucesso!");
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("❌ Erro ao cadastrar categoria.");
+            return ResponseEntity.status(500).body(" Erro ao cadastrar categoria.");
         }
     }
 
@@ -82,11 +82,11 @@ public class CategoriaProdutoController {
             stmt.setInt(2, categoria.getId());
             stmt.executeUpdate();
 
-            return ResponseEntity.ok("✅ Categoria atualizada com sucesso!");
+            return ResponseEntity.ok(" Categoria atualizada com sucesso!");
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("❌ Erro ao atualizar categoria.");
+            return ResponseEntity.status(500).body(" Erro ao atualizar categoria.");
         }
     }
 
@@ -104,11 +104,11 @@ public class CategoriaProdutoController {
             stmt.setInt(1, id);
             stmt.executeUpdate();
 
-            return ResponseEntity.ok("✅ Categoria excluída com sucesso!");
+            return ResponseEntity.ok(" Categoria excluída com sucesso!");
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("❌ Erro ao excluir categoria.");
+            return ResponseEntity.status(500).body(" Erro ao excluir categoria.");
         }
     }
 }
