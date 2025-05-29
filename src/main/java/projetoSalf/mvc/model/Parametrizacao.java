@@ -1,31 +1,60 @@
 package projetoSalf.mvc.model;
 
-import projetoSalf.mvc.dao.ParametrizacaoDAO;
-import projetoSalf.mvc.util.Conexao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import java.util.Base64;
 
 @Component
 public class Parametrizacao {
-    @Autowired
-    private ParametrizacaoDAO dao;
 
     private int id;
     private String nomeEmpresa;
     private String cnpj;
     private String endereco;
     private String telefone;
+    private String email;
+    private byte[] logotipo;
 
-    public Parametrizacao(String nomeEmpresa, String cnpj, String endereco, String telefone) {
+    // Campo para armazenar o logotipo em Base64 (não persistente no banco)
+    private String logotipoBase64;
+
+    public Parametrizacao(String nomeEmpresa, String cnpj, String endereco, String telefone, String email, byte[] logotipo) {
         this.nomeEmpresa = nomeEmpresa;
         this.cnpj = cnpj;
         this.endereco = endereco;
         this.telefone = telefone;
+        this.email = email;
+        this.setLogotipo(logotipo);  // chama o setter para já converter Base64
     }
 
     public Parametrizacao() {
+    }
+
+    public byte[] getLogotipo() {
+        return logotipo;
+    }
+
+    public void setLogotipo(byte[] logotipo) {
+        this.logotipo = logotipo;
+        // Converte para Base64 automaticamente ao setar
+        if (logotipo != null && logotipo.length > 0) {
+            this.logotipoBase64 = Base64.getEncoder().encodeToString(logotipo);
+        } else {
+            this.logotipoBase64 = null;
+        }
+    }
+
+    public String getLogotipoBase64() {
+        return logotipoBase64;
+    }
+
+    // Não precisa de setter para logotipoBase64, pois é gerado automaticamente
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getNomeEmpresa() {
@@ -61,23 +90,10 @@ public class Parametrizacao {
     }
 
     public void setId(int id) {
-        this.id=id;
+        this.id = id;
     }
 
     public int getId() {
         return id;
-    }
-
-    public List<Parametrizacao> consultar(String filtro, Conexao conexao){
-        return dao.get(filtro);
-    }
-    public boolean isEmpty(){
-        return dao.get("").isEmpty();
-    }
-    public Parametrizacao gravar(Parametrizacao param){
-        return dao.gravar(param);
-    }
-    public boolean deletarEmpresa(){
-        return dao.deletarEmpresa();
     }
 }

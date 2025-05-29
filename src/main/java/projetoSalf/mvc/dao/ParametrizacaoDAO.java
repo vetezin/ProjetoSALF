@@ -1,54 +1,81 @@
 package projetoSalf.mvc.dao;
 
-import projetoSalf.mvc.util.SingletonDB;
+import org.springframework.stereotype.Service;
 import projetoSalf.mvc.model.Parametrizacao;
-import org.springframework.stereotype.Repository;
+import projetoSalf.mvc.util.Conexao;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-@Repository
-public class ParametrizacaoDAO implements IDAO<Parametrizacao> {
-    @Override
-    public Parametrizacao gravar(Parametrizacao entidade) {
-        String sql = """
-            INSERT INTO empresa(nome_empresa, cnpj, endereco, telefone) 
-            VALUES ('#1', '#2', '#3', '#4');
-            """;
-        sql = sql.replace("#1", entidade.getNomeEmpresa());
-        sql = sql.replace("#2", entidade.getCnpj());
-        sql = sql.replace("#3", entidade.getEndereco());
-        sql = sql.replace("#4", entidade.getTelefone());
-        if (SingletonDB.getConexao().manipular(sql)) {
-            return entidade;
-        } else {
-            System.out.println("Erro: " + SingletonDB.getConexao().getMensagemErro());
-            return null;
-        }
-    }
-    @Override
-    public Parametrizacao alterar(Parametrizacao entidade) {
-        String sql = """
-        UPDATE empresa SET 
-            nome_empresa = '#1',
-            cnpj = '#2',
-            endereco = '#3',
-            telefone = '#4',
-        WHERE id = #6;
-        """;
-        sql = sql.replace("#1", entidade.getNomeEmpresa())
-                .replace("#2", entidade.getCnpj())
-                .replace("#3", entidade.getEndereco())
-                .replace("#4", entidade.getTelefone())
-                .replace("#6", String.valueOf(entidade.getId()));
+@Service
+public class ParametrizacaoDAO implements IDAO<Parametrizacao>{
 
-        if (SingletonDB.getConexao().manipular(sql)) {
-            return entidade;
-        } else {
-            System.out.println("Erro: " + SingletonDB.getConexao().getMensagemErro());
-            return null;
+
+    @Override
+    public Object gravar(Parametrizacao pa) {
+
+        String SQL = "INSERT INTO parametrizacao (pa_nome_empresa, pa_cnpj, pa_endereco, pa_telefone, pa_email, pa_caminho_logotipo ) VALUES (?,?,?,?,?,?)";
+
+        try{
+            if(ExisteEmpresas() == false) {
+                Conexao conexao = new Conexao();
+                Connection con = conexao.getConnection();
+                PreparedStatement stmt = con.prepareStatement(SQL);
+
+
+
+                // Salvar dados no banco
+                stmt.setString(1, pa.getNomeEmpresa());
+                stmt.setString(2, pa.getCnpj());
+                stmt.setString(3, pa.getEndereco());
+                stmt.setString(4, pa.getTelefone());
+                stmt.setString(5, pa.getEmail());
+                stmt.setBytes(6,pa.getLogotipo());
+                if (stmt.executeUpdate() > 0) {
+                    conexao.fechar();
+                    return pa;
+
+                }
+            }
+            else{
+                System.out.println("Empresa já existente, não é possivel cadastrar outra empresa nesse sistema");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao inserir",e);
         }
+
+        return null;
+
+    }
+
+    @Override
+    public Object alterar(Parametrizacao pa) {
+
+        String SQL = "UPDATE parametrizacao SET pa_nome_empresa = ?, pa_cnpj = ?, pa_endereco = ?, pa_telefone = ? WHERE pa_email = ?";
+        try {
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
+            stmt.setString(1, pa.getNomeEmpresa());
+            stmt.setString(2, pa.getCnpj());
+            stmt.setString(3, pa.getEndereco());
+            stmt.setString(4, pa.getTelefone());
+            stmt.setString(5, pa.getEmail());
+
+
+            if(stmt.executeUpdate() > 0){
+                conexao.fechar();
+                return pa;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     @Override
@@ -58,59 +85,100 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao> {
 
     @Override
     public Parametrizacao get(int id) {
-        String sql = "SELECT * FROM empresa WHERE id_empresa = " + id;
-        var rs = SingletonDB.getConexao().consultar(sql);
-        try {
-            if (rs.next()) {
-                Parametrizacao p = new Parametrizacao();
-                p.setId(rs.getInt("id_empresa"));
-                p.setNomeEmpresa(rs.getString("nome_empresa"));
-                p.setCnpj(rs.getString("cnpj"));
-                p.setEndereco(rs.getString("endereco"));
-                p.setTelefone(rs.getString("telefone"));
-                return p;
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao buscar empresa: " + e.getMessage());
-        }
         return null;
     }
 
     @Override
     public List<Parametrizacao> get(String filtro) {
-        List<Parametrizacao> lista = new ArrayList<>();
-        String sql = "SELECT * FROM empresa";
-        if (filtro != null && !filtro.isBlank()) {
-            sql += " WHERE " + filtro;
-        }
-        var rs = SingletonDB.getConexao().consultar(sql);
-        try {
-            while (rs.next()) {
-                Parametrizacao p = new Parametrizacao();
-                p.setId(rs.getInt("id"));
-                p.setNomeEmpresa(rs.getString("nome_empresa"));
-                p.setCnpj(rs.getString("cnpj"));
-                p.setEndereco(rs.getString("endereco"));
-                p.setTelefone(rs.getString("telefone"));
-                lista.add(p);
-            }
-        } catch (Exception e) {
-            System.out.println("Erro ao listar empresas: " + e.getMessage());
-        }
-        return lista;
+        return List.of();
     }
 
-    public boolean isEmpty() {
-        String sql = "SELECT * FROM empresa";
-        ResultSet rs = SingletonDB.getConexao().consultar(sql);
-        try {
-            return !rs.next();
-        } catch (SQLException e) {
+
+    public boolean existeRegistro(Parametrizacao PA) {
+
+        String SQL = "SELECT pa_email FROM parametrizacao WHERE pa_email = ?";
+
+        try{
+            Conexao conexao = new Conexao();
+
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
+            stmt.setString(1,PA.getEmail());
+
+            ResultSet rs = stmt.executeQuery();
+
+
+            //Se nao encontrou nenhum registro, retorna false, alegando isso.
+            if(!rs.next()) {
+                conexao.fechar();
+                return false;
+            }
             return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    public Parametrizacao getRegistro(String email) {
+
+        String SQL = "SELECT * FROM parametrizacao WHERE pa_email = ?";
+
+        try {
+
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
+            stmt.setString(1,email);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()){
+
+                Parametrizacao PA = new Parametrizacao();
+                PA.setId(rs.getInt("pa_id"));
+                PA.setNomeEmpresa(rs.getString("pa_nome_empresa"));
+                PA.setCnpj(rs.getString("pa_cnpj"));
+                PA.setEndereco(rs.getString("pa_endereco"));
+                PA.setTelefone(rs.getString("pa_telefone"));
+                PA.setEmail(rs.getString("pa_email"));
+                byte[] logotipoBytes = rs.getBytes("pa_caminho_logotipo"); // nome da coluna exato do seu banco
+                PA.setLogotipo(logotipoBytes);
+
+                return PA;
+
+
+            }
+            conexao.fechar();
+
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar parametrização por email", e);
+        }
+        return null;
+    }
+
+
+    public boolean ExisteEmpresas() {
+        String SQL = "SELECT COUNT(*) FROM parametrizacao";
+
+        try {
+            Conexao conexao = new Conexao();
+            Connection con = conexao.getConnection();
+            PreparedStatement stmt = con.prepareStatement(SQL);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0; // só retorna true se houver 1 ou mais registros
+            }
+
+            return false; // caso não consiga ler o resultado
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-    public boolean deletarEmpresa() {
-        String sql = "DELETE FROM empresa";
-        return SingletonDB.getConexao().manipular(sql);
-    }
+
 }

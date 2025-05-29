@@ -1,47 +1,68 @@
-//package projetoSalf.mvc.view;
+package projetoSalf.mvc.view;
 
-//import casoft.mvc.controller.ParametrizacaoController;
-//import projetoSalf.mvc.util.Mensagem;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import projetoSalf.mvc.Controller.ParametrizacaoController;
+import projetoSalf.mvc.model.Parametrizacao;
 
-//import java.util.List;
-//import java.util.Map;
-//@CrossOrigin
-//@RestController
-//@RequestMapping("apis/param")
-//public class ParametrizacaoView {
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("salf/param")
+public class ParametrizacaoView {
 
-//  @Autowired
-//  private ParametrizacaoController paramController;
+    @Autowired
+    private ParametrizacaoController parametrizacaoController;
+
+    @PostMapping( consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> salvarOuAtualizar(
+            @RequestParam("nomeEmpresa") String nomeEmpresa,
+            @RequestParam("cnpj") String cnpj,
+            @RequestParam("endereco") String endereco,
+            @RequestParam("telefone") String telefone,
+            @RequestParam("email") String email,
+            @RequestParam("logotipo") MultipartFile logotipo) {
+
+        try {
+            Parametrizacao pa = new Parametrizacao();
+            pa.setNomeEmpresa(nomeEmpresa);
+            pa.setCnpj(cnpj);
+            pa.setEndereco(endereco);
+            pa.setTelefone(telefone);
+            pa.setEmail(email);
+
+            // Converte arquivo para array de bytes e seta no objeto
+            pa.setLogotipo(logotipo.getBytes());
+
+            // Salvar no banco
+            parametrizacaoController.salvarOuAtualizar(pa);
+
+            return ResponseEntity.ok("Empresa cadastrada com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao salvar empresa: " + e.getMessage());
+        }
+    }
 
 
-//    @GetMapping
-//    public ResponseEntity<Object> getParam() {
-//        List<Map<String,Object>> listParam;
-//        listParam=paramController.getParam("");
-//        if (listParam!=null)
-//            return ResponseEntity.ok(listParam.getFirst());
-//        else
-//            return ResponseEntity.badRequest().body(new Mensagem("Necessário cadastrar a Empresa"));
-//    }
-//    @PostMapping
-//    public ResponseEntity<Object> addParam(@RequestParam("nomeEmpresa") String nome,@RequestParam("cnpj") String cnpj,@RequestParam("endereco")String endereco,@RequestParam("telefone")String telefone,@RequestPart("file") MultipartFile file) {
-//        Map<String,Object> json =paramController.addParam(nome,cnpj,endereco,telefone,file);
-//        if(json.get("erro")==null)
-//            return ResponseEntity.ok(new Mensagem("Empresa cadastrada com sucesso!"));
-//        else
-//            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
-//    }
+    @GetMapping
+    public ResponseEntity<Object> getParametrizacao(@RequestParam String email) {
+        Parametrizacao pa = parametrizacaoController.get(email);
 
-//    @PutMapping
-//    public ResponseEntity<Object> updtParam(@RequestParam("nomeEmpresa") String nome,@RequestParam("cnpj") String cnpj,@RequestParam("endereco")String endereco,@RequestParam("telefone")String telefone,@RequestPart("file") MultipartFile file) {
-//        Map<String,Object> json =paramController.updtParam(nome,cnpj,endereco,telefone,file);
-//        if(json.get("erro")==null)
-//            return ResponseEntity.ok(new Mensagem("Empresa alterada com sucesso!"));
-//        else
-//            return ResponseEntity.badRequest().body(new Mensagem(json.get("erro").toString()));
-//    }
-//}
+        if (pa != null) {
+            return ResponseEntity.ok(pa);
+        } else {
+            return ResponseEntity.status(404).body("Parametrização não encontrada.");
+        }
+    }
+
+    @GetMapping("/existeEmpresa")
+    public ResponseEntity<Boolean> existeEmpresa() {
+        boolean existe = parametrizacaoController.listar();
+        return ResponseEntity.ok(existe);
+    }
+
+}

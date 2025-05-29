@@ -1,4 +1,4 @@
 package projetoSalf.mvc.view;
 
-public class DespesasView {
+public class ListaCompraView {
 }
