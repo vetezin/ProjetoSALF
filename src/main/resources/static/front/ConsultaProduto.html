@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <title>Gerenciar Produtos</title>
+  <link rel="stylesheet" href="styleProduto.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+
+</head>
+
+<body>
+  <main class="container">
+    <h1>Gerenciar Produtos</h1>
+    <a href="menu.html">
+        <button class="menu-btn" id="btn-voltar-menu">Menu</button>
+    </a>
+    <div class="top-bar">
+      <input type="text" id="buscaNome" placeholder="Digite aqui..." />
+      <div class="botoes-topo">
+       
+        <button onclick="ordenarPorNome()">Ordenar A-Z</button>
+        <button onclick="mostrarFormulario()">Novo</button>
+      </div>
+    </div>
+
+    <table id="tabelaProdutos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descrição</th>
+          <th>Data de Validade</th>
+          <th>Valor</th>
+          <th>Categoria</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- JS insere aqui -->
+      </tbody>
+    </table>
+  </main>
+
+  <div id="mensagemToast"></div>
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Novo Produto</h2>
+        <span class="modal-close" onclick="fecharModal('modal')">&times;</span>
+      </div>
+
+
+      <form id="formProduto" class="needs-validation" novalidate onsubmit="return cadastrarProduto(event)"
+        method="POST">
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="descricao" name="prod_desc" placeholder="Descrição" required>
+          <label for="descricao">Descrição</label>
+          <div class="invalid-feedback">Informe uma descrição.</div>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="date" class="form-control" id="dtvalidade" name="prod_dtvalid" placeholder="Data de validade"
+            required>
+          <label for="dtvalidade">Data de Validade</label>
+          <div class="invalid-feedback">Informe uma data válida.</div>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="valor" name="prod_valorun" placeholder="Valor unitário" required>
+
+          <label for="valor">Valor Unitário (R$)</label>
+          <div class="invalid-feedback">Informe o valor.</div>
+        </div>
+
+        <div class="form-floating mb-3">
+          <select class="form-select" id="categoria" name="categoria" required>
+            <option value="">Selecione uma categoria</option>
+            <!-- opcoes vao ser inseridas aqui-->
+          </select>
+          <label for="categoria">Categoria</label>
+          <div class="invalid-feedback">Selecione uma categoria válida.</div>
+        </div>
+
+
+        <div class="modal-footer">
+          <button type="submit" class="button green">Salvar</button>
+          <button type="button" class="button blue" onclick="fecharModal()">Cancelar</button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+
+  <div class="modal" id="modalEdicao">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Editar Produto</h2>
+          <span class="modal-close" onclick="fecharModal('modalEdicao')">&times;</span>
+
+        </div>
+
+        <form id="formEditarProduto" class="needs-validation" novalidate onsubmit="return atualizarProduto(event)"
+          method="PUT">
+          <input type="hidden" id="idEdicao" name="id">
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="descricaoEdicao" name="prod_desc" required>
+            <label for="descricaoEdicao">Descrição</label>
+            <div class="invalid-feedback">Informe uma descrição.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="date" class="form-control" id="dtvalidadeEdicao" name="prod_dtvalid" required>
+            <label for="dtvalidadeEdicao">Data de Validade</label>
+            <div class="invalid-feedback">Informe uma data válida.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="valorEdicao" name="prod_valorun" required>
+            <label for="valorEdicao">Valor Unitário (R$)</label>
+            <div class="invalid-feedback">Informe o valor.</div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select class="form-select" id="categoriaEdicao" name="categoria" required>
+              <option value="">Selecione uma categoria</option>
+              <!-- opções JS -->
+            </select>
+            <label for="categoriaEdicao">Categoria</label>
+            <div class="invalid-feedback">Selecione uma categoria válida.</div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="button green">Atualizar</button>
+            <button type="button" class="button blue" onclick="fecharModalEdicao()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+
+
+    </div>
+  <script src="produtoScript.js"></script>
+</body>
+
+</html>

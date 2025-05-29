@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alterar Cotação</title>
+    <link rel="stylesheet" href="styleCadastro.css" />
+</head>
+<body>
+    <header class="header">
+        <nav>
+            <a href="ConsultaCotacao.html" class="nav-link">Voltar para Consulta de Cotações</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <h1>Alterar Cotação</h1>
+            <form id="alterarCotacaoForm" novalidate>
+                <div class="form-group">
+                    <label for="cot_id" class="form-label">ID da Cotação:</label>
+                    <input type="text" id="cot_id" name="cot_id" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="cot_dtabertura" class="form-label">Data de Abertura:</label>
+                    <input type="date" id="cot_dtabertura" name="cot_dtabertura" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="cot_dtfechamento" class="form-label">Data de Fechamento (Opcional):</label>
+                    <input type="date" id="cot_dtfechamento" name="cot_dtfechamento" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="lc_cod" class="form-label">Lista de Compra ID:</label>
+                    <input type="number" id="lc_cod" name="lc_cod" min="1" class="form-control" required />
+                    <p id="lcCodInfo" class="info-message message" style="display: none;"></p>
+                </div>
+
+                <h3>Fornecedores Selecionados:</h3>
+                <p id="loadingFornecedores" class="loading message" style="display: none;">Carregando fornecedores...</p>
+                <p id="fornecedoresErrorMessage" class="error-message message" style="display: none;"></p>
+                <p id="noFornecedoresFound" class="info-message message" style="display: none;"></p>
+                
+                <div class="fornecedores-table-container">
+                    <table class="fornecedores-table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Fornecedor</th>
+                                <th>ID do Fornecedor</th>
+                                <th>CNPJ</th>
+                                <th>Selecionar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaFornecedores">
+                            </tbody>
+                    </table>
+                </div>
+
+                <p id="message" class="message" style="display: none;"></p>
+                <p id="errorMessage" class="error-message message" style="display: none;"></p>
+                <p id="successMessage" class="success-message message" style="display: none;"></p>
+                
+                <button type="submit" class="btn-gradient">Salvar Alterações</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="AlterarCotacao.js"></script>
+</body>
+</html>

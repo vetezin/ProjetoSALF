@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro de Lista de Compras</title>
+    <link rel="stylesheet" href="styleCadastro.css" />
+    </head>
+<body>
+    <header class="header">
+        <nav>
+            <a href="ConsultaListaCompra.html" class="nav-link">Voltar para Consulta de Compras</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <h1>Cadastrar Nova Lista de Compras</h1>
+            <form id="listaCompraForm" novalidate>
+                <label for="lc_dtlista" class="form-label">Data da Lista:</label>
+                <input type="date" id="lc_dtlista" name="lc_dtlista" class="form-control" required />
+
+                <label for="lc_desc" class="form-label">Descrição da Lista:</label>
+                <textarea id="lc_desc" name="lc_desc" placeholder="Ex: Materiais de escritório para o mês de junho" class="form-control" required></textarea>
+
+                <label for="func_cod" class="form-label">ID do Funcionário:</label>
+                <input type="number" id="func_cod" name="func_cod" min="1" class="form-control" required />
+
+                <h3>Produtos em Estoque:</h3>
+                <p id="loadingProducts" class="loading message" style="display: none;">Carregando produtos do estoque...</p>
+                <p id="productsErrorMessage" class="error-message message" style="display: none;"></p>
+                
+                <div class="products-table-container">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Produto</th>
+                                <th>ID do Produto</th>
+                                <th>Qtd em Estoque</th>
+                                <th>Selecionar</th>
+                                <th>Qtd Desejada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaProdutosEstoque">
+                            </tbody>
+                    </table>
+                </div>
+
+                <p id="submitErrorMessage" class="error-message message" style="display: none;"></p>
+                <p id="submitSuccessMessage" class="success-message message" style="display: none;"></p>
+                
+                <button type="submit" class="btn-gradient">Salvar Lista de Compras</button>
+            </form>
+        </div>
+    </main>
+
+    <script src="CadastroListaCompra.js"></script>
+</body>
+</html>

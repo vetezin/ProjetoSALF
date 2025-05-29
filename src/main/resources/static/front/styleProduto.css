@@ -1,0 +1,240 @@
+body {
+  background-color: #0d0d18;
+  color: #f0f0f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding-top: 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  width: 95%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: #1e1e2f;
+  padding: 25px 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(128, 0, 128, 0.25);
+  overflow-x: auto;
+  font-size: 16px;
+}
+
+h1 {
+  color: #b084f7;
+  text-align: center;
+  margin-bottom: 35px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.top-bar input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  background-color: #2c2c44;
+  color: #fff;
+  outline: none;
+}
+
+.top-bar input::placeholder {
+  color: #bbb;
+}
+
+.botoes-topo button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  background-color: #6f42c1;
+  box-shadow: 0 2px 6px rgba(111, 66, 193, 0.6);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.botoes-topo button:hover {
+  background-color: #845ec2;
+  box-shadow: 0 4px 12px rgba(132, 94, 194, 0.8);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+thead th {
+  background-color: #3a2a6f;
+  color: #e0d7ff;
+  padding: 14px 18px;
+  font-weight: 600;
+  text-align: left;
+  border-radius: 12px 12px 0 0;
+  letter-spacing: 0.05em;
+}
+
+tbody tr {
+  background-color: #2c2c44;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+tbody tr:hover {
+  background-color: #4b3b9a;
+}
+
+tbody td {
+  padding: 14px 18px;
+  color: #ddd;
+  vertical-align: middle;
+}
+
+button.edit-btn {
+  background-color: #7e57c2;
+  box-shadow: 0 2px 6px rgba(126, 87, 194, 0.6);
+}
+
+button.edit-btn:hover {
+  background-color: #9a78d4;
+  box-shadow: 0 4px 14px rgba(154, 120, 212, 0.8);
+}
+
+button.delete-btn {
+  background-color: #d9534f;
+  box-shadow: 0 2px 6px rgba(217, 83, 79, 0.6);
+}
+
+button.delete-btn:hover {
+  background-color: #e57373;
+  box-shadow: 0 4px 14px rgba(229, 115, 115, 0.8);
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(13, 13, 24, 0.9);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: #1e1e2f;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 500px;
+  box-shadow: 0 6px 18px rgba(128, 0, 128, 0.4);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #c9b3ff;
+}
+
+.modal-close {
+  font-size: 28px;
+  cursor: pointer;
+  color: #c9b3ff;
+}
+
+.modal-close:hover {
+  color: #fff;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Botões modais */
+.button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.button.green {
+  background-color: #28a745;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.6);
+}
+
+.button.green:hover {
+  background-color: #45c96b;
+  box-shadow: 0 4px 12px rgba(69, 201, 107, 0.8);
+}
+
+.button.blue {
+  background-color: #6f42c1;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(111, 66, 193, 0.6);
+}
+
+.button.blue:hover {
+  background-color: #845ec2;
+  box-shadow: 0 4px 12px rgba(132, 94, 194, 0.8);
+}
+
+/* Formulários */
+.form-control,
+.form-select {
+  background-color: #2c2c44;
+  color: #f0f0f0;
+  border: 1px solid #555;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #845ec2;
+  box-shadow: 0 0 0 0.2rem rgba(132, 94, 194, 0.25);
+  background-color: #3a3a5c;
+  color: #fff;
+}
+
+.invalid-feedback {
+  color: #ff7070;
+  font-size: 13px;
+}
+.menu-btn {
+  background-color: #6f42c1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(111, 66, 193, 0.6);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.menu-btn:hover {
+  background-color: #845ec2;
+  box-shadow: 0 4px 12px rgba(132, 94, 194, 0.8);
+}

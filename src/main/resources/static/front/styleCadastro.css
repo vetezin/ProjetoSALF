@@ -1,0 +1,329 @@
+/* Estilo escuro e moderno para a página de cadastro */
+
+body {
+    margin: 0;
+    padding-top: 60px; /* Mantém o espaço para o cabeçalho fixo */
+    background-color: #0d0d18;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh; /* Garante que o body ocupa pelo menos 100% da altura da viewport */
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #1a1a2e;
+    box-shadow: 0 2px 10px rgba(128, 0, 128, 0.4);
+    padding: 14px 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.nav-link {
+    color: #b084f7;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: rgba(176, 132, 247, 0.15);
+}
+
+.nav-link:hover {
+    color: #7834c7;
+    background: rgba(120, 52, 199, 0.3);
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    /* ALTERAÇÃO AQUI: Remove ou altera align-items para permitir que o conteúdo empurre a página */
+    /* Se você quer que o formulário comece mais acima, mantenha flex-start.
+       Se quer que ele centralize verticalmente QUANDO HÁ ESPAÇO, use center.
+       Para apenas permitir a expansão, flex-start ou remova a propriedade se já houver espaço.
+       Vamos remover flex-start para não restringir o crescimento. */
+    /* align-items: flex-start; /* Remova ou comente esta linha */
+    padding-top: 20px;
+    padding-bottom: 40px;
+    box-sizing: border-box; /* Garante que padding seja incluído na altura total */
+}
+
+.form-container {
+    background-color: #1e1e2f;
+    padding: 40px 35px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(128, 0, 128, 0.25);
+    max-width: 800px; /* Você pode aumentar isso se o formulário for muito largo */
+    width: 90%;
+    transition: transform 0.3s ease;
+    /* REMOVA OU AUMENTE O MAX-HEIGHT AQUI TAMBÉM SE HOUVER UM,
+       PARA GARANTIR QUE O CONTÊINER PRINCIPAL SE EXPANDA */
+}
+
+.form-container:hover {
+    transform: scale(1.005);
+}
+
+h1 {
+    color: #b084f7;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 28px;
+    letter-spacing: 1.1px;
+}
+
+h3 {
+    color: #d1c4f9;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.form-label {
+    color: #d1c4f9;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-control,
+.form-select {
+    background-color: #2c2c44;
+    border: 1.5px solid #5e5e80;
+    color: #f0f0f0;
+    font-size: 1rem;
+    border-radius: 8px;
+    box-shadow: none;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #b084f7;
+    background-color: #2c2c55;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(176, 132, 247, 0.4);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #e57373;
+    background-color: #4d1d2d;
+    color: #ffcccc;
+}
+
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #81c784;
+    background-color: #234030;
+    color: #aaf0c0;
+}
+
+.invalid-feedback {
+    color: #ff8c8c;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 15px;
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg, #7e57c2, #b084f7);
+    border: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border-radius: 10px;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(176, 132, 247, 0.5);
+    width: 100%;
+    margin-top: 25px;
+}
+
+.btn-gradient:hover,
+.btn-gradient:focus {
+    background: linear-gradient(90deg, #9a78d4, #d1b3ff);
+    box-shadow: 0 6px 18px rgba(200, 150, 255, 0.8);
+    outline: none;
+}
+
+.message {
+    font-weight: 600;
+    font-size: 1rem;
+    min-height: 1.2rem;
+    user-select: none;
+    transition: color 0.3s ease;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.loading {
+    background-color: #e0f7fa;
+    color: #00796b;
+}
+
+.error-message {
+    background-color: #ffe0e0;
+    color: #d32f2f;
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.info-message {
+    background-color: #e3f2fd; /* Azul ainda mais claro */
+    color: #1976d2;
+    border: 1px solid #1976d2;
+}
+
+
+/* *** ALTERAÇÕES PARA A TABELA DE FORNECEDORES *** */
+.fornecedores-table-container {
+    /* REMOVIDO: max-height e overflow-y */
+    /* Permitindo que o contêiner se expanda para mostrar todas as linhas da tabela */
+    border: 1px solid #3a3a50; /* Borda sutil para combinar com o tema */
+    border-radius: 10px; /* Cantos arredondados */
+    margin-top: 20px; /* Espaçamento do elemento acima */
+    box-shadow: 0 4px 15px rgba(128, 0, 128, 0.2); /* Sombra roxa sutil */
+    background-color: #212135; /* Fundo ligeiramente mais escuro para o contêiner */
+}
+
+.fornecedores-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e1e2f;
+    margin-top: 0;
+}
+
+.fornecedores-table thead {
+    background-color: #2c2c44;
+    /* REMOVIDO: position: sticky; top: 0; z-index: 2; */
+    /* Já que a tabela inteira vai aparecer, não precisa fixar o cabeçalho */
+    box-shadow: none; /* Não precisa de sombra se não for sticky */
+}
+
+.fornecedores-table th,
+.fornecedores-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #2a2a3e;
+    vertical-align: middle;
+    color: #f0f0f0;
+    font-size: 0.95rem;
+}
+
+.fornecedores-table th {
+    color: #b084f7;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.fornecedores-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.fornecedores-table tbody tr:nth-child(even) {
+    background-color: #212135;
+}
+
+.fornecedores-table tbody tr:hover {
+    background-color: #343450;
+    cursor: default;
+}
+
+.fornecedores-table input[type="checkbox"] {
+    transform: scale(1.2);
+    margin: 0;
+    cursor: pointer;
+    accent-color: #b084f7;
+}
+
+/* Os estilos para .products-table-container, .products-table, etc.
+   que você já tinha, devem ser removidos ou substituídos, se a tabela
+   de fornecedores for a única tabela neste layout.
+   Se .products-table ainda for usado para outros propósitos, mantenha-os. */
+
+/* ... seu CSS existente para outros elementos como .form-group, .form-text-info ... */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-text-info {
+    display: block;
+    font-size: 0.9em;
+    color: #a0a0a0;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    padding-left: 5px;
+}
+
+.form-control[readonly] {
+    background-color: #3a3a50;
+    border-color: #4e4e68;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Ajustes gerais (se não estiverem já no seu CSS) */
+main {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    /* align-items: center;  -> REMOVER se o formulário for muito longo e você quiser que ele comece no topo */
+}
+
+.form-container {
+    max-width: 800px; /* Pode aumentar isso se quiser mais largura para o formulário */
+    width: 90%;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .form-container {
+        max-width: 95%;
+        padding: 30px 20px;
+    }
+    .fornecedores-table th,
+    .fornecedores-table td {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    .fornecedores-table input[type="checkbox"] {
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 25px 15px;
+    }
+    .fornecedores-table th,
+    .fornecedores-table td {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+    /* Considere um layout alternativo para tabelas em telas muito pequenas,
+       como display: block para tr e td ou usando flexbox */
+}

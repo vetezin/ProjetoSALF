@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Consulta de Cotações</title>
+    <link rel="stylesheet" href="styleConsulta.css" />
+</head>
+<body>
+    <header class="topbar">
+        <div class="user-info">
+            <span id="usuario-logado">Logado como: Usuário</span>
+            <button id="logout-btn" class="logout-btn">Sair</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Consulta de Cotações</h1>
+            <div style="display: flex; gap: 10px;">
+                <a href="CadastroCotacao.html">
+                    <button id="btn-novo" class="edit-btn">Nova Cotação</button>
+                </a>
+                <a href="menu.html">
+                    <button class="edit-btn" id="btn-voltar-menu">Menu</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="filtro-container">
+            <input type="text" id="filtro-input" placeholder="Digite aqui..." />
+            <button class="edit-btn" id="filtrar-data">Filtrar por Data Abertura</button>
+            <button class="edit-btn" id="filtrar-status">Filtrar por Lista/ID</button>
+            <p id="filtro-status-text" style="margin-left: 10px; font-style: italic; color: #bbb;"></p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Cotação</th>
+                    <th>Data Abertura</th>
+                    <th>Data Fechamento</th>
+                    <th>Lista Compra ID</th>
+                    <th>Fornecedores</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-cotacoes"></tbody>
+        </table>
+
+        <div id="message-consulta"></div>
+    </div>
+
+    <script src="ConsultaCotacao.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu Principal</title>
+  <link rel="stylesheet" href="styleMenu.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="user-info" id="usuario-logado">Logado como: </div>
+    <button class="logout-btn" id="logout-btn">Sair</button>
+  </div>
+
+  <div class="container">
+    <h1>Menu Principal</h1>
+    <div class="menu-grid">
+      <button onclick="abrirPagina('ConsultaFuncionario.html')">Funcionários</button>
+      <button onclick="abrirPagina('ConsultaProduto.html')">Produtos</button>
+      <button onclick="abrirPagina('ConsultaListaCompra.html')">Lista de Compras</button>
+      <button onclick="abrirPagina('ConsultaCotacao.html')">Cotacao</button>
+      <!-- Adicione mais opções de menu aqui -->
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+</body>
+</html>

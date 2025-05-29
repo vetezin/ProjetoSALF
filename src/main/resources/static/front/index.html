@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastro de Funcionário</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Seu CSS -->
+  <link rel="stylesheet" href="styleCadastro.css" />
+
+  <!-- Inputmask para máscara de CPF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+</head>
+<body>
+  <header class="header shadow-sm">
+    <nav class="container d-flex justify-content-center">
+      <a href="ConsultaFuncionario.html" class="nav-link">Ir para Consulta</a>
+    </nav>
+  </header>
+
+  <main class="d-flex justify-content-center align-items-start">
+    <div class="container form-container mt-5">
+      <h1 class="mb-4 text-center">Cadastro de Funcionário</h1>
+      <form id="formCadastro" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="func_nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="func_nome" name="func_nome" placeholder="Digite o nome" required>
+          <div class="invalid-feedback">Por favor, informe o nome.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="func_cpf" class="form-label">CPF</label>
+          <input type="text" class="form-control" id="func_cpf" name="func_cpf" placeholder="Digite o CPF" required>
+          <div class="invalid-feedback" id="cpf-feedback">Por favor, informe um CPF válido.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="func_senha" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="func_senha" name="func_senha" placeholder="Digite a senha" required minlength="6">
+          <div class="invalid-feedback">Por favor, informe uma senha com ao menos 6 caracteres.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="func_email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="func_email" name="func_email" placeholder="Digite o email" required>
+          <div class="invalid-feedback">Por favor, informe um email válido.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="func_login" class="form-label">Login</label>
+          <input type="text" class="form-control" id="func_login" name="func_login" placeholder="Digite o login" required minlength="4" pattern="^[a-zA-Z0-9._-]{4,}$">
+          <div class="invalid-feedback" id="login-feedback">Por favor, informe um login válido (mínimo 4 caracteres, sem espaços).</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="func_nivel" class="form-label">Nível</label>
+          <select id="func_nivel" name="func_nivel" class="form-select" required>
+            <option value="">Selecione o nível</option>
+            <option value="1">1 - Básico</option>
+            <option value="2">2 - Intermediário</option>
+            <option value="3">3 - Avançado</option>
+          </select>
+          <div class="invalid-feedback">Por favor, selecione um nível.</div>
+        </div>
+
+        <button type="submit" class="btn btn-gradient w-100">Cadastrar</button>
+        <div id="message" class="mt-3 text-center"></div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Seu JS -->
+  <script src="cadastroFuncionario.js"></script>
+</body>
+</html>
