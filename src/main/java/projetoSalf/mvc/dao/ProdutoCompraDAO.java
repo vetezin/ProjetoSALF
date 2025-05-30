@@ -6,6 +6,11 @@ import projetoSalf.mvc.util.SingletonDB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProdutoCompraDAO {
 
@@ -41,5 +46,41 @@ public class ProdutoCompraDAO {
         }
     }
 
+    public List<Map<String, Object>> getProdutosDaCompra(int compraId, Conexao conexao) {
+        List<Map<String, Object>> itens = new ArrayList<>();
+        String sql = """
+        SELECT 
+            cpc.prod_cod,
+            p.prod_desc,
+            cpc.cpc_qtd,
+            cpc.cpc_valorcompra,
+            cpc.lc_cod,
+            cpc.cot_cod,
+            cpc.forn_cod
+        FROM compra_prod_cot cpc
+        JOIN produto p ON p.prod_cod = cpc.prod_cod
+        WHERE cpc.compra_cod = ?
+        """;
 
+        try (PreparedStatement stmt = conexao.getConnect().prepareStatement(sql)) {
+            stmt.setInt(1, compraId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("prod_cod", rs.getInt("prod_cod"));
+                item.put("prod_desc", rs.getString("prod_desc"));
+                item.put("cpc_qtd", rs.getInt("cpc_qtd"));
+                item.put("cpc_valorcompra", rs.getFloat("cpc_valorcompra"));
+                item.put("lc_cod", rs.getInt("lc_cod"));
+                item.put("cot_cod", rs.getInt("cot_cod"));
+                item.put("forn_cod", rs.getInt("forn_cod"));
+                itens.add(item);
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar itens da compra: " + e.getMessage());
+        }
+
+        return itens;
+    }
 }

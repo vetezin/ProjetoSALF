@@ -1,21 +1,21 @@
 package projetoSalf.mvc.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import projetoSalf.mvc.dao.CompraDAO;
+import projetoSalf.mvc.dao.ProdutoCompraDAO;
 import projetoSalf.mvc.model.Compra;
+import projetoSalf.mvc.model.Fornecedor;
 import projetoSalf.mvc.util.Conexao;
+import projetoSalf.mvc.util.SingletonDB;
 
 import java.util.*;
 
 @Service
 public class CompraController {
-
-    private final Compra compraModel = new Compra();
-
     public List<Map<String, Object>> getCompras() {
-        Conexao conexao = new Conexao();
-        List<Compra> lista = compraModel.consultarTodas(conexao);
-        if (lista == null || lista.isEmpty()) return List.of(Map.of("erro", "Nenhuma compra encontrada"));
+        SingletonDB.conectar();
+        Conexao conexao = SingletonDB.getConexao();
+        List<Compra> lista = new CompraDAO().consultarNaoConfirmadas(conexao);
 
         List<Map<String, Object>> resposta = new ArrayList<>();
         for (Compra c : lista) {
@@ -28,23 +28,24 @@ public class CompraController {
             item.put("funcionario", c.getFuncionarioFuncCod());
             item.put("cotacaoCod", c.getCotFornCotacaoCotCod());
             item.put("fornecedorCod", c.getCotFornFornecedorFornCod());
+            Fornecedor forn = Fornecedor.consultarPorId(c.getCotFornFornecedorFornCod());
+            item.put("fornecedorNome", forn != null ? forn.getForn_nome() : "Desconhecido");
             resposta.add(item);
         }
         return resposta;
     }
 
-    public Map<String, Object> addCompra(Map<String, Object> dados) {
-        try {
-            Compra nova = Compra.fromMap(dados);
-            Conexao conexao = new Conexao();
-            boolean sucesso = nova.inserir(conexao);
-            if (sucesso) {
-                return Map.of("sucesso", "Compra registrada com sucesso");
-            } else {
-                return Map.of("erro", "Erro ao registrar a compra");
-            }
-        } catch (Exception e) {
-            return Map.of("erro", "Erro ao processar os dados da compra: " + e.getMessage());
-        }
+    public Map<String, Object> addCompra(Compra compra) {
+        Conexao conexao = new Conexao();
+        boolean sucesso = compra.inserir(conexao);
+        return sucesso ? Map.of("mensagem", "Compra registrada com sucesso")
+                : Map.of("erro", "Erro ao registrar a compra");
+    }
+
+    public List<Map<String, Object>> getProdutosDaCompra(int compraId) {
+        SingletonDB.conectar();
+        Conexao conexao = SingletonDB.getConexao();
+        ProdutoCompraDAO dao = new ProdutoCompraDAO();
+        return dao.getProdutosDaCompra(compraId, conexao);
     }
 }

@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projetoSalf.mvc.Controller.ListaCompraController;
+import projetoSalf.mvc.dao.ProdutoCompraDAO;
 import projetoSalf.mvc.model.ListaCompra;
+import projetoSalf.mvc.util.Conexao;
 import projetoSalf.mvc.util.Mensagem;
 
 import java.util.List;
@@ -26,6 +28,23 @@ public class ListaCompraView {
                 ? ResponseEntity.badRequest().body(new Mensagem("Nenhuma lista encontrada."))
                 : ResponseEntity.ok(listas);
     }
+    @GetMapping("/{id}/produtos")
+    public ResponseEntity<Object> listarProdutosDaCompra(@PathVariable int id) {
+        try {
+            Conexao conexao = new Conexao();
+            ProdutoCompraDAO dao = new ProdutoCompraDAO();
+            List<Map<String, Object>> itens = dao.getProdutosDaCompra(id, conexao);
+
+            if (itens == null || itens.isEmpty()) {
+                return ResponseEntity.ok(List.of()); // Sem produtos
+            }
+
+            return ResponseEntity.ok(itens);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", "Erro ao buscar produtos da compra: " + e.getMessage()));
+        }
+    }
+
 
     // Endpoint para retornar todas as listas de compras sem filtro
     @GetMapping("/all")
