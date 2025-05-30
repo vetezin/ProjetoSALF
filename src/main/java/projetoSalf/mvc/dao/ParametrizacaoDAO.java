@@ -44,7 +44,7 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao> {
 
     @Override
     public Object alterar(Parametrizacao pa) {
-        String SQL = "UPDATE parametrizacao SET pa_nome_empresa = ?, pa_cnpj = ?, pa_endereco = ?, pa_telefone = ? WHERE pa_email = ?";
+        String SQL = "UPDATE parametrizacao SET pa_nome_empresa = ?, pa_cnpj = ?, pa_endereco = ?, pa_telefone = ?, pa_caminho_logotipo = ? WHERE pa_email = ?";
 
         try {
             Connection con = SingletonDB.getConexao().getConnect();
@@ -53,7 +53,8 @@ public class ParametrizacaoDAO implements IDAO<Parametrizacao> {
             stmt.setString(2, pa.getCnpj());
             stmt.setString(3, pa.getEndereco());
             stmt.setString(4, pa.getTelefone());
-            stmt.setString(5, pa.getEmail());
+            stmt.setBytes(5, pa.getLogotipo());  // <<< adicionando logotipo
+            stmt.setString(6, pa.getEmail());
 
             if (stmt.executeUpdate() > 0) {
                 return pa;

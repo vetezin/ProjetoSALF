@@ -53,11 +53,22 @@ public class ParametrizacaoView {
         Parametrizacao pa = parametrizacaoController.get(email);
 
         if (pa != null) {
-            return ResponseEntity.ok(pa);
+            // Criar manualmente a resposta com apenas os campos desejados
+            var response = new java.util.HashMap<String, Object>();
+            response.put("nomeEmpresa", pa.getNomeEmpresa());
+            response.put("cnpj", pa.getCnpj());
+            response.put("endereco", pa.getEndereco());
+            response.put("telefone", pa.getTelefone());
+            response.put("email", pa.getEmail());
+            response.put("logotipoBase64", pa.getLogotipoBase64());
+
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(404).body("Parametrização não encontrada.");
         }
     }
+
+
 
     @GetMapping("/existeEmpresa")
     public ResponseEntity<Boolean> existeEmpresa() {
