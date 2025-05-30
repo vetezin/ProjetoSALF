@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gerenciar Saídas</title>
+  <link rel="stylesheet" href="style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <title>Estoque</title>
-  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+  
 </head>
-
 <body>
 
-   <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+  <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
     <div class="container-fluid justify-content-center">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -19,19 +19,19 @@
 
       <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
        <ul class="navbar-nav">
+
          <li class="nav-item">
            <a class="nav-link " href="index.html">Inicio</a>
          </li>
-
 
          <li class="nav-item">
            <a class="nav-link" href="produtos.html">Produtos</a>
          </li>
          <li class="nav-item">
-           <a class="nav-link active" href="estoque.html">Estoque</a>
+           <a class="nav-link " href="estoque.html">Estoque</a>
          </li>
          <li class="nav-item">
-           <a class="nav-link" href="saida.html">Saída</a>
+           <a class="nav-link active" href="saida.html">Saída</a>
          </li>
          <li class="nav-item">
            <a class="nav-link" href="acerto.html">Acerto</a>
@@ -41,36 +41,38 @@
     </div>
   </nav>
 
-<main class="container" style="padding-top: 70px;">
- 
-  
 
-  <!-- Botões principais -->
-  <div class="d-flex justify-content-end mb-3 gap-2">
-    <button class="btn btn-primary" onclick="window.location.href='regSaida.html'">Nova Saída</button>
-    <button class="btn btn-warning" onclick="window.location.href='regAcerto.html'">Novo Acerto</button>
-  </div>
 
-  <!-- Tabela do estoque -->
-  <div>
-    
-    <table id="tabelaEstoque" >
+
+
+
+
+
+
+
+  <main class="container" style="padding-top: 70px;">
+    <h1 class="mb-4">Listar Saídas</h1>
+
+    <table id="tabelaSaidas" class="table table-striped table-bordered">
       <thead>
         <tr>
-          <th>ID Estoque</th>
-          <th>ID Produto</th>
-          <th>Produto</th>
-          <th>Quantidade</th>
-          <th>Validade</th>
+          <th>ID Saída</th>
+          <th>Data</th>
+          <th>Motivo</th>
+          <th>Funcionário</th>
+          <th>Produtos</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Populado via JS -->
+        
       </tbody>
     </table>
-  </div>
-</main>
+  </main>
+  <div id="mensagemToast"></div>
 
-<script src="estoqueListar.js"></script>
+  <script src="saida.js">
+    
+  </script>
 </body>
 </html>

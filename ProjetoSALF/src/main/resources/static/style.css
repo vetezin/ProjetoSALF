@@ -241,3 +241,27 @@ button {
 button:hover {
   transform: scale(1.02);
 }
+
+/* Navbar personalizada */
+.custom-navbar {
+ background-color: #2575fc;
+  border-bottom: 1px solid #3a7bd5;
+  box-shadow: 0 0 10px rgba(58, 123, 213, 0.4);
+  z-index: 1030;
+
+}
+
+.navbar-nav .nav-link {
+  color: #fff;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  padding: 10px 20px;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #00d2ff !important;
+ 
+}
