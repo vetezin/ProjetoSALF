@@ -235,3 +235,7 @@ async function registrarSaidaFinal() {
     alert("Erro de comunicação com o servidor.");
   }
 }
+
+
+
+

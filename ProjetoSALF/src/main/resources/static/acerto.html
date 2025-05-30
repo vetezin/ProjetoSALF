@@ -47,6 +47,13 @@
     <main class="container" style="padding-top: 70px;">
         <h1 class="mb-4">Listar Acertos</h1>
 
+        <div class="d-flex justify-content-end mb-3 gap-2">
+       <button class="btn btn-primary" onclick="ordenarPorFuncionarioAcerto()">Ordenar por Funcionário</button>
+        <button class="btn btn-primary" onclick="ordenarPorMotivoAcerto()">Ordenar por Motivo</button>
+        <button class="btn btn-warning" onclick="window.location.href='regAcerto.html'">Novo Acerto</button>
+        </div>
+
+
         <table id="tabelaAcertos" class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -150,6 +157,113 @@
                 tbody.innerHTML = "<tr><td colspan='6'>Erro ao carregar dados.</td></tr>";
             }
         }
+
+         async function ordenarPorFuncionarioAcerto() {
+        let tbody = document.querySelector("#tabelaAcertos tbody");
+        tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
+
+        try {
+            let response = await fetch("http://localhost:8080/apis/acertoestoque/listar-com-produtos");
+            if (!response.ok) {
+                tbody.innerHTML = `<tr><td colspan="6">Erro ao buscar acertos: ${response.status}</td></tr>`;
+                return;
+            }
+
+            let acertos = await response.json();
+
+            if (!Array.isArray(acertos) || acertos.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6'>Nenhum acerto encontrado.</td></tr>";
+                return;
+            }
+
+            // Ordena pelo nome do funcionário (case insensitive)
+            acertos.sort((a, b) => {
+                let nomeA = a.funcionario && a.funcionario.nome ? a.funcionario.nome.toLowerCase() : "";
+                let nomeB = b.funcionario && b.funcionario.nome ? b.funcionario.nome.toLowerCase() : "";
+                if (nomeA < nomeB) return -1;
+                if (nomeA > nomeB) return 1;
+                return 0;
+            });
+
+            tbody.innerHTML = ""; // limpa antes de preencher
+
+            acertos.forEach(acerto => {
+                let produtosNomes = acerto.produto ? acerto.produto.descricao : "-";
+                let nomeFuncionario = acerto.funcionario ? acerto.funcionario.nome : "Desconhecido";
+
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                <td>${acerto.id}</td>
+                <td>${new Date(acerto.data).toLocaleDateString('pt-BR')}</td>
+                <td>${acerto.motivo}</td>
+                <td>${nomeFuncionario}</td>
+                <td>${produtosNomes}</td>
+                <td class="acoes">
+                <button class="excluir btn btn-danger btn-sm" onclick="apagarAcerto(${acerto.id})">Excluir</button>
+                </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+        } catch (error) {
+            console.error("Erro ao ordenar acertos:", error);
+            tbody.innerHTML = "<tr><td colspan='6'>Erro ao carregar dados.</td></tr>";
+        }
+    }
+
+    async function ordenarPorMotivoAcerto() {
+    let tbody = document.querySelector("#tabelaAcertos tbody");
+    tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
+
+    try {
+        let response = await fetch("http://localhost:8080/apis/acertoestoque/listar-com-produtos");
+        if (!response.ok) {
+            tbody.innerHTML = `<tr><td colspan="6">Erro ao buscar acertos: ${response.status}</td></tr>`;
+            return;
+        }
+
+        let acertos = await response.json();
+
+        if (!Array.isArray(acertos) || acertos.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='6'>Nenhum acerto encontrado.</td></tr>";
+            return;
+        }
+
+        // Ordena pelo motivo (case insensitive)
+        acertos.sort((a, b) => {
+            let motivoA = a.motivo ? a.motivo.toLowerCase() : "";
+            let motivoB = b.motivo ? b.motivo.toLowerCase() : "";
+            if (motivoA < motivoB) return -1;
+            if (motivoA > motivoB) return 1;
+            return 0;
+        });
+
+        tbody.innerHTML = ""; // limpa antes de preencher
+
+        acertos.forEach(acerto => {
+            let produtosNomes = acerto.produto ? acerto.produto.descricao : "-";
+            let nomeFuncionario = acerto.funcionario ? acerto.funcionario.nome : "Desconhecido";
+
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${acerto.id}</td>
+                <td>${new Date(acerto.data).toLocaleDateString('pt-BR')}</td>
+                <td>${acerto.motivo}</td>
+                <td>${nomeFuncionario}</td>
+                <td>${produtosNomes}</td>
+                <td class="acoes">
+                    <button class="excluir btn btn-danger btn-sm" onclick="apagarAcerto(${acerto.id})">Excluir</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error("Erro ao ordenar acertos:", error);
+        tbody.innerHTML = "<tr><td colspan='6'>Erro ao carregar dados.</td></tr>";
+    }
+    }
+
     </script>
 </body>
 
