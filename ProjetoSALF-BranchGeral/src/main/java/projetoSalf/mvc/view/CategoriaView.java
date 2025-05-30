@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import projetoSalf.mvc.controller.CategoriaController;
+import projetoSalf.mvc.Controller.CategoriaController;
 import projetoSalf.mvc.util.Mensagem;
 
 import java.util.List;

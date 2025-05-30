@@ -3,7 +3,7 @@ package projetoSalf.mvc.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import projetoSalf.mvc.controller.EstoqueController;
+import projetoSalf.mvc.Controller.EstoqueController;
 import projetoSalf.mvc.util.Mensagem;
 
 import java.util.List;

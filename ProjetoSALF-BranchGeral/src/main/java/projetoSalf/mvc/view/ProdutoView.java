@@ -3,7 +3,7 @@
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
-    import projetoSalf.mvc.controller.ProdutoController;
+    import projetoSalf.mvc.Controller.ProdutoController;
     import projetoSalf.mvc.util.Mensagem;
 
     import java.util.List;
