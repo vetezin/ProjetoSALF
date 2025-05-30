@@ -38,7 +38,7 @@ public class AcertoEstoqueView {
     }
 
     // Lista todos os acertos registrados
-    @GetMapping
+    @GetMapping("listar-com-produtos")
     public ResponseEntity<Object> getAllAcertos() {
         List<Map<String, Object>> lista = acertoController.getAcertos();
         if (lista != null && !lista.isEmpty()) {
@@ -49,7 +49,7 @@ public class AcertoEstoqueView {
     }
 
     // Deleta um acerto pelo ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Object> deletarAcerto(@PathVariable int id) {
         Map<String, Object> resultado = acertoController.deletarAcerto(id);
 

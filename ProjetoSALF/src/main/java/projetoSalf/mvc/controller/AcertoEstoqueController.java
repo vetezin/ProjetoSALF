@@ -91,7 +91,9 @@ public class AcertoEstoqueController {
 
             // Objeto Produto completo
             Produto produto = produtoModel.consultar(acerto.getCodProduto());
+
             if (produto != null) {
+
                 Map<String, Object> jsonProduto = new HashMap<>();
                 jsonProduto.put("id", produto.getProd_cod());
                 jsonProduto.put("descricao", produto.getProd_desc());
