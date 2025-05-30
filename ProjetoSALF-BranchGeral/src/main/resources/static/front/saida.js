@@ -1,0 +1,109 @@
+    document.addEventListener("DOMContentLoaded", () => {
+      listarSaidasComProdutos();
+    });
+function mostrarToast(mensagem, duracao = 3000) {
+  let toast = document.getElementById("mensagemToast");
+  toast.textContent = mensagem;
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, duracao);
+}
+
+/*
+function apagarSaida(id) {
+  if (!id) {
+    alert("ID da saída não informado.");
+    return;
+  }
+
+  fetch(`http://localhost:8080/apis/saida/deletar/${id}`, {
+    method: "DELETE",
+  })
+    .then((response) =>
+      response.json().then((data) => ({ status: response.status, body: data }))
+    )
+    .then(({ status, body }) => {
+      if (status === 200) {
+        mostrarToast(body.mensagem || "Saída apagada com sucesso!");
+        listarSaidasComProdutos(); // Atualiza a lista após apagar
+      } else {
+        mostrarToast(body.mensagem || "Erro ao apagar saída");
+      }
+    })
+    .catch((error) => {
+      console.error("Erro ao apagar saída:", error);
+      mostrarToast("Erro ao apagar saída");
+    });
+}
+*/
+function apagarSaida(id) {
+  if (!id) {
+    alert("ID da saída não informado.");
+    return;
+  }
+
+  fetch(`http://localhost:8080/apis/saida/deletar/${id}`, {
+    method: "DELETE",
+  })
+    .then((response) =>
+      response.json().then((data) => ({ status: response.status, body: data }))
+    )
+    .then(({ status, body }) => {
+      if (status === 200) {
+        mostrarToast(body.mensagem || "Saída apagada com sucesso!");
+        listarSaidasComProdutos(); // Atualiza a lista após apagar
+      } else {
+        mostrarToast(body.mensagem || "Erro ao apagar saída");
+      }
+    })
+    .catch((error) => {
+      console.error("Erro ao apagar saída:", error);
+      mostrarToast("Erro ao apagar saída"); // ✅ removido uso de "body"
+    });
+}
+
+
+async function listarSaidasComProdutos() {
+      let tbody = document.querySelector("#tabelaSaidas tbody");
+      tbody.innerHTML = "<tr><td colspan='5'>Carregando...</td></tr>";
+
+      try {
+        let response = await fetch("http://localhost:8080/apis/saida/listar-com-produtos");
+        if (!response.ok) {
+          tbody.innerHTML = `<tr><td colspan="5">Erro ao buscar saídas: ${response.status}</td></tr>`;
+          return;
+        }
+        let saidas = await response.json();
+
+        if (!Array.isArray(saidas) || saidas.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='5'>Nenhuma saída encontrada.</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = ""; // limpa antes de preencher
+
+        saidas.forEach(saida => {
+          let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+          let nomeFuncionario = saida.funcionario ? saida.funcionario.nome : "Desconhecido";
+
+          let tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${saida.id}</td>
+            <td>${new Date(saida.data).toLocaleDateString('pt-BR')}</td>
+            <td>${saida.motivo}</td>
+            <td>${nomeFuncionario}</td>
+            <td>${produtosNomes}</td>
+             <td class="acoes">
+               <button class="excluir btn btn-danger btn-sm" onclick="apagarSaida(${saida.id})">Excluir</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error("Erro ao listar saídas:", error);
+        tbody.innerHTML = "<tr><td colspan='5'>Erro ao carregar dados.</td></tr>";
+      }
+    }
+
