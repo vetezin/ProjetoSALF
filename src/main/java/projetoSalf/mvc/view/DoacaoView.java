@@ -85,5 +85,4 @@ public class DoacaoView {
         else
             return ResponseEntity.status(500).body("Erro ao deletar a doação.");
     }
-
 }

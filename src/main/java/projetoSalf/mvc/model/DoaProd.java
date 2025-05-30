@@ -3,16 +3,22 @@ package projetoSalf.mvc.model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import projetoSalf.mvc.dao.DoaProdDAO;
+import projetoSalf.mvc.util.Conexao;
 
+import java.util.List;
+
+@Component
 public class DoaProd {
+    @Autowired
+    private DoaProdDAO dao;
+
     private int doaProdCod;
     private int doaProdQtd;
     private int doaProdCatCod;
     private int produtoProdCod;
     private int doacaoDoaCod;
 
-    public DoaProd() {}
-
+    // Getters e Setters
     public int getDoaProdCod() {
         return doaProdCod;
     }
@@ -52,5 +58,21 @@ public class DoaProd {
     public void setDoacaoDoaCod(int doacaoDoaCod) {
         this.doacaoDoaCod = doacaoDoaCod;
     }
-}
 
+    // Métodos com DAO
+    public boolean gravar() {
+        return dao.gravar(this);
+    }
+
+    public List<DoaProd> listarPorDoacao(int doaCod) {
+        return dao.listarPorDoacao(doaCod);
+    }
+
+    public boolean reverterDoacao(int doaCod) {
+        return dao.reverterDoacao(doaCod);
+    }
+
+    public boolean reverterProdutosDaDoacaoPC(int doapcCod) {
+        return dao.reverterProdutosDaDoacaoPC(doapcCod);
+    }
+}

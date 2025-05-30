@@ -49,19 +49,23 @@ public class Conexao
         }
         return executou;
     }
-    public ResultSet consultar(String sql)
-    {   ResultSet rs=null;
+    public ResultSet consultar(String sql) {
+        ResultSet rs = null;
+
         try {
+            if (connect == null) {
+                System.out.println(" Erro: conexão com o banco está nula!");
+                return null;
+            }
+
             Statement statement = connect.createStatement();
-            //ResultSet.TYPE_SCROLL_INSENSITIVE,
-            //ResultSet.CONCUR_READ_ONLY);
-            rs = statement.executeQuery( sql );
-            //statement.close();
-        }
-        catch ( SQLException sqlex )
-        { erro="Erro: "+sqlex.toString();
+            rs = statement.executeQuery(sql);
+        } catch (SQLException sqlex) {
+            erro = "Erro: " + sqlex.toString();
+            System.out.println(" SQLException: " + erro);
             rs = null;
         }
+
         return rs;
     }
     public int getMaxPK(String tabela,String chave)
