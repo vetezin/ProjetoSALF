@@ -1,6 +1,17 @@
 package projetoSalf.mvc.model;
 
+<<<<<<< HEAD
 import java.time.LocalDate;
+=======
+import projetoSalf.mvc.dao.CompraDAO;
+import projetoSalf.mvc.dao.ProdutoCompraDAO;
+import projetoSalf.mvc.util.Conexao;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+>>>>>>> Geral
 
 public class Compra {
     private int coCod;
@@ -11,6 +22,7 @@ public class Compra {
     private int funcionarioFuncCod;
     private int cotFornCotacaoCotCod;
     private int cotFornFornecedorFornCod;
+<<<<<<< HEAD
 
     public Compra() {
     }
@@ -26,6 +38,14 @@ public class Compra {
         this.cotFornCotacaoCotCod = cotFornCotacaoCotCod;
         this.cotFornFornecedorFornCod = cotFornFornecedorFornCod;
     }
+=======
+    private List<ProdutoCompra> itens;
+
+    public Compra() {}
+
+    // Getters e Setters omitidos por brevidade...
+
+>>>>>>> Geral
 
     public int getCoCod() {
         return coCod;
@@ -90,5 +110,59 @@ public class Compra {
     public void setCotFornFornecedorFornCod(int cotFornFornecedorFornCod) {
         this.cotFornFornecedorFornCod = cotFornFornecedorFornCod;
     }
+<<<<<<< HEAD
 }
 
+=======
+
+    public List<ProdutoCompra> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ProdutoCompra> itens) {
+        this.itens = itens;
+    }
+
+    public static Compra fromMap(Map<String, Object> map) {
+        Compra c = new Compra();
+        c.setCoDescricao((String) map.get("coDescricao"));
+        c.setCoValorTotal(Float.parseFloat(map.get("coValorTotal").toString()));
+        c.setCoDtCompra(LocalDate.parse((String) map.get("coDtCompra")));
+        c.setCoTotalItens(Integer.parseInt(map.get("coTotalItens").toString()));
+        c.setFuncionarioFuncCod(Integer.parseInt(map.get("funcionarioFuncCod").toString()));
+        c.setCotFornCotacaoCotCod(Integer.parseInt(map.get("cotFornCotacaoCotCod").toString()));
+        c.setCotFornFornecedorFornCod(Integer.parseInt(map.get("cotFornFornecedorFornCod").toString()));
+        return c;
+    }
+
+    public void fromList(List<Map<String, Object>> listaProdutos) {
+        this.itens = new ArrayList<>();
+        for (Map<String, Object> p : listaProdutos) {
+            ProdutoCompra pc = ProdutoCompra.fromMap(p);
+            this.itens.add(pc);
+        }
+    }
+
+    public boolean inserir(Conexao conexao) {
+        CompraDAO compraDAO = new CompraDAO();
+        int codCompra = compraDAO.inserir(this, conexao);  // <- AQUI está falhando e retornando -1
+
+        if (codCompra > 0 && this.itens != null) {
+            ProdutoCompraDAO prodDAO = new ProdutoCompraDAO();
+            for (ProdutoCompra pc : this.itens) {
+                prodDAO.inserir(pc, codCompra,conexao);
+            }
+            return true;
+        }
+        return false;  // <- Está caindo aqui, por isso aparece "Erro ao registrar a compra"
+    }
+
+
+
+    public List<Compra> consultarTodas(Conexao conexao) {
+        CompraDAO dao = new CompraDAO();
+        return dao.consultarTodas(conexao);
+    }
+
+}
+>>>>>>> Geral

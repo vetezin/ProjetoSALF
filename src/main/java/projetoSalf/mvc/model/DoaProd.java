@@ -1,5 +1,12 @@
 package projetoSalf.mvc.model;
 
+<<<<<<< HEAD
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import projetoSalf.mvc.dao.DoaProdDAO;
+
+>>>>>>> Geral
 public class DoaProd {
     private int doaProdCod;
     private int doaProdQtd;
@@ -7,6 +14,7 @@ public class DoaProd {
     private int produtoProdCod;
     private int doacaoDoaCod;
 
+<<<<<<< HEAD
     public DoaProd() {
     }
 
@@ -17,6 +25,9 @@ public class DoaProd {
         this.produtoProdCod = produtoProdCod;
         this.doacaoDoaCod = doacaoDoaCod;
     }
+=======
+    public DoaProd() {}
+>>>>>>> Geral
 
     public int getDoaProdCod() {
         return doaProdCod;

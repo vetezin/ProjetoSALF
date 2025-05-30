@@ -1,5 +1,11 @@
 package projetoSalf.mvc.dao;
 
+<<<<<<< HEAD
+=======
+import projetoSalf.mvc.model.Fornecedor;
+import projetoSalf.mvc.util.Conexao;
+
+>>>>>>> Geral
 import java.util.List;
 
 public interface IDAO<T>{
