@@ -1,15 +1,14 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     listarEstoque();
-    configurarFormularioAcerto(); // Renomeada para clareza
+    configurarFormularioAcerto(); 
     inicializarBootstrapValidation();
 });
 
-// Função para carregar e preencher tabela do estoque
+
 async function listarEstoque() {
     let tbody = document.querySelector("#tabelaEstoque tbody");
-    tbody.innerHTML = ""; // limpa tabela antes de preencher
-
+    tbody.innerHTML = ""; 
     try {
         let response = await fetch("http://localhost:8080/apis/estoque");
         let estoque = await response.json();
@@ -72,37 +71,37 @@ document.addEventListener("change", function (event) {
     }
 });
 
-// Configura a submissão do formulário de acerto
+
 function configurarFormularioAcerto() {
     let form = document.getElementById("formAcerto");
 
     form.addEventListener("submit", async (event) => {
-        event.preventDefault(); // Impede o envio padrão do formulário
-        event.stopPropagation(); // Impede a propagação do evento
+        event.preventDefault(); 
+        event.stopPropagation(); 
 
-        // Validação Bootstrap
+       
         if (!form.checkValidity()) {
             form.classList.add("was-validated");
             return;
         }
 
-        // Coleta os dados do formulário
+        
         let dataAcerto = document.getElementById("dataAcerto").value;
         let codFuncionario = document.getElementById("codigoFuncionario").value;
         let motivo = document.getElementById("motivoAcerto").value.trim();
         let quantidadeAcerto = document.getElementById("quantidadeAcerto").value;
 
-        // Pega o código do produto do campo hidden
+        
         let codProduto = document.getElementById("codProdutoAcerto").value;
 
-        // Verifica se um produto foi selecionado (o campo hidden está preenchido)
+        
         if (!codProduto) {
             mostrarToast("Por favor, selecione um produto na tabela.");
-            form.classList.remove("was-validated"); // Remove validação para não mostrar erro persistente
+            form.classList.remove("was-validated"); 
             return;
         }
 
-        // Monta os parâmetros para a requisição POST
+       
         let params = new URLSearchParams();
         params.append("codProduto", codProduto);
         params.append("novaQuantidade", quantidadeAcerto);
@@ -123,12 +122,11 @@ function configurarFormularioAcerto() {
 
             if (response.ok) {
                 mostrarToast(resultado.mensagem || "Acerto registrado com sucesso!");
-                form.reset(); // Limpa o formulário
-                form.classList.remove("was-validated"); // Remove os estilos de validação
-                // Desmarca todos os checkboxes após o sucesso
+                form.reset(); 
+                form.classList.remove("was-validated");
                 document.querySelectorAll(".produto-checkbox").forEach(cb => cb.checked = false);
-                document.getElementById("codProdutoAcerto").value = ""; // Limpa o campo hidden
-                listarEstoque(); // Atualiza a tabela de estoque
+                document.getElementById("codProdutoAcerto").value = "";
+                listarEstoque();
             } else {
                 mostrarToast("Erro: " + (resultado.mensagem || "Falha ao registrar acerto."));
             }
@@ -139,7 +137,7 @@ function configurarFormularioAcerto() {
     });
 }
 
-// Toast simples de mensagens
+
 function mostrarToast(mensagem, duracao = 3000) {
     let toast = document.getElementById("mensagemToast");
     toast.textContent = mensagem;
@@ -158,7 +156,6 @@ function mostrarToast(mensagem, duracao = 3000) {
     }, duracao);
 }
 
-// Inicializa validação Bootstrap para o formulário
 function inicializarBootstrapValidation() {
     let forms = document.querySelectorAll('.needs-validation');
     Array.from(forms).forEach(form => {

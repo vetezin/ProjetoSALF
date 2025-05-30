@@ -15,20 +15,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// <button class="btn btn-danger btn-sm" onclick="abrirModalSaida(${item.id}, ${item.quantidade})">Saída</button>
+
 async function carregarFuncionarios() {
-  const select = document.getElementById("selectFuncionario");
+  let select = document.getElementById("selectFuncionario");
 
   try {
-    const response = await fetch("http://localhost:8080/apis/funcionario");
+    let response = await fetch("http://localhost:8080/apis/funcionario");
     if (!response.ok) {
       console.error("Erro ao buscar funcionários");
       return;
     }
 
-    const funcionarios = await response.json();
+    let funcionarios = await response.json();
     funcionarios.forEach(func => {
-      const option = document.createElement("option");
+      let option = document.createElement("option");
       option.value = func.id;
       option.textContent = func.nome;
       select.appendChild(option);
@@ -41,7 +41,7 @@ async function carregarFuncionarios() {
 
 async function listarEstoque() {
   let tbody = document.querySelector("#tabelaEstoque tbody");
-  tbody.innerHTML = ""; // limpa tabela antes de preencher
+  tbody.innerHTML = ""; 
 
   try {
     let response = await fetch("http://localhost:8080/apis/estoque");
@@ -177,7 +177,7 @@ function adicionarSelecionados() {
     `;
 
     tabelaDestino.appendChild(novaLinha);
-    cb.checked = false; // desmarca o checkbox após adicionar
+    cb.checked = false; 
   });
 
     document.getElementById("quantidadeItem").value = "";
@@ -185,7 +185,7 @@ function adicionarSelecionados() {
 
 async function registrarSaidaFinal() {
   let dataSaida = document.getElementById("dataSaida").value;
-  //let codFuncionario = document.getElementById("codigoFuncionario").value;
+  
   let codFuncionario = document.getElementById("selectFuncionario").value;
 
   let motivo = document.getElementById("motivoSaida").value;
@@ -226,7 +226,7 @@ async function registrarSaidaFinal() {
 
     if (resposta.ok) {
       alert("Saída registrada com sucesso!");
-      window.location.reload(); // ou listarEstoque();
+      window.location.reload(); 
     } else {
       alert("Erro: " + (resultado.mensagem || "Falha ao registrar saída."));
     }

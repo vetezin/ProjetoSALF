@@ -1,17 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
   listarProdutos();
-  carregarCategorias(); // carrega as categorias assim que a página abre, se não tiver não funciona
+  carregarCategorias(); 
 });
 
 function formatarValor(e) {
-  let valor = e.target.value.replace(/\D/g, ""); // remove tudo que não for número
+  let valor = e.target.value.replace(/\D/g, ""); 
 
   if (!valor) {
     e.target.value = "";
     return;
   }
 
-  valor = (parseInt(valor, 10) / 100).toFixed(2); // divide por 100 para casas decimais, vai usar na mascara
+  valor = (parseInt(valor, 10) / 100).toFixed(2); 
 
   // ponto por virgula
   valor = valor.replace(".", ",");
@@ -25,11 +25,11 @@ function formatarValor(e) {
 function aplicarMascaraValor() {
   let inputValor = document.getElementById("valor");
 
-  // Remove listener anterior pra evitar duplicação
+  
   inputValor.removeEventListener("input", formatarValor);
   inputValor.addEventListener("input", formatarValor);
 
-  // limpa mascara re movendo R$
+  
   let form = document.getElementById("formProduto");
   form.addEventListener(
     "submit",
@@ -47,7 +47,7 @@ function aplicarMascaraValor() {
 function limparValorFormatado(valorFormatado) {
   if (!valorFormatado) return 0;
 
-  // Remove  vírgula ou ponto
+  
   let valorLimpo = valorFormatado.replace(/[^\d.,-]/g, "");
 
   
@@ -72,14 +72,14 @@ function mostrarToast(mensagem, duracao = 3000) {
 }
 
 function formatarData(dataISO) {
-  if (!dataISO) return ""; // previne erro se data for null ou undefined
+  if (!dataISO) return ""; 
   let [ano, mes, dia] = dataISO.split("-");
   return `${dia}/${mes}/${ano}`;
 }
 
 async function listarProdutos() {
   let tbody = document.querySelector("#tabelaProdutos tbody");
-  tbody.innerHTML = ""; // limpa a tabela antes de inserir
+  tbody.innerHTML = ""; 
 
   try {
     let response = await fetch("http://localhost:8080/apis/produto");
@@ -178,7 +178,7 @@ async function buscarPorValorMenor() {
   let valorInput = document.getElementById("valorMaxInput").value;
   let searchResults = document.getElementById("searchResults");
 
-  // Limpar resultados anteriores
+ 
   searchResults.innerHTML = "";
 
   if (!valorInput || isNaN(valorInput) || Number(valorInput) <= 0) {
@@ -326,7 +326,7 @@ function apagarProduto(id) {
     .then(({ status, body }) => {
       if (status === 200) {
         mostrarToast(body.mensagem || "Produto apagado com sucesso!");
-        listarProdutos(); // Atualiza a lista após apagar
+        listarProdutos(); 
       } else {
         mostrarToast(body.mensagem || "Erro ao apagar produto");
       }
@@ -407,7 +407,7 @@ function atualizarProduto(event) {
   let valorNumerico = limparValorFormatado(valorRaw);
 
   let dados = new URLSearchParams({
-    prod_cod: id, // <- AQUI! obrigatório se seu back espera @RequestParam
+    prod_cod: id, 
     prod_desc: document.getElementById("descricaoEdicao").value,
     prod_dtvalid: document.getElementById("dtvalidadeEdicao").value,
     prod_valorun: valorNumerico,
@@ -435,7 +435,7 @@ function atualizarProduto(event) {
 
 async function carregarCategoriasEdicao(categoriaSelecionadaId = null) {
   let selectCategoria = document.getElementById("categoriaEdicao");
-  selectCategoria.innerHTML = ""; // Limpa o select antes de preencher
+  selectCategoria.innerHTML = ""; 
 
   try {
     let response = await fetch("http://localhost:8080/apis/categoria");
@@ -451,7 +451,7 @@ async function carregarCategoriasEdicao(categoriaSelecionadaId = null) {
       option.value = cat.id;
       option.textContent = cat.desc;
 
-      // Se o ID da categoria for igual ao do produto, marca como selecionado
+      
       if (categoriaSelecionadaId && cat.id === categoriaSelecionadaId) {
         option.selected = true;
       }
@@ -470,17 +470,17 @@ async function editarProduto(id) {
 
     let produto = await response.json();
 
-    // Preenche os campos do formulário de edição
+    
     document.getElementById("idEdicao").value = produto.id;
     document.getElementById("descricaoEdicao").value =
       produto.nome || produto.descricao;
 
-    // Converte data do formato yyyy-mm-dd para input type="date"
+    
     if (produto.data) {
       document.getElementById("dtvalidadeEdicao").value = produto.data;
     }
 
-    // Valor formatado para input
+    
     document.getElementById("valorEdicao").value = `R$ ${parseFloat(
       produto.preco
     )
@@ -488,7 +488,7 @@ async function editarProduto(id) {
       .replace(".", ",")}`;
     aplicarMascaraValorEdicao();
 
-    // Carrega as categorias e marca a do produto como selecionada
+   
     await carregarCategoriasEdicao(produto.categoria.id);
 
     abrirModal("modalEdicao");
@@ -607,7 +607,7 @@ async function ordenarPorData() {
       return;
     }
 
-    // Ordena os produtos por data (do mais recente para o mais antigo)
+    
     produtos.sort((a, b) => new Date(a.data) - new Date(b.data));
 
 

@@ -1,0 +1,167 @@
+CREATE TABLE public.acerto_estoque (
+    ae_cod serial PRIMARY KEY,
+    ae_data date,
+    ae_motivo character varying(100),
+    ae_qtd numeric,
+    prod_cod numeric NOT NULL,
+    func_cod numeric NOT NULL
+);
+
+CREATE TABLE public.categoria_produto (
+    cat_cod serial PRIMARY KEY,
+    cat_desc character varying(100)
+);
+
+CREATE TABLE public.cb_prod (
+    produto_prod_cod numeric NOT NULL,
+    cesta_basica_cb_cod numeric NOT NULL,
+    cb_qtd numeric,
+    PRIMARY KEY (produto_prod_cod, cesta_basica_cb_cod)
+);
+
+CREATE TABLE public.cesta_basica (
+    cb_cod serial PRIMARY KEY,
+    cb_motivo character varying(100) NOT NULL,
+    cb_dtcriacao date,
+    pessoa_carente_pc_cod numeric NOT NULL,
+    cb_codfunc numeric,
+    funcionario_func_cod numeric NOT NULL,
+    cb_dtdoacao date
+);
+
+CREATE TABLE public.compra (
+    co_cod serial PRIMARY KEY,
+    co_descricao character varying(100),
+    co_valortotal numeric,
+    co_dtcompra date,
+    co_totalitens numeric,
+    funcionario_func_cod numeric NOT NULL,
+    cot_forn_cotacao_cot_cod numeric NOT NULL,
+    cot_forn_fornecedor_forn_cod numeric NOT NULL
+);
+
+CREATE TABLE public.compra_prod_cot (
+    lc_cod numeric NOT NULL,
+    prod_cod numeric NOT NULL,
+    cot_cod numeric NOT NULL,
+    forn_cod numeric NOT NULL,
+    compra_cod numeric NOT NULL,
+    qtd numeric,
+    valortotal numeric,
+    valorunit numeric,
+    PRIMARY KEY (lc_cod, prod_cod, cot_cod, forn_cod, compra_cod)
+);
+
+CREATE TABLE public.cotacao (
+    cot_cod serial PRIMARY KEY,
+    cot_dtabertura date,
+    cot_dtfechamento date,
+    lc_cod numeric NOT NULL
+);
+
+CREATE TABLE public.cot_forn (
+    cot_cod numeric NOT NULL,
+    forn_cod numeric NOT NULL,
+    PRIMARY KEY (cot_cod, forn_cod)
+);
+
+CREATE TABLE public.doa_prod (
+    doa_prod_cod serial PRIMARY KEY,
+    doa_prod_qtd numeric,
+    doa_prod_catcod numeric,
+    produto_prod_cod numeric NOT NULL,
+    doacao_doa_cod numeric NOT NULL
+);
+
+CREATE TABLE public.doacao (
+    doa_cod serial PRIMARY KEY,
+    doa_dtentrada date,
+    func_cod numeric NOT NULL
+);
+
+CREATE TABLE public.estoque (
+    estoque_id serial PRIMARY KEY,
+    es_qtdprod numeric,
+    produto_prod_cod numeric NOT NULL,
+    es_dtvalidade date
+);
+
+CREATE TABLE public.fornecedor (
+    forn_cod serial PRIMARY KEY,
+    forn_nome character varying(100),
+    forn_end character varying(100),
+    forn_cpnj character varying(100),
+    forn_telefone character varying(100)
+);
+
+CREATE TABLE public.funcionario (
+    func_cod serial PRIMARY KEY,
+    func_nome character varying(100),
+    func_cpf character varying(100),
+    func_senha character varying(100),
+    func_email character varying(100),
+    func_login character varying(100),
+    func_nivel numeric
+);
+
+CREATE TABLE public.listacompra (
+    lc_cod serial PRIMARY KEY,
+    lc_dtlista date,
+    lc_desc character varying(100),
+    func_cod numeric NOT NULL
+);
+
+CREATE TABLE public.lc_prod (
+    lc_cod numeric NOT NULL,
+    prod_cod numeric NOT NULL,
+    lc_prod_qtd numeric,
+    PRIMARY KEY (lc_cod, prod_cod)
+);
+
+CREATE TABLE public.necessidade_pc (
+    npc_cod serial PRIMARY KEY,
+    npc_desc character varying(300),
+    npc_dtcriacao date,
+    npc_status character(1),
+    func_cod numeric NOT NULL,
+    pc_cod numeric NOT NULL
+);
+
+CREATE TABLE public.pessoa_carente (
+    pc_cod serial PRIMARY KEY,
+    pc_nome character varying,
+    pc_cpf character varying(14) NOT NULL,
+    pc_telefone character varying,
+    pc_endereco character varying
+);
+
+CREATE TABLE public.produto (
+    prod_cod serial PRIMARY KEY,
+    prod_dtvalid date,
+    prod_desc character varying(100),
+    prod_valorun numeric,
+    cat_cod numeric NOT NULL
+);
+
+CREATE TABLE public.prodcotforn (
+    lc_cod numeric NOT NULL,
+    prod_cod numeric NOT NULL,
+    cot_cod numeric NOT NULL,
+    forn_cod numeric NOT NULL,
+    pc_qtd numeric,
+    PRIMARY KEY (lc_cod, prod_cod, cot_cod, forn_cod)
+);
+
+CREATE TABLE public.saida (
+    s_cod serial PRIMARY KEY,
+    s_dtsaida date,
+    s_motivo character varying(100),
+    func_cod numeric NOT NULL
+);
+
+CREATE TABLE public.saida_prod (
+    produto_prod_cod numeric NOT NULL,
+    saida_s_cod numeric NOT NULL,
+    sp_qtd numeric,
+    PRIMARY KEY (produto_prod_cod, saida_s_cod)
+);
