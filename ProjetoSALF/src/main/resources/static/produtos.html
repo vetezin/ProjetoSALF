@@ -49,18 +49,28 @@
   <main class="container" style="padding-top: 70px;">
     <h1>Gerenciar Produtos</h1>
 
-    <div class="top-bar">
+    <!-- <div class="top-bar">
       <input type="text" id="buscaNome" placeholder="Digite aqui..." />
       <div class="botoes-topo">
        
-        <button onclick="ordenarPorData()">Ordenar Data</button>
-        <button onclick="ordenarPorNome()">Ordenar A-Z</button>
-        <button onclick="mostrarFormulario()">Novo</button>
+        <button onclick="ordenarPorData()">Ordenar por Data</button>
+        <button onclick="ordenarPorNome()">Ordenar por nome (A-Z)</button>
+        <button onclick="mostrarFormulario()">Novo Produto</button>
         <button onclick="window.location.href='estoque.html'">Estoque</button>
         <button onclick="window.location.href='saida.html'">Saida</button>
         <button onclick="window.location.href='acerto.html'">Acerto</button>
       </div>
-    </div>
+    </div> -->
+    <div class="top-bar d-flex align-items-center gap-2 flex-wrap">
+  <input type="text" id="buscaNome" placeholder="Digite aqui..." class="form-control flex-grow-1" />
+  <div class="botoes-topo d-flex gap-2 flex-wrap">
+    <button class="btn btn-outline-primary" onclick="ordenarPorData()">Ordenar por Data</button>
+    <button class="btn btn-outline-primary" onclick="ordenarPorNome()">Ordenar por nome (A-Z)</button>
+    <button class="btn btn-primary" onclick="mostrarFormulario()">Novo Produto</button>
+ 
+  </div>
+</div>
+
 
     <table id="tabelaProdutos">
       <thead>

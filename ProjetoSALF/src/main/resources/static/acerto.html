@@ -47,14 +47,14 @@
     <main class="container" style="padding-top: 70px;">
         <h1 class="mb-4">Listar Acertos</h1>
 
-        <div class="d-flex justify-content-end mb-3 gap-2">
-       <button class="btn btn-primary" onclick="ordenarPorFuncionarioAcerto()">Ordenar por Funcionário</button>
+        <div class="d-flex justify-content-start mb-3 gap-2">
+        <button class="btn btn-primary" onclick="ordenarPorFuncionarioAcerto()">Ordenar por Funcionário</button>
         <button class="btn btn-primary" onclick="ordenarPorMotivoAcerto()">Ordenar por Motivo</button>
         <button class="btn btn-warning" onclick="window.location.href='regAcerto.html'">Novo Acerto</button>
         </div>
 
 
-        <table id="tabelaAcertos" class="table table-striped table-bordered">
+        <table id="tabelaAcertos" >
             <thead>
                 <tr>
                     <th>ID Acerto</th>
