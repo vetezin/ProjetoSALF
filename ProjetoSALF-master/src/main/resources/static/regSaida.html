@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <title>Gerenciar Estoque</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+<main class="container">
+  <h1>Gerenciar Estoque</h1>
+
+  <!-- Top-bar com busca e botões -->
+  <div class="top-bar">
+    <input type="text" id="buscaEstoque" placeholder="Buscar produto no estoque..." />
+    <div class="botoes-topo">
+      <button onclick="window.location.href='produtos.html'">Produtos</button>
+      <button onclick="window.location.href='saida.html'">Saída</button>
+    </div>
+  </div>
+
+  <!-- Dados da saída -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 form-floating">
+      <input type="date" id="dataSaida" class="form-control" placeholder="Data da Saída" required />
+      <label for="dataSaida">Data da Saída</label>
+    </div>
+    <div class="col-md-3 form-floating">
+      <input type="number" id="codigoFuncionario" class="form-control" min="1" placeholder="Funcionário (ID)" required />
+      <label for="codigoFuncionario">Funcionário (ID)</label>
+    </div>
+    <div class="col-md-6 form-floating">
+      <input type="text" id="motivoSaida" class="form-control" placeholder="Motivo" required />
+      <label for="motivoSaida">Motivo da Saída</label>
+    </div>
+  </div>
+
+
+
+  <div class="row g-3 mb-3 align-items-end">
+  <div class="col-md-3 form-floating">
+    <input type="number" id="quantidadeItem" class="form-control" min="1" placeholder="Quantidade" />
+    <label for="quantidadeItem">Quantidade</label>
+  </div>
+  <div class="col-md-3">
+    <button class="btn btn-primary w-100" onclick="adicionarSelecionados()">Adicionar Itens</button>
+  </div>
+</div>
+
+  <!-- Tabelas -->
+  <div class="row">
+    <!-- Tabela do estoque -->
+    <div class="col-md-7">
+      <h5>Estoque Atual</h5>
+      <table id="tabelaEstoque" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>ID Estoque</th>
+            <th>ID Produto</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Validade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populado via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de itens selecionados -->
+    <div class="col-md-5">
+      <h5>Produtos Selecionados</h5>
+      <table id="tabelaItensSelecionados" class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID Produto</th>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Selecionar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populado via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Botões finais -->
+  <div class="text-end mt-4">
+    <button class="btn btn-success" onclick="registrarSaidaFinal()">Gravar Saída</button>
+  </div>
+</main>
+
+<div id="mensagemToast"></div>
+<script src="estoque.js"></script>
+</body>
+</html>

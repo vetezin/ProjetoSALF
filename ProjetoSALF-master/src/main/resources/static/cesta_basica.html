@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Cesta Básica</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Registrar Cesta Básica</h2>
+  <form id="form-cesta">
+    <div class="mb-3">
+      <label class="form-label">Motivo da doação *</label>
+      <input type="text" id="motivo" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Data de criação *</label>
+      <input type="date" id="dtCriacao" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Data da doação *</label>
+      <input type="date" id="dtDoacao" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Código do Funcionário *</label>
+      <input type="number" id="codFunc" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Código da Pessoa Carente *</label>
+      <input type="number" id="codPessoa" class="form-control" required>
+    </div>
+
+    <h5>Produtos da Cesta</h5>
+    <div class="row g-2 align-items-end">
+      <div class="col">
+        <label class="form-label">Código do Produto</label>
+        <input type="number" id="prod-cod" class="form-control">
+      </div>
+      <div class="col">
+        <label class="form-label">Quantidade</label>
+        <input type="number" id="prod-qtd" class="form-control">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-secondary" onclick="adicionarProduto()">Adicionar</button>
+      </div>
+    </div>
+
+    <ul id="lista-produtos" class="list-group my-3"></ul>
+
+    <button type="submit" class="btn btn-success">Registrar Cesta</button>
+  </form>
+
+  <div id="mensagem" class="mt-3"></div>
+</div>
+
+<script>
+  const produtos = [];
+
+  function adicionarProduto() {
+    const cod = document.getElementById('prod-cod').value;
+    const qtd = document.getElementById('prod-qtd').value;
+
+    if (!cod || !qtd || qtd <= 0) {
+      alert("Preencha corretamente o código e a quantidade.");
+      return;
+    }
+
+    produtos.push({ produto_prod_cod: parseInt(cod), prod_qtd: parseInt(qtd) });
+    atualizarListaProdutos();
+    document.getElementById('prod-cod').value = '';
+    document.getElementById('prod-qtd').value = '';
+  }
+
+  function removerProduto(index) {
+    produtos.splice(index, 1);
+    atualizarListaProdutos();
+  }
+
+  function atualizarListaProdutos() {
+    const lista = document.getElementById('lista-produtos');
+    lista.innerHTML = '';
+
+    produtos.forEach((p, index) => {
+      const item = document.createElement('li');
+      item.className = 'list-group-item d-flex justify-content-between align-items-center';
+      item.innerHTML = `Produto: ${p.produto_prod_cod}, Qtd: ${p.prod_qtd}
+                <button class='btn btn-sm btn-danger' onclick='removerProduto(${index})'>Remover</button>`;
+      lista.appendChild(item);
+    });
+  }
+
+  document.getElementById('form-cesta').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const cesta = {
+      cb_motivo: document.getElementById('motivo').value,
+      cb_dtcriacao: document.getElementById('dtCriacao').value,
+      cb_dtdoacao: document.getElementById('dtDoacao').value,
+      cb_codfunc: parseInt(document.getElementById('codFunc').value),
+      cb_pessoacod: parseInt(document.getElementById('codPessoa').value)
+    };
+
+    const dados = {
+      cesta: cesta,
+      listaProdutos: produtos
+    };
+
+    try {
+      const resposta = await fetch("http://localhost:8080/apis/cesta/registrar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+      });
+
+      const texto = await resposta.text();
+      const mensagem = document.getElementById("mensagem");
+      mensagem.innerHTML = `<div class='alert ${resposta.ok ? 'alert-success' : 'alert-danger'}'>${texto}</div>`;
+
+      if (resposta.ok) {
+        produtos.length = 0;
+        atualizarListaProdutos();
+      }
+    } catch (erro) {
+      document.getElementById("mensagem").innerHTML = "<div class='alert alert-danger'>❌ Erro na requisição.</div>";
+    }
+  });
+</script>
+</body>
+</html>

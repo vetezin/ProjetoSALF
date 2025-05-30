@@ -1,0 +1,19 @@
+# Arquivos gerados pelo Maven e pelo build
+target/
+*.iml
+
+# Arquivos específicos do IntelliJ
+.idea/
+hs_err_pid*
+
+# Default ignored files do repositório remoto
+/shelf/
+/workspace.xml
+
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# Maven home e datasources locais
+/mavenHomeManager.xml
+/dataSources/
+/dataSources.local.xml
