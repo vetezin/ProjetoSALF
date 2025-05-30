@@ -36,14 +36,7 @@ public class SaidaView {
 
 
 
-    @GetMapping
-    public ResponseEntity<Object> getAll() {
-        List<Map<String, Object>> lista = saidaController.getSaidas();
-        if (lista != null && !lista.isEmpty())
-            return ResponseEntity.ok(lista);
-        else
-            return ResponseEntity.badRequest().body(new Mensagem("Nenhuma saída encontrada."));
-    }
+
 
     @GetMapping("/listar-com-produtos")
     public ResponseEntity<Object> getSaidasComProdutos() {
