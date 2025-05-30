@@ -28,10 +28,19 @@
       <input type="date" id="dataSaida" class="form-control" placeholder="Data da Saída" required />
       <label for="dataSaida">Data da Saída</label>
     </div>
-    <div class="col-md-3 form-floating">
+
+    <!-- <div class="col-md-3 form-floating">
       <input type="number" id="codigoFuncionario" class="form-control" min="1" placeholder="Funcionário (ID)" required />
       <label for="codigoFuncionario">Funcionário (ID)</label>
+    </div> -->
+    <div class="mb-3">
+    <label for="selectFuncionario" class="form-label">Funcionário</label>
+    <select id="selectFuncionario" class="form-select" required>
+       <option value="">Selecione um funcionário</option>
+    </select>
     </div>
+
+
     <div class="col-md-6 form-floating">
       <input type="text" id="motivoSaida" class="form-control" placeholder="Motivo" required />
       <label for="motivoSaida">Motivo da Saída</label>

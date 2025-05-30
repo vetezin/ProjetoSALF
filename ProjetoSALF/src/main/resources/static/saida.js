@@ -11,33 +11,7 @@ function mostrarToast(mensagem, duracao = 3000) {
   }, duracao);
 }
 
-/*
-function apagarSaida(id) {
-  if (!id) {
-    alert("ID da saída não informado.");
-    return;
-  }
 
-  fetch(`http://localhost:8080/apis/saida/deletar/${id}`, {
-    method: "DELETE",
-  })
-    .then((response) =>
-      response.json().then((data) => ({ status: response.status, body: data }))
-    )
-    .then(({ status, body }) => {
-      if (status === 200) {
-        mostrarToast(body.mensagem || "Saída apagada com sucesso!");
-        listarSaidasComProdutos(); // Atualiza a lista após apagar
-      } else {
-        mostrarToast(body.mensagem || "Erro ao apagar saída");
-      }
-    })
-    .catch((error) => {
-      console.error("Erro ao apagar saída:", error);
-      mostrarToast("Erro ao apagar saída");
-    });
-}
-*/
 function apagarSaida(id) {
   if (!id) {
     alert("ID da saída não informado.");

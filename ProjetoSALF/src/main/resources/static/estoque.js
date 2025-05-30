@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   listarEstoque();
+  carregarFuncionarios(); 
    document.addEventListener("change", function (event) {
     if (event.target.classList.contains("produto-checkbox")) {
       document.querySelectorAll(".produto-checkbox").forEach((cb) => {
@@ -15,6 +16,28 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // <button class="btn btn-danger btn-sm" onclick="abrirModalSaida(${item.id}, ${item.quantidade})">Saída</button>
+async function carregarFuncionarios() {
+  const select = document.getElementById("selectFuncionario");
+
+  try {
+    const response = await fetch("http://localhost:8080/apis/funcionario");
+    if (!response.ok) {
+      console.error("Erro ao buscar funcionários");
+      return;
+    }
+
+    const funcionarios = await response.json();
+    funcionarios.forEach(func => {
+      const option = document.createElement("option");
+      option.value = func.id;
+      option.textContent = func.nome;
+      select.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Erro ao carregar funcionários:", error);
+  }
+}
+
 
 async function listarEstoque() {
   let tbody = document.querySelector("#tabelaEstoque tbody");
@@ -162,7 +185,9 @@ function adicionarSelecionados() {
 
 async function registrarSaidaFinal() {
   let dataSaida = document.getElementById("dataSaida").value;
-  let codFuncionario = document.getElementById("codigoFuncionario").value;
+  //let codFuncionario = document.getElementById("codigoFuncionario").value;
+  let codFuncionario = document.getElementById("selectFuncionario").value;
+
   let motivo = document.getElementById("motivoSaida").value;
 
   let linhas = document.querySelectorAll("#tabelaItensSelecionados tbody tr");
