@@ -239,3 +239,21 @@ async function registrarSaidaFinal() {
 
 
 
+// Validação Bootstrap customizada
+(() => {
+  'use strict'
+
+  let form = document.getElementById('formSaida');
+
+  form.addEventListener('submit', event => {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      event.preventDefault(); 
+      adicionarSelecionados(); 
+    }
+
+    form.classList.add('was-validated');
+  });
+})();

@@ -54,7 +54,7 @@
   </div>
 
 
-<div class="row g-3 mb-3">
+<!-- <div class="row g-3 mb-3">
   <div class="col-md-3 form-floating">
     <input type="date" id="dataSaida" class="form-control" placeholder="Data da Saída" required />
     <label for="dataSaida">Data da Saída</label>
@@ -82,8 +82,42 @@
       <option value="">Selecione um funcionário</option>
     </select>
   </div>
-</div>
+</div> -->
 
+<form id="formSaida" class="needs-validation" novalidate>
+  <div class="row g-3 mb-3">
+    <div class="col-md-3 form-floating">
+      <input type="date" id="dataSaida" class="form-control" placeholder="Data da Saída" required />
+      <label for="dataSaida">Data da Saída</label>
+      <div class="invalid-feedback">Informe a data da saída.</div>
+    </div>
+
+    <div class="col-md-4 form-floating">
+      <input type="text" id="motivoSaida" class="form-control" placeholder="Motivo" required />
+      <label for="motivoSaida">Motivo da Saída</label>
+      <div class="invalid-feedback">Informe o motivo da saída.</div>
+    </div>
+
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-primary w-100 h-100">Adicionar Itens</button>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4 align-items-end">
+    <div class="col-md-3 form-floating">
+      <input type="number" id="quantidadeItem" class="form-control" min="1" placeholder="Quantidade" required />
+      <label for="quantidadeItem">Quantidade</label>
+      <div class="invalid-feedback">Informe a quantidade.</div>
+    </div>
+
+    <div class="col-md-3">
+      <select id="selectFuncionario" class="form-select" required>
+        <option value="">Selecione um funcionário</option>
+      </select>
+      <div class="invalid-feedback">Selecione um funcionário.</div>
+    </div>
+  </div>
+</form>
 
 
   
