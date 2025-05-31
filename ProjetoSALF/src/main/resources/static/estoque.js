@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   listarEstoque();
   carregarFuncionarios(); 
+
+  let dataInput = document.getElementById("dataSaida");
+  let hoje = new Date().toISOString().split("T")[0];
+  dataInput.max = hoje;
+
+
+
    document.addEventListener("change", function (event) {
     if (event.target.classList.contains("produto-checkbox")) {
       document.querySelectorAll(".produto-checkbox").forEach((cb) => {
@@ -14,6 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
+function mostrarToast(mensagem, duracao = 3000) {
+  let toast = document.getElementById("mensagemToast");
+  toast.textContent = mensagem;
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, duracao);
+}
 
 
 async function carregarFuncionarios() {
@@ -135,7 +152,8 @@ async function registrarSaida(event) {
     let resultado = await resposta.json();
 
     if (resposta.ok) {
-      alert(resultado.mensagem || "Saída registrada com sucesso!");
+      mostrarToast("Saida registrada com sucesso",5000);
+      
       fecharModal("modalSaidaProduto");
       listarEstoque();
     } else {
@@ -239,7 +257,7 @@ async function registrarSaidaFinal() {
 
 
 
-// Validação Bootstrap customizada
+
 (() => {
   'use strict'
 
@@ -257,3 +275,4 @@ async function registrarSaidaFinal() {
     form.classList.add('was-validated');
   });
 })();
+

@@ -60,7 +60,7 @@ public class SaidaController {
         }
 
         // 4. Excluir todos os SaidaProd vinculados de uma vez usando o novo método
-        saidaProdModel.deletarPorSaida(id);  // método deve chamar apagar(int saidaCod)
+        saidaProdModel.deletarPorSaida(id);  //método deve chamar apagar(int saidaCod)
 
         // 5. Excluir a saída
         boolean deletado = saidaModel.deletar(existente);
