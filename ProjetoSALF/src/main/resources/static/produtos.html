@@ -53,8 +53,9 @@
     <div class="top-bar d-flex align-items-center gap-2 flex-wrap">
   <input type="text" id="buscaNome" placeholder="Digite aqui..." class="form-control flex-grow-1" />
   <div class="botoes-topo d-flex gap-2 flex-wrap">
-    <button class="btn btn-outline-primary" onclick="ordenarPorData()">Ordenar por Data</button>
-    <button class="btn btn-outline-primary" onclick="ordenarPorNome()">Ordenar por nome (A-Z)</button>
+    <button class="btn btn-outline-primary" onclick="ordenarPorNome()">Ordenar (A-Z)</button>
+    <button class="btn btn-outline-primary" onclick="ordenarProdutosZA()">Ordenar (Z-A)</button>
+    
     <button class="btn btn-primary" onclick="mostrarFormulario()">Novo Produto</button>
  
   </div>
@@ -66,7 +67,7 @@
         <tr>
           <th>ID</th>
           <th>Descrição</th>
-          <th>Data de Validade</th>
+          
           <th>Valor</th>
           <th>Categoria</th>
           <th>Ações</th>
@@ -96,12 +97,7 @@
           <div class="invalid-feedback">Informe uma descrição.</div>
         </div>
 
-        <div class="form-floating mb-3">
-          <input type="date" class="form-control" id="dtvalidade" name="prod_dtvalid" placeholder="Data de validade"
-            required>
-          <label for="dtvalidade">Data de Validade*</label>
-          <div class="invalid-feedback">Informe uma data válida.</div>
-        </div>
+      
 
         <div class="form-floating mb-3">
           <input type="text" class="form-control" id="valor" name="prod_valorun" placeholder="Valor unitário" required>
@@ -148,11 +144,7 @@
             <div class="invalid-feedback">Informe uma descrição.</div>
           </div>
 
-          <div class="form-floating mb-3">
-            <input type="date" class="form-control" id="dtvalidadeEdicao" name="prod_dtvalid" required>
-            <label for="dtvalidadeEdicao">Data de Validade</label>
-            <div class="invalid-feedback">Informe uma data válida.</div>
-          </div>
+        
 
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="valorEdicao" name="prod_valorun" required>

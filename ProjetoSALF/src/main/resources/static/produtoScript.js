@@ -71,11 +71,7 @@ function mostrarToast(mensagem, duracao = 3000) {
   }, duracao);
 }
 
-function formatarData(dataISO) {
-  if (!dataISO) return ""; 
-  let [ano, mes, dia] = dataISO.split("-");
-  return `${dia}/${mes}/${ano}`;
-}
+
 
 async function listarProdutos() {
   let tbody = document.querySelector("#tabelaProdutos tbody");
@@ -104,7 +100,7 @@ async function listarProdutos() {
                 <td>${produto.id}</td>
                 <td>${produto.nome}</td>
 
-                <td>${formatarData(produto.data)}</td>
+                
                 <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
 
                 <td>${produto.categoria.desc}</td>
@@ -161,7 +157,7 @@ async function buscarPorCategoria() {
                 <li>
                     <strong>${produto.nome}</strong><br/>
                     Preço: R$ ${produto.preco}<br/>
-                    Validade: ${produto.data}<br/>
+                    
                     Categoria: ${produto.categoria.desc} (ID: ${produto.categoria.id})
                 </li><hr/>
             `;
@@ -215,7 +211,7 @@ async function buscarPorValorMenor() {
                 <li>
                     <strong>${produto.nome}</strong><br/>
                     Preço: R$ ${produto.preco.toFixed(2)}<br/>
-                    Validade: ${produto.data}<br/>
+                    
                     Categoria: ${produto.categoria.desc}
                 </li><br/>
             `;
@@ -259,7 +255,7 @@ function cadastrarProduto(event) {
 
   let dados = {
     prod_desc: document.getElementById("descricao").value,
-    prod_dtvalid: document.getElementById("dtvalidade").value,
+    
     prod_valorun: valorNumerico,
     categoria: parseInt(document.getElementById("categoria").value),
   };
@@ -409,7 +405,7 @@ function atualizarProduto(event) {
   let dados = new URLSearchParams({
     prod_cod: id, 
     prod_desc: document.getElementById("descricaoEdicao").value,
-    prod_dtvalid: document.getElementById("dtvalidadeEdicao").value,
+    
     prod_valorun: valorNumerico,
     categoria: document.getElementById("categoriaEdicao").value,
   });
@@ -476,9 +472,7 @@ async function editarProduto(id) {
       produto.nome || produto.descricao;
 
     
-    if (produto.data) {
-      document.getElementById("dtvalidadeEdicao").value = produto.data;
-    }
+   
 
     
     document.getElementById("valorEdicao").value = `R$ ${parseFloat(
@@ -528,7 +522,7 @@ async function buscarPorNome() {
       tr.innerHTML = `
         <td>${produto.id}</td>
         <td>${produto.nome}</td>
-        <td>${formatarData(produto.data)}</td>
+       
         <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
         <td>${produto.categoria.desc}</td>
         <td class="acoes">
@@ -573,7 +567,7 @@ async function ordenarPorNome() {
       tr.innerHTML = `
         <td>${produto.id}</td>
         <td>${produto.nome}</td>
-        <td>${formatarData(produto.data)}</td>
+        
         <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
         <td>${produto.categoria.desc}</td>
         <td class="acoes">
@@ -616,7 +610,7 @@ async function ordenarPorData() {
       tr.innerHTML = `
         <td>${produto.id}</td>
         <td>${produto.nome}</td>
-        <td>${formatarData(produto.data)}</td>
+       
         <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
         <td>${produto.categoria.desc}</td>
         <td class="acoes">
@@ -632,3 +626,40 @@ async function ordenarPorData() {
   }
 }
 
+async function ordenarProdutosZA() {
+  let tbody = document.querySelector("#tabelaProdutos tbody");
+  tbody.innerHTML = "";
+
+  try {
+    let response = await fetch("http://localhost:8080/apis/produto");
+    let produtos = await response.json();
+
+    if (!Array.isArray(produtos)) {
+      tbody.innerHTML = `<tr><td colspan="6">${
+        produtos.mensagem || "Erro ao buscar produtos."
+      }</td></tr>`;
+      return;
+    }
+
+  
+    produtos.sort((a, b) => b.nome.localeCompare(a.nome));
+
+    produtos.forEach((produto) => {
+      let tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${produto.id}</td>
+        <td>${produto.nome}</td>
+        <td>R$ ${parseFloat(produto.preco).toFixed(2)}</td>
+        <td>${produto.categoria.desc}</td>
+        <td class="acoes">
+          <button class="editar" onclick="editarProduto(${produto.id})">Editar</button>
+          <button class="excluir" onclick="apagarProduto(${produto.id})">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (erro) {
+    console.error("Erro ao buscar produtos:", erro);
+    tbody.innerHTML = "<tr><td colspan='6'>Erro ao buscar produtos.</td></tr>";
+  }
+}

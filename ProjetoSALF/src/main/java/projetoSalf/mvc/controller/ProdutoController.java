@@ -1,3 +1,4 @@
+
 package projetoSalf.mvc.controller;
 
 
@@ -41,7 +42,7 @@ public class ProdutoController {
                 json.put("id", p.getProd_cod());
                 json.put("nome", p.getProd_desc());
                 json.put("preco", p.getProd_valorun());
-                json.put("data", p.getProd_dtvalid());
+              //  json.put("data", p.getProd_dtvalid());
 
 
 
@@ -77,7 +78,7 @@ public class ProdutoController {
                 json.put("id", p.getProd_cod());
                 json.put("nome", p.getProd_desc());
                 json.put("preco", p.getProd_valorun());
-                json.put("data", p.getProd_dtvalid());
+               // json.put("data", p.getProd_dtvalid());
 
                 cAux = categoriaModel.consultar(p.getCategoria());
                 catJson.put("id", cAux.getId());
@@ -108,7 +109,7 @@ public class ProdutoController {
             json.put("id", p.getProd_cod());
             json.put("nome", p.getProd_desc());
             json.put("preco", p.getProd_valorun());
-            json.put("data", p.getProd_dtvalid());
+         //   json.put("data", p.getProd_dtvalid());
 
             cAux = categoriaModel.consultar(p.getCategoria());
             catJson.put("id", cAux.getId());
@@ -135,7 +136,7 @@ public class ProdutoController {
             json.put("id", produto.getProd_cod());
             json.put("nome", produto.getProd_desc());
             json.put("preco", produto.getProd_valorun());
-            json.put("data", produto.getProd_dtvalid());
+           // json.put("data", produto.getProd_dtvalid());
             json.put("categoria", produto.getCategoria());
 
             cAux = categoriaModel.consultar(produto.getCategoria());
@@ -172,7 +173,7 @@ public class ProdutoController {
 
     public Map<String, Object> addProd(
             String prod_desc,
-            String prod_dtvalid,
+
 
             float prod_valorun,
             int cat_cod)
@@ -180,12 +181,12 @@ public class ProdutoController {
         Categoria cAux = new Categoria();
         cAux= categoriaModel.consultar(cat_cod);
 
-        if (prod_dtvalid == null || prod_desc.isBlank() || prod_valorun <= 0 || cat_cod <= 0 ||cAux == null) {
+        if ( prod_desc.isBlank() || prod_valorun <= 0 || cat_cod <= 0 ||cAux == null) {
             return Map.of("erro", "Dados inválidos para cadastro");
         }
 
         Conexao conexao = new Conexao();
-        Produto novo = new Produto(prod_dtvalid, prod_desc, prod_valorun,cat_cod);
+        Produto novo = new Produto( prod_desc, prod_valorun,cat_cod);
 
         Produto gravado = produtoModel.gravar(novo);
         //fazer verificacao para ver se a categoria existe
@@ -195,7 +196,7 @@ public class ProdutoController {
             json.put("id", gravado.getProd_cod());
             json.put("nome", gravado.getProd_desc());
             json.put("preco", gravado.getProd_valorun());
-            json.put("data", gravado.getProd_dtvalid());
+            //json.put("data", gravado.getProd_dtvalid());
 
 
             json.put("categoria", gravado.getCategoria());
@@ -210,7 +211,7 @@ public class ProdutoController {
 
     public Map<String, Object> updtProd(
             int prod_cod,
-            String prod_dtvalid,
+
             String prod_desc,
             float prod_valorun,
             int  cat_cod)
@@ -219,7 +220,7 @@ public class ProdutoController {
         Categoria cAux = new Categoria();
         cAux= categoriaModel.consultar(cat_cod);
         if (prod_cod <= 0
-                || prod_dtvalid == null
+
                 || prod_desc == null
                 || prod_desc.isBlank()
                 || prod_valorun < 0
@@ -234,7 +235,7 @@ public class ProdutoController {
         }
 
         // atualiza apenas os campos necessários
-        existente.setProd_dtvalid(prod_dtvalid);
+        //existente.setProd_dtvalid(prod_dtvalid);
         existente.setProd_desc(prod_desc);
         existente.setProd_valorun(prod_valorun);
         //verificar a categoria
@@ -247,7 +248,7 @@ public class ProdutoController {
                     "id",        atualizado.getProd_cod(),
                     "nome",      atualizado.getProd_desc(),
                     "preco",     atualizado.getProd_valorun(),
-                    "data",      atualizado.getProd_dtvalid(),
+                    //"data",      atualizado.getProd_dtvalid(),
                     "categoria", atualizado.getCategoria()
             );
         } else {
@@ -280,7 +281,7 @@ public class ProdutoController {
             json.put("id", p.getProd_cod());
             json.put("nome", p.getProd_desc());
             json.put("preco", p.getProd_valorun());
-            json.put("data", p.getProd_dtvalid());
+           // json.put("data", p.getProd_dtvalid());
 
             cAux = categoriaModel.consultar(p.getCategoria());
             catJson.put("id", cAux.getId());
@@ -327,7 +328,7 @@ public class ProdutoController {
             json.put("id", p.getProd_cod());
             json.put("nome", p.getProd_desc());
             json.put("preco", p.getProd_valorun());
-            json.put("data", p.getProd_dtvalid());
+            //json.put("data", p.getProd_dtvalid());
 
             cAux = categoriaModel.consultar(p.getCategoria());
             catJson.put("id", cAux.getId());

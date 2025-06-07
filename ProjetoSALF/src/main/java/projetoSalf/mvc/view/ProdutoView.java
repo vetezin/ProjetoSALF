@@ -78,12 +78,12 @@
         public ResponseEntity<Object> addProduto(
 
                 @RequestParam("prod_desc") String descricao,
-                @RequestParam("prod_dtvalid") String validade,
+
 
                 @RequestParam("prod_valorun") float valor,
                 @RequestParam("categoria") int cat_cod
         ) {
-            Map<String, Object> json = produtoController.addProd(descricao, validade, valor, cat_cod);
+            Map<String, Object> json = produtoController.addProd(descricao, valor, cat_cod);
             if (json.get("erro") == null)
                 return ResponseEntity.ok(new Mensagem("Produto cadastrado com sucesso!"));
             else
@@ -94,13 +94,13 @@
         @PutMapping
         public ResponseEntity<Object> updtProduto(
                 @RequestParam("prod_cod") int cod,
-                @RequestParam("prod_dtvalid") String validade,
+
                 @RequestParam("prod_desc") String descricao,
 
                 @RequestParam("prod_valorun") float valor,
                 @RequestParam("categoria") int cat_cod
         ) {
-            Map<String, Object> json = produtoController.updtProd(cod, validade , descricao, valor, cat_cod);
+            Map<String, Object> json = produtoController.updtProd(cod , descricao, valor, cat_cod);
             if (json.get("erro") == null)
                 return ResponseEntity.ok(new Mensagem("Produto alterado com sucesso!"));
             else
