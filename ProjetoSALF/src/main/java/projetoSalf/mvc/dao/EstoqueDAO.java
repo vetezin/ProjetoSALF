@@ -54,6 +54,25 @@ public class EstoqueDAO implements IDAO<Estoque> {
         }
     }
 
+    public Estoque alterarQtd(Estoque estoque) {
+        String sql = """
+        UPDATE estoque SET
+        es_qtdprod = #1,
+        WHERE estoque_id = #2;
+        """;
+        sql = sql.replace("#1", String.valueOf(estoque.getEs_qtdprod()));
+
+
+        sql = sql.replace("#2", String.valueOf(estoque.getEstoque_id()));
+
+        if (SingletonDB.getConexao().manipular(sql)) {
+            return estoque;
+        } else {
+            System.out.println("Erro ao alterar estoque: " + SingletonDB.getConexao().getMensagemErro());
+            return null;
+        }
+    }
+
     @Override
     public Estoque get(int id) {
         String sql = "SELECT * FROM estoque WHERE estoque_id = " + id;

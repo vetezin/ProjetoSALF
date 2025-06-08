@@ -80,6 +80,7 @@ public class AcertoEstoqueDAO implements IDAO<AcertoEstoque> {
                         rs.getInt("prod_cod"),
                         rs.getInt("func_cod")
                 );
+
             }
         } catch (SQLException e) {
             System.out.println("Erro ao buscar acerto de estoque: " + e.getMessage());

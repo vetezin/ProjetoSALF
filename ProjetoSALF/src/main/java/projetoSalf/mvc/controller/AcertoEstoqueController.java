@@ -21,14 +21,16 @@ public class AcertoEstoqueController {
     private Funcionario funcionarioModel;
 
 
+
+
     public Map<String, Object> registrarAcertoProduto(
             int codProduto,
-            int novaQuantidade,
+            int quantidadeASubtrair,
             int codFuncionario,
             String dataAcerto,
             String motivo
     ) {
-        if (codProduto <= 0 || novaQuantidade < 0 || codFuncionario <= 0 || dataAcerto == null || dataAcerto.isBlank() || motivo == null || motivo.isBlank()) {
+        if (codProduto <= 0 || quantidadeASubtrair <= 0 || codFuncionario <= 0 || dataAcerto == null || dataAcerto.isBlank() || motivo == null || motivo.isBlank()) {
             return Map.of("erro", "Dados inválidos para registrar acerto");
         }
 
@@ -43,17 +45,22 @@ public class AcertoEstoqueController {
 
         int quantidadeAnterior = estoque.getEs_qtdprod();
 
-        // Atualiza estoque com nova quantidade
+        if (quantidadeASubtrair > quantidadeAnterior) {
+            return Map.of("erro", "Quantidade a subtrair é maior que o estoque atual");
+        }
+
+        // Atualiza estoque subtraindo a quantidade informada
+        int novaQuantidade = quantidadeAnterior - quantidadeASubtrair;
         estoque.setEs_qtdprod(novaQuantidade);
 
-        Estoque atualizado = estoqueModel.alterar(estoque);
+        Estoque atualizado = estoqueModel.alterarQtd(estoque);
 
         if (atualizado == null) {
             return Map.of("erro", "Erro ao atualizar estoque do produto ID " + codProduto);
         }
 
-        // Registra o acerto
-        AcertoEstoque novoAcerto = new AcertoEstoque(dataAcerto, motivo, novaQuantidade, codFuncionario, codProduto);
+        // Registra o acerto como uma saída de estoque (redução)
+        AcertoEstoque novoAcerto = new AcertoEstoque(dataAcerto, motivo, -quantidadeASubtrair, codFuncionario, codProduto);
         AcertoEstoque acertoGravado = acertoModel.gravar(novoAcerto);
 
         if (acertoGravado == null) {
@@ -61,9 +68,10 @@ public class AcertoEstoqueController {
         }
 
         return Map.of(
-                "mensagem", "Acerto registrado com sucesso",
+                "mensagem", "Acerto (redução) registrado com sucesso",
                 "produto_id", codProduto,
                 "quantidade_anterior", quantidadeAnterior,
+                "quantidade_subtraida", quantidadeASubtrair,
                 "nova_quantidade", novaQuantidade,
                 "motivo", motivo,
                 "data", dataAcerto,
@@ -121,24 +129,38 @@ public class AcertoEstoqueController {
     }
 
 
-    //não devolve o estoque para a tabela de estoque, se alterou vai ficar o valor alterado
-    public Map<String, Object> deletarAcerto(int id) {
-        AcertoEstoque acerto = acertoModel.consultar(id);
 
-        if (acerto == null) {
-            return Map.of("erro", "Acerto não encontrado");
-        }
 
-        boolean deletado = acertoModel.deletar(acerto);
+public Map<String, Object> deletarAcerto(int id) {
+    // 1. Verifica se o acerto existe
+    AcertoEstoque acerto = acertoModel.consultar(id);
+    if (acerto == null)
+        return Map.of("erro", "Acerto não encontrado");
 
-        if (deletado) {
-            return Map.of("mensagem", "Acerto removido com sucesso!");
-        } else {
-            return Map.of("erro", "Erro ao remover o acerto");
-        }
+    int codProduto = acerto.getCodProduto();
+    int quantidade = (int) acerto.getQtd();
+
+    // 2. Reverter quantidade do acerto no estoque
+    Estoque estoque = estoqueModel.consultar("").stream()
+            .filter(e -> e.getProduto_prod_cod() == codProduto)
+            .findFirst()
+            .orElse(null);
+
+    if (estoque != null) {
+        estoque.setEs_qtdprod(estoque.getEs_qtdprod() - quantidade);
+        estoqueModel.alterarQtd(estoque);
+    } else {
+        return Map.of("erro", "Estoque do produto não encontrado para reverter acerto");
     }
 
-
+    // 3. Deleta o acerto
+    boolean deletado = acertoModel.deletar(acerto);
+    if (deletado) {
+        return Map.of("mensagem", "Acerto removido e quantidade revertida do estoque!");
+    } else {
+        return Map.of("erro", "Erro ao remover acerto");
+    }
+}
 
 
 

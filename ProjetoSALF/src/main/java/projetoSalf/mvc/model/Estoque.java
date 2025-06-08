@@ -82,6 +82,10 @@ public class Estoque {
         return dao.alterar(estoque);
     }
 
+    public Estoque alterarQtd(Estoque estoque) {
+        return dao.alterarQtd(estoque);
+    }
+
     public boolean deletar(Estoque estoque) {
         return dao.apagar(estoque);
     }

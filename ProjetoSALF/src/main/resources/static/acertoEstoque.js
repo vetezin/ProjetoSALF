@@ -1,56 +1,13 @@
 
 document.addEventListener("DOMContentLoaded", () => {
-    listarEstoque();
+    
     configurarFormularioAcerto(); 
     inicializarBootstrapValidation();
+     carregarProdutosNoDatalist();
 });
 
 
-async function listarEstoque() {
-    let tbody = document.querySelector("#tabelaEstoque tbody");
-    tbody.innerHTML = ""; 
-    try {
-        let response = await fetch("http://localhost:8080/apis/estoque");
-        let estoque = await response.json();
 
-        if (!Array.isArray(estoque)) {
-            tbody.innerHTML = `<tr><td colspan="6">${
-                estoque.mensagem || "Erro ao buscar estoque."
-            }</td></tr>`;
-            return;
-        }
-
-        if (estoque.length === 0) {
-            tbody.innerHTML =
-                "<tr><td colspan='6'>Nenhum item de estoque encontrado.</td></tr>";
-            return;
-        }
-
-        estoque.forEach((item) => {
-            let tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.produtoId}</td>
-                <td>${item.produto.nome}</td>
-                <td>${item.quantidade}</td>
-                <td>${item.validade}</td>
-                <td class="text-center">
-                    <input type="checkbox" class="form-check-input produto-checkbox"
-                        data-estoque-id="${item.id}"
-                        data-produto-id="${item.produtoId}"
-                        data-produto-nome="${item.produto.nome}"
-                        data-quantidade="${item.quantidade}"
-                        data-validade="${item.validade}" />
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    } catch (erro) {
-        console.error("Erro ao buscar estoque:", erro);
-        tbody.innerHTML =
-            "<tr><td colspan='6'>Erro ao buscar estoque. Verifique a API.</td></tr>";
-    }
-}
 
 document.addEventListener("change", function (event) {
     if (event.target.classList.contains("produto-checkbox")) {
@@ -168,3 +125,44 @@ function inicializarBootstrapValidation() {
         }, false);
     });
 }
+
+async function carregarProdutosNoDatalist() {
+    try {
+        let response = await fetch("http://localhost:8080/apis/estoque");
+        if (!response.ok) throw new Error("Erro ao buscar estoque");
+
+        let estoque = await response.json();
+
+        if (!Array.isArray(estoque)) {
+            throw new Error("Resposta inválida da API");
+        }
+
+        let datalist = document.getElementById("listaProdutos");
+        datalist.innerHTML = ""; // Limpa opções antigas
+
+        estoque.forEach(item => {
+            if (item.produto && item.produto.nome) {
+                let option = document.createElement("option");
+                option.value = item.produto.nome;
+                option.setAttribute("data-id", item.produtoId);
+                datalist.appendChild(option);
+            }
+        });
+
+        let inputProduto = document.getElementById("produtoSelecionado");
+        inputProduto.addEventListener("input", () => {
+            let selectedOption = Array.from(datalist.options).find(opt => opt.value === inputProduto.value);
+            let codInput = document.getElementById("codProdutoAcerto");
+            if (selectedOption) {
+                codInput.value = selectedOption.getAttribute("data-id");
+            } else {
+                codInput.value = "";
+            }
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar produtos no datalist:", error);
+        mostrarToast("Erro ao carregar produtos no datalist.");
+    }
+}
+

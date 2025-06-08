@@ -50,7 +50,7 @@
         <div class="d-flex justify-content-start mb-3 gap-2">
         <button class="btn btn-primary" onclick="ordenarPorFuncionarioAcerto()">Ordenar por Funcionário (A-Z)</button>
         <button class="btn btn-primary" onclick="ordenarPorMotivoAcerto()">Ordenar por Motivo (A-Z)</button>
-        <button class="btn btn-warning" onclick="window.location.href='regAcerto.html'">Novo Acerto</button>
+        <button class="btn btn-warning" onclick="window.location.href='regAcerto2.html'">Novo Acerto</button>
         </div>
 
 
@@ -61,7 +61,8 @@
                     <th>Data</th>
                     <th>Motivo</th>
                     <th>Funcionário</th>
-                    <th>Produtos Corrigidos</th>
+                    <th>Produtos </th>
+                    <th>Quantidade </th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -145,6 +146,7 @@
                     <td>${acerto.motivo}</td>
                     <td>${nomeFuncionario}</td>
                     <td>${produtosNomes}</td>
+                    <td>${acerto.quantidade}</td>
                     <td class="acoes">
                     <button class="excluir btn btn-danger btn-sm" onclick="apagarAcerto(${acerto.id})">Excluir</button>
                     </td>
