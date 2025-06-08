@@ -250,8 +250,20 @@ function cadastrarProduto(event) {
     return false;
   }
 
-  let valorRaw = document.getElementById("valor").value;
+  let valorInput = document.getElementById("valor");
+  let valorRaw = valorInput.value;
   let valorNumerico = limparValorFormatado(valorRaw);
+
+  if (isNaN(valorNumerico) || valorNumerico <= 0) {
+    valorInput.classList.add('is-invalid');
+    valorInput.classList.remove('is-valid');
+    return false; 
+  } else {
+    valorInput.classList.remove('is-invalid');
+    valorInput.classList.add('is-valid');
+  }
+
+
 
   let dados = {
     prod_desc: document.getElementById("descricao").value,
@@ -401,6 +413,22 @@ function atualizarProduto(event) {
   let id = document.getElementById("idEdicao").value;
   let valorRaw = document.getElementById("valorEdicao").value;
   let valorNumerico = limparValorFormatado(valorRaw);
+
+  // VALIDAÇÃO: valor novo não pode ser 0 ou menor
+  if (isNaN(valorNumerico) || valorNumerico <= 0) {
+    let valorInput = document.getElementById("valorEdicao");
+    valorInput.classList.add('is-invalid');
+    valorInput.classList.remove('is-valid');
+    return false; 
+  } else {
+    let valorInput = document.getElementById("valorEdicao");
+    valorInput.classList.remove('is-invalid');
+    valorInput.classList.add('is-valid');
+  }
+
+
+
+
 
   let dados = new URLSearchParams({
     prod_cod: id, 
