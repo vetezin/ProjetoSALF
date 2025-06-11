@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/apis/doacoes")
 public class DoacaoView {
@@ -16,6 +17,7 @@ public class DoacaoView {
     @Autowired
     private DoacaoController doacaoController;
 
+    @CrossOrigin(origins = "*")
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> listarTodas() {
         List<Map<String, Object>> lista = doacaoController.listarTodasDoacoes(null, null);
@@ -24,6 +26,7 @@ public class DoacaoView {
         return ResponseEntity.ok(lista);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/data/{data}")
     public ResponseEntity<List<Map<String, Object>>> listarPorData(@PathVariable String data) {
         List<Map<String, Object>> lista = doacaoController.listarTodasDoacoes(null, data);
@@ -32,6 +35,7 @@ public class DoacaoView {
         return ResponseEntity.ok(lista);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/funcionario/{funcCod}")
     public ResponseEntity<List<Map<String, Object>>> listarPorFuncionario(@PathVariable int funcCod) {
         List<Map<String, Object>> lista = doacaoController.listarTodasDoacoes(funcCod, null);
@@ -40,7 +44,7 @@ public class DoacaoView {
         return ResponseEntity.ok(lista);
     }
 
-
+    @CrossOrigin(origins = "*")
     @PostMapping
     public ResponseEntity<String> registrar(@RequestBody Map<String, Object> payload) {
         try {
@@ -61,7 +65,6 @@ public class DoacaoView {
             for (Map<String, Object> p : produtosData) {
                 DoaProd dp = new DoaProd();
                 dp.setDoaProdQtd(((Number) p.get("doaProdQtd")).intValue());
-                dp.setDoaProdCatCod(((Number) p.get("doaProdCatCod")).intValue());
                 dp.setProdutoProdCod(((Number) p.get("produtoProdCod")).intValue());
                 produtos.add(dp);
             }

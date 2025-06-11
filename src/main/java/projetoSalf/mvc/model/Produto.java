@@ -17,28 +17,24 @@ public class Produto {
     private int prod_cod;
     private String prod_dtvalid;
     private String prod_desc;
-    private float prod_valorun;
-
     private int cat_cod;
 
 
     public Produto() {
     }
 
-    public Produto( int prod_cod, String prod_dtvalid, String prod_desc, float prod_valorun, int cat_cod) {
+    public Produto( int prod_cod, String prod_dtvalid, String prod_desc, int cat_cod) {
 
         this.prod_cod = prod_cod;
         this.prod_dtvalid = prod_dtvalid;
         this.prod_desc = prod_desc;
-        this.prod_valorun = prod_valorun;
         this.cat_cod = cat_cod;
     }
 
-    public Produto(String prod_dtvalid, String prod_desc, float prod_valorun, int cat_cod) {
+    public Produto(String prod_dtvalid, String prod_desc, int cat_cod) {
 
         this.prod_dtvalid = prod_dtvalid;
         this.prod_desc = prod_desc;
-        this.prod_valorun = prod_valorun;
         this.cat_cod = cat_cod;
     }
 
@@ -66,14 +62,6 @@ public class Produto {
 
     public void setProd_desc(String prod_desc) {
         this.prod_desc = prod_desc;
-    }
-
-    public float getProd_valorun() {
-        return prod_valorun;
-    }
-
-    public void setProd_valorun(float prod_valorun) {
-        this.prod_valorun = prod_valorun;
     }
 
     public int getCategoria() {

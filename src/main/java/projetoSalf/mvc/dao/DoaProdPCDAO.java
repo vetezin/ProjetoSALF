@@ -5,6 +5,8 @@ import projetoSalf.mvc.util.SingletonDB;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class DoaProdPCDAO {
@@ -77,4 +79,26 @@ public class DoaProdPCDAO {
             return false;
         }
     }
+
+    public List<DoaProd> buscarProdutosPorDoacaoPC(int doapcCod) {
+        List<DoaProd> produtos = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM doa_prod_pc WHERE doapc_cod = " + doapcCod;
+            ResultSet rs = SingletonDB.getConexao().consultar(sql);
+
+            while (rs.next()) {
+                DoaProd p = new DoaProd();
+                p.setProdutoProdCod(rs.getInt("produto_prod_cod"));
+                p.setDoaProdQtd(rs.getInt("doa_prod_qtd"));
+                p.setDoaProdCatCod(rs.getInt("doa_prod_cat_cod"));
+                produtos.add(p);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar produtos da doacao_pc: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return produtos;
+    }
+
 }

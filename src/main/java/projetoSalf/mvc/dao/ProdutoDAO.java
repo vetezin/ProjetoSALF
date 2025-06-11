@@ -21,14 +21,13 @@ public class ProdutoDAO implements IDAO<Produto>
     @Override
     public Produto gravar(Produto produto) {
         String sql = """
-                INSERT INTO produto(prod_dtvalid, prod_desc, prod_valorun, cat_cod) 
-                VALUES ('#1', '#2', '#3', '#4');
+                INSERT INTO produto(prod_dtvalid, prod_desc, cat_cod) 
+                VALUES ('#1', '#2', '#3');
         """;
 
         sql=sql.replace("#1",produto.getProd_dtvalid());
         sql=sql.replace("#2",produto.getProd_desc());
-        sql=sql.replace("#3",String.valueOf(produto.getProd_valorun()));
-        sql=sql.replace("#4",String.valueOf(produto.getCategoria()));
+        sql=sql.replace("#3",String.valueOf(produto.getCategoria()));
 
         if (SingletonDB.getConexao().manipular(sql)) {
             return produto;
@@ -44,16 +43,14 @@ public class ProdutoDAO implements IDAO<Produto>
             UPDATE produto SET
             prod_dtvalid=#1,
             prod_desc=#2,
-            prod_valorun=#3,
-            cat_cod=#4
-            WHERE prod_cod = #5;
+            cat_cod=#3
+            WHERE prod_cod = #4;
             
         """;
 
 
         sql = sql.replace("#1", "'" + produto.getProd_dtvalid() + "'");
         sql = sql.replace("#2", "'" + produto.getProd_desc().replace("'", "''") + "'");
-        sql = sql.replace("#3", String.valueOf(produto.getProd_valorun()));
         sql = sql.replace("#4", String.valueOf(produto.getCategoria()));
         sql = sql.replace("#5", String.valueOf(produto.getProd_cod()));
         if (SingletonDB.getConexao().manipular(sql)) {
@@ -79,7 +76,6 @@ public class ProdutoDAO implements IDAO<Produto>
                         resultSet.getInt("prod_cod"),
                         resultSet.getString("prod_dtvalid"),
                         resultSet.getString("prod_desc"),
-                        resultSet.getFloat("prod_valorun"),
                         resultSet.getInt("cat_cod")
 
                 );
@@ -105,7 +101,6 @@ public class ProdutoDAO implements IDAO<Produto>
                         rs.getInt("prod_cod"),
                         rs.getString("prod_dtvalid"),
                         rs.getString("prod_desc"),
-                        rs.getFloat("prod_valorun"),
                         rs.getInt("cat_cod")
 
                 );
@@ -135,7 +130,17 @@ public class ProdutoDAO implements IDAO<Produto>
         if (produto == null)
             return false;
 
-        String sql = "DELETE FROM produto WHERE prod_cod = " + produto.getProd_cod();
-        return SingletonDB.getConexao().manipular(sql);
+        try {
+            // Remove do estoque primeiro
+            String sqlEstoque = "DELETE FROM estoque WHERE produto_prod_cod = " + produto.getProd_cod();
+            SingletonDB.getConexao().manipular(sqlEstoque);
+
+            // Depois remove o produto
+            String sql = "DELETE FROM produto WHERE prod_cod = " + produto.getProd_cod();
+            return SingletonDB.getConexao().manipular(sql);
+        } catch (Exception e) {
+            System.out.println("Erro ao apagar produto: " + e.getMessage());
+            return false;
+        }
     }
 }

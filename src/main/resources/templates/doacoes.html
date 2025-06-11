@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SALF - Registro de Doações</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 250px;
+            background-color: #1f2d3d;
+            color: white;
+            padding: 1rem;
+        }
+        .sidebar h4 { color: #fff; margin-bottom: 1rem; }
+        .sidebar button { width: 100%; margin-bottom: 10px; }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            background-color: #f8f9fa;
+        }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h4>Menu</h4>
+    <button class="btn btn-light" onclick="showSection('ong')">Doação para ONG</button>
+    <button class="btn btn-light" onclick="showSection('pc')">Doação para Pessoa Carente</button>
+</div>
+
+<div class="content">
+    <!-- Doação para ONG -->
+    <div id="form-ong" class="form-section active">
+        <h2>Registrar Doação para ONG</h2>
+        <form id="formDoacao">
+            <div class="mb-3">
+                <label for="funcCodOng" class="form-label">Código do Funcionário</label>
+                <input type="number" class="form-control" id="funcCodOng" required>
+            </div>
+
+            <h5>Produtos</h5>
+            <div id="listaProdutosOng"></div>
+            <h6 class="mt-3">Produtos adicionados:</h6>
+            <ul id="produtosSelecionadosOng" class="list-group mb-3"></ul>
+
+            <button type="submit" class="btn btn-primary">Registrar Doação</button>
+        </form>
+    </div>
+
+    <!-- Doação para Pessoa Carente -->
+    <div id="form-pc" class="form-section">
+        <h2>Registrar Doação para Pessoa Carente</h2>
+        <form id="formDoacaoPC">
+            <div class="mb-3">
+                <label for="funcCodPc" class="form-label">Código do Funcionário</label>
+                <input type="number" class="form-control" id="funcCodPc" required>
+            </div>
+            <div class="mb-3">
+                <label for="pcCod" class="form-label">Código da Pessoa Carente</label>
+                <input type="number" class="form-control" id="pcCod" required>
+            </div>
+
+            <h5>Produtos</h5>
+            <div id="listaProdutosPc"></div>
+            <h6 class="mt-3">Produtos adicionados:</h6>
+            <ul id="produtosSelecionadosPc" class="list-group mb-3"></ul>
+
+            <button type="submit" class="btn btn-success">Registrar Doação para Pessoa Carente</button>
+        </form>
+    </div>
+
+    <div id="resposta" class="mt-4"></div>
+</div>
+
+<script>
+    const apiBase = 'http://localhost:8080/salf';
+    let produtos = [];
+
+    const selecionadosOng = [];
+    const selecionadosPc = [];
+
+    function showSection(section) {
+        document.querySelectorAll('.form-section').forEach(el => el.classList.remove('active'));
+        document.getElementById('form-' + section).classList.add('active');
+    }
+
+    async function carregarProdutos() {
+        try {
+            const res = await fetch(`${apiBase}/apis/produto/listar`);
+            produtos = await res.json();
+
+            renderizarLista('listaProdutosOng', selecionadosOng, 'Ong');
+            renderizarLista('listaProdutosPc', selecionadosPc, 'Pc');
+        } catch (e) {
+            console.error('Erro ao buscar produtos:', e);
+        }
+    }
+
+    function renderizarLista(containerId, selecionados, tipo) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        produtos.forEach(p => {
+            const div = document.createElement('div');
+            div.classList.add('mb-2');
+            div.innerHTML = `
+          <strong>${p.nome}</strong> (${p.categoria.desc})<br>
+          <input type="number" placeholder="Qtd" min="1" id="qtd-${tipo}-${p.id}" style="width:80px">
+          <button type="button" class="btn btn-sm btn-outline-primary" onclick="adicionarProduto(${p.id}, '${tipo}')">Adicionar</button>
+        `;
+            container.appendChild(div);
+        });
+    }
+
+    function adicionarProduto(prodId, tipo) {
+        const qtd = parseInt(document.getElementById(`qtd-${tipo}-${prodId}`).value);
+        if (!qtd || qtd <= 0) return alert('Quantidade inválida');
+
+        const prod = produtos.find(p => p.id === prodId);
+        const item = {
+            produtoProdCod: prod.id,
+            doaProdQtd: qtd,
+            doaProdCatCod: prod.categoria.id
+        };
+
+        const lista = tipo === 'Ong' ? selecionadosOng : selecionadosPc;
+        const ul = document.getElementById(`produtosSelecionados${tipo}`);
+
+        lista.push(item);
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        li.textContent = `${prod.nome} (${prod.categoria.desc}) - Qtd: ${qtd}`;
+        ul.appendChild(li);
+
+        document.getElementById(`qtd-${tipo}-${prod.id}`).value = '';
+    }
+
+    document.getElementById('formDoacao').onsubmit = async function (e) {
+        e.preventDefault();
+        const funcCod = parseInt(document.getElementById('funcCodOng').value);
+        const body = { funcCod, produtos: selecionadosOng };
+        const res = await fetch(`${apiBase}/apis/doacao/registrar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        document.getElementById('resposta').innerText = JSON.stringify(data, null, 2);
+    };
+
+    document.getElementById('formDoacaoPC').onsubmit = async function (e) {
+        e.preventDefault();
+        const funcCod = parseInt(document.getElementById('funcCodPc').value);
+        const pcCod = parseInt(document.getElementById('pcCod').value);
+        const body = { funcCod, pcCod, produtos: selecionadosPc };
+        const res = await fetch(`${apiBase}/apis/doacao_pc/registrar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        document.getElementById('resposta').innerText = JSON.stringify(data, null, 2);
+    };
+
+    window.onload = carregarProdutos;
+</script>
+</body>
+</html>

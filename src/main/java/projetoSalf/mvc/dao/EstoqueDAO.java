@@ -19,7 +19,6 @@ public class EstoqueDAO implements IDAO<Estoque> {
         VALUES (#1, '#2', #3);
         """;
         sql = sql.replace("#1", String.valueOf(estoque.getEs_qtdprod()));
-
         sql = sql.replace("#2", estoque.getEs_dtvalidade());
         sql = sql.replace("#3", String.valueOf(estoque.getProduto_prod_cod()));
 
@@ -41,7 +40,6 @@ public class EstoqueDAO implements IDAO<Estoque> {
         WHERE estoque_id = #4;
         """;
         sql = sql.replace("#1", String.valueOf(estoque.getEs_qtdprod()));
-
         sql = sql.replace("#2", estoque.getEs_dtvalidade());
         sql = sql.replace("#3", String.valueOf(estoque.getProduto_prod_cod()));
         sql = sql.replace("#4", String.valueOf(estoque.getEstoque_id()));
@@ -65,7 +63,6 @@ public class EstoqueDAO implements IDAO<Estoque> {
                 estoque = new Estoque(
                         rs.getInt("estoque_id"),
                         rs.getInt("es_qtdprod"),
-
                         rs.getString("es_dtvalidade"),
                         rs.getInt("produto_prod_cod")
                 );
@@ -89,11 +86,9 @@ public class EstoqueDAO implements IDAO<Estoque> {
         try {
             ResultSet rs = SingletonDB.getConexao().consultar(sql);
             while (rs.next()) {
-
                 Estoque e = new Estoque(
                         rs.getInt("estoque_id"),
                         rs.getInt("es_qtdprod"),
-
                         rs.getString("es_dtvalidade"),
                         rs.getInt("produto_prod_cod")
                 );
@@ -101,6 +96,86 @@ public class EstoqueDAO implements IDAO<Estoque> {
             }
         } catch (SQLException e) {
             System.out.println("Erro ao listar estoques: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // NOVO MÉTODO: Lista estoque com informações completas do produto e categoria
+    public List<Object[]> getEstoqueCompleto() {
+        List<Object[]> lista = new ArrayList<>();
+        String sql = """
+            SELECT 
+                e.estoque_id,
+                e.es_qtdprod,
+                e.es_dtvalidade,
+                e.produto_prod_cod,
+                p.prod_desc as produto_nome,
+                c.cat_desc as categoria_nome
+            FROM estoque e
+            INNER JOIN produto p ON e.produto_prod_cod = p.prod_cod
+            LEFT JOIN categoria_produto c ON p.cat_cod = c.cat_cod
+            ORDER BY e.estoque_id
+        """;
+
+        try {
+            ResultSet rs = SingletonDB.getConexao().consultar(sql);
+            while (rs.next()) {
+                Object[] item = new Object[6];
+                item[0] = rs.getInt("estoque_id");           // estoque_id
+                item[1] = rs.getInt("es_qtdprod");           // quantidade
+                item[2] = rs.getString("es_dtvalidade");     // validade
+                item[3] = rs.getInt("produto_prod_cod");     // produto_id
+                item[4] = rs.getString("produto_nome");      // produto_nome
+                item[5] = rs.getString("categoria_nome");    // categoria_nome
+                lista.add(item);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar estoque completo: " + e.getMessage());
+        }
+
+        return lista;
+    }
+
+    // MÉTODO ALTERNATIVO: Se quiser retornar um Map mais estruturado
+    public List<java.util.Map<String, Object>> getEstoqueCompletoMap() {
+        List<java.util.Map<String, Object>> lista = new ArrayList<>();
+        String sql = """
+            SELECT 
+                e.estoque_id,
+                e.es_qtdprod,
+                e.es_dtvalidade,
+                e.produto_prod_cod,
+                p.prod_desc as produto_nome,
+                c.cat_desc as categoria_nome
+            FROM estoque e
+            INNER JOIN produto p ON e.produto_prod_cod = p.prod_cod
+            LEFT JOIN categoria_produto c ON p.cat_cod = c.cat_cod
+            ORDER BY e.estoque_id
+        """;
+
+        try {
+            ResultSet rs = SingletonDB.getConexao().consultar(sql);
+            while (rs.next()) {
+                java.util.Map<String, Object> item = new java.util.HashMap<>();
+
+                // Dados do estoque
+                item.put("id", rs.getInt("estoque_id"));
+                item.put("quantidade", rs.getInt("es_qtdprod"));
+                item.put("validade", rs.getString("es_dtvalidade"));
+                item.put("produtoId", rs.getInt("produto_prod_cod"));
+
+                // Dados do produto (estrutura aninhada como o JSON atual)
+                java.util.Map<String, Object> produto = new java.util.HashMap<>();
+                produto.put("id", rs.getInt("produto_prod_cod"));
+                produto.put("nome", rs.getString("produto_nome"));
+                produto.put("categoria", rs.getString("categoria_nome"));
+
+                item.put("produto", produto);
+                lista.add(item);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar estoque completo: " + e.getMessage());
         }
 
         return lista;

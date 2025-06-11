@@ -113,6 +113,9 @@ public class DoacaoPCDAO {
                 d.setPcCod(rs.getInt("pc_cod"));
                 d.setDoapcData(rs.getDate("doapc_data").toLocalDate());
 
+                // Aqui adiciona os produtos à doação
+                d.setProdutos(prodPCDAO.buscarProdutosPorDoacaoPC(d.getDoapcCod()));
+
                 lista.add(d);
             }
         } catch (Exception e) {
@@ -134,6 +137,10 @@ public class DoacaoPCDAO {
                 d.setFuncCod(rs.getInt("func_cod"));
                 d.setPcCod(rs.getInt("pc_cod"));
                 d.setDoapcData(rs.getDate("doapc_data").toLocalDate());
+
+                // Aqui adiciona os produtos à doação
+                d.setProdutos(prodPCDAO.buscarProdutosPorDoacaoPC(d.getDoapcCod()));
+
                 lista.add(d);
             }
         } catch (Exception e) {
@@ -155,6 +162,10 @@ public class DoacaoPCDAO {
                 d.setFuncCod(rs.getInt("func_cod"));
                 d.setPcCod(rs.getInt("pc_cod"));
                 d.setDoapcData(rs.getDate("doapc_data").toLocalDate());
+
+                // Aqui adiciona os produtos à doação
+                d.setProdutos(prodPCDAO.buscarProdutosPorDoacaoPC(d.getDoapcCod()));
+
                 lista.add(d);
             }
         } catch (Exception e) {

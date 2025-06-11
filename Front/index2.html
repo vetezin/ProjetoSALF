@@ -46,6 +46,7 @@
 </div>
 
 <div class="content">
+
     <div id="entrada" class="tab d-none">
         <h3>Registro de Doação</h3>
         <form id="formEntrada">
@@ -122,6 +123,33 @@
 </div>
 
 <script>
+
+    let listaProdutos = [];
+
+    async function carregarProdutos() {
+        const res = await fetch('http://localhost:8080/apis/produto');
+        listaProdutos = await res.json();
+    }
+
+    function filtrarProdutos(query) {
+        return listaProdutos.filter(p => p.id.toString().includes(query) || p.nome.toLowerCase().includes(query.toLowerCase()));
+    }
+
+    function atualizarSelect(selectId, query) {
+        const select = document.getElementById(selectId);
+        select.innerHTML = '';
+        const resultados = filtrarProdutos(query);
+        resultados.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = `${p.id} - ${p.nome}`;
+            select.appendChild(opt);
+        });
+    }
+
+    document.getElementById('buscaEntrada').addEventListener('input', e => atualizarSelect('produtoEntrada', e.target.value));
+    document.getElementById('buscaCarente').addEventListener('input', e => atualizarSelect('produtoCarente', e.target.value));
+
     function getCategoriaPorProduto(prodId) {
         const produto = window.listaProdutos?.find(p => p.id === prodId);
         return produto?.categoria?.id || 1;
@@ -271,7 +299,15 @@
         if (tab === 'listarCarente') carregarDoacoesPC();
     }
 
-    window.onload = carregarProdutosSelect;
+    window.onload = async () => {
+        await carregarProdutos();
+        showTab('entrada');
+    }
+
+    function showTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.add('d-none'));
+        document.getElementById(tab).classList.remove('d-none');
+    }
 </script>
 </body>
 </html>

@@ -6,16 +6,18 @@ public class PessoaCarente {
     private String pcCpf;
     private String pcTelefone;
     private String pcEndereco;
+    private String pcCep;
 
     public PessoaCarente() {
     }
 
-    public PessoaCarente(int pcCod, String pcNome, String pcCpf, String pcTelefone, String pcEndereco) {
+    public PessoaCarente(int pcCod, String pcNome, String pcCpf, String pcTelefone, String pcEndereco, String pcCep) {
         this.pcCod = pcCod;
         this.pcNome = pcNome;
         this.pcCpf = pcCpf;
         this.pcTelefone = pcTelefone;
         this.pcEndereco = pcEndereco;
+        this.pcCep = pcCep;
     }
 
     public int getPcCod() {
@@ -56,6 +58,14 @@ public class PessoaCarente {
 
     public void setPcEndereco(String pcEndereco) {
         this.pcEndereco = pcEndereco;
+    }
+
+    public String getPcCep() {
+        return pcCep;
+    }
+
+    public void setPcCep(String CEP) {
+        this.pcCep = pcCep;
     }
 }
 

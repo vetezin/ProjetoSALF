@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetoSalf.mvc.model.Estoque;
 import projetoSalf.mvc.model.Produto;
+import projetoSalf.mvc.model.Categoria;
 
 import java.util.*;
 
@@ -15,6 +16,9 @@ public class EstoqueController {
 
     @Autowired
     private Produto produtoModel;
+
+    @Autowired
+    private Categoria categoriaModel;
 
     public List<Map<String, Object>> getEstoques() {
         List<Estoque> lista = estoqueModel.consultar("");
@@ -33,7 +37,17 @@ public class EstoqueController {
                 Map<String, Object> prodJson = new HashMap<>();
                 prodJson.put("id", p.getProd_cod());
                 prodJson.put("nome", p.getProd_desc());
-                prodJson.put("preco", p.getProd_valorun());
+
+                // Buscar categoria usando o model Categoria
+                String categoriaNome = null;
+                if (p.getCategoria() != 0) {
+                    Categoria categoria = categoriaModel.consultar(p.getCategoria());
+                    if (categoria != null) {
+                        categoriaNome = categoria.getDesc();
+                    }
+                }
+                prodJson.put("categoria", categoriaNome);
+
                 json.put("produto", prodJson);
             }
 
@@ -58,7 +72,16 @@ public class EstoqueController {
             Map<String, Object> prodJson = new HashMap<>();
             prodJson.put("id", p.getProd_cod());
             prodJson.put("nome", p.getProd_desc());
-            prodJson.put("preco", p.getProd_valorun());
+
+            String categoriaNome = null;
+            if (p.getCategoria() != 0) {
+                Categoria categoria = categoriaModel.consultar(p.getCategoria());
+                if (categoria != null) {
+                    categoriaNome = categoria.getDesc();
+                }
+            }
+            prodJson.put("categoria", categoriaNome);
+
             json.put("produto", prodJson);
         }
 
@@ -77,6 +100,14 @@ public class EstoqueController {
         Estoque gravado = estoqueModel.gravar(novo);
 
         if (gravado != null) {
+            String categoriaNome = null;
+            if (p.getCategoria() != 0) {
+                Categoria categoria = categoriaModel.consultar(p.getCategoria());
+                if (categoria != null) {
+                    categoriaNome = categoria.getDesc();
+                }
+            }
+
             Map<String, Object> json = new HashMap<>();
             json.put("id", gravado.getEstoque_id());
             json.put("quantidade", gravado.getEs_qtdprod());
@@ -85,7 +116,7 @@ public class EstoqueController {
             json.put("produto", Map.of(
                     "id", p.getProd_cod(),
                     "nome", p.getProd_desc(),
-                    "preco", p.getProd_valorun()
+                    "categoria", categoriaNome
             ));
             return json;
         } else {
@@ -99,31 +130,34 @@ public class EstoqueController {
             String es_dtvalidade,
             int produtoId) {
 
-        // Validação dos dados de entrada
         if (estoqueId <= 0 || es_qtdprod < 0 || es_dtvalidade == null || produtoId <= 0) {
             return Map.of("erro", "Dados inválidos para atualização");
         }
 
-        // Verificar se o estoque existe
         Estoque existente = estoqueModel.consultarPorId(estoqueId);
         if (existente == null) {
             return Map.of("erro", "Estoque não encontrado");
         }
 
-        // Verificar se o produto existe
         Produto p = produtoModel.consultar(produtoId);
         if (p == null) {
             return Map.of("erro", "Produto não encontrado");
         }
 
-        // Atualizar os campos do estoque
         existente.setEs_qtdprod(es_qtdprod);
         existente.setEs_dtvalidade(es_dtvalidade);
         existente.setProduto_prod_cod(produtoId);
 
-        // Persistir a alteração
         Estoque atualizado = estoqueModel.alterar(existente);
         if (atualizado != null) {
+            String categoriaNome = null;
+            if (p.getCategoria() != 0) {
+                Categoria categoria = categoriaModel.consultar(p.getCategoria());
+                if (categoria != null) {
+                    categoriaNome = categoria.getDesc();
+                }
+            }
+
             return Map.of(
                     "id", atualizado.getEstoque_id(),
                     "quantidade", atualizado.getEs_qtdprod(),
@@ -132,7 +166,7 @@ public class EstoqueController {
                     "produto", Map.of(
                             "id", p.getProd_cod(),
                             "nome", p.getProd_desc(),
-                            "preco", p.getProd_valorun()
+                            "categoria", categoriaNome
                     )
             );
         } else {
@@ -141,12 +175,12 @@ public class EstoqueController {
     }
 
     public Map<String, Object> deletarEstoque(int id) {
-        Estoque estoque = estoqueModel.consultarPorId(id); // Buscar o estoque pelo ID
+        Estoque estoque = estoqueModel.consultarPorId(id);
         if (estoque == null) {
             return Map.of("erro", "Estoque não encontrado");
         }
 
-        boolean deletado = estoqueModel.deletar(estoque); // Método que deve existir no modelo Estoque
+        boolean deletado = estoqueModel.deletar(estoque);
 
         if (deletado) {
             return Map.of("mensagem", "Estoque removido com sucesso!");
@@ -154,5 +188,4 @@ public class EstoqueController {
             return Map.of("erro", "Erro ao remover o estoque");
         }
     }
-
 }

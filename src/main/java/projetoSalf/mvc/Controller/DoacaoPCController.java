@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projetoSalf.mvc.dao.DoaProdPCDAO;
 import projetoSalf.mvc.dao.DoacaoPCDAO;
+import projetoSalf.mvc.dao.ProdutoDAO;
 import projetoSalf.mvc.model.DoacaoPC;
 import projetoSalf.mvc.model.DoaProd;
+import projetoSalf.mvc.model.Produto;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -17,6 +19,9 @@ public class DoacaoPCController {
     private DoacaoPCDAO dao;
     @Autowired
     private DoaProdPCDAO doaProdPCDAO;
+    @Autowired
+    private ProdutoDAO produtoDAO;
+
 
     public Map<String, Object> registrarDoacaoPC(Map<String, Object> body) {
         Map<String, Object> response = new HashMap<>();
@@ -32,11 +37,21 @@ public class DoacaoPCController {
             List<DoaProd> produtos = new ArrayList<>();
             for (Map<String, Object> item : itens) {
                 DoaProd p = new DoaProd();
-                p.setProdutoProdCod((int) item.get("produtoProdCod"));
+                int prodCod = (int) item.get("produtoProdCod");
+                p.setProdutoProdCod(prodCod);
                 p.setDoaProdQtd((int) item.get("doaProdQtd"));
-                p.setDoaProdCatCod((int) item.get("doaProdCatCod"));
+
+                Produto produto = produtoDAO.get(prodCod);
+                if (produto == null) {
+                    response.put("status", "erro");
+                    response.put("mensagem", "Produto com código " + prodCod + " não encontrado.");
+                    return response;
+                }
+
+                p.setDoaProdCatCod(produto.getCategoria());
                 produtos.add(p);
             }
+
             doacao.setProdutos(produtos);
 
             if (doacao.inserir()) {
@@ -66,6 +81,20 @@ public class DoacaoPCController {
             map.put("funcCod", d.getFuncCod());
             map.put("pcCod", d.getPcCod());
             map.put("doapcData", d.getDoapcData().toString());
+
+            List<Map<String, Object>> produtos = new ArrayList<>();
+            for (DoaProd dp : d.getProdutos()) {
+                Produto produto = produtoDAO.get(dp.getProdutoProdCod());
+
+                Map<String, Object> prodMap = new HashMap<>();
+                prodMap.put("produtoCod", dp.getProdutoProdCod());
+                prodMap.put("descricao", produto != null ? produto.getProd_desc() : "Produto não encontrado");
+                prodMap.put("quantidade", dp.getDoaProdQtd());
+
+                produtos.add(prodMap);
+            }
+
+            map.put("produtos", produtos);
             lista.add(map);
         }
 
@@ -127,6 +156,20 @@ public class DoacaoPCController {
             map.put("funcCod", d.getFuncCod());
             map.put("pcCod", d.getPcCod());
             map.put("doapcData", d.getDoapcData().toString());
+
+            List<Map<String, Object>> produtos = new ArrayList<>();
+            for (DoaProd dp : d.getProdutos()) {
+                Produto produto = produtoDAO.get(dp.getProdutoProdCod());
+
+                Map<String, Object> prodMap = new HashMap<>();
+                prodMap.put("produtoCod", dp.getProdutoProdCod());
+                prodMap.put("descricao", produto != null ? produto.getProd_desc() : "Produto não encontrado");
+                prodMap.put("quantidade", dp.getDoaProdQtd());
+
+                produtos.add(prodMap);
+            }
+
+            map.put("produtos", produtos);
             lista.add(map);
         }
 
@@ -143,6 +186,20 @@ public class DoacaoPCController {
             map.put("funcCod", d.getFuncCod());
             map.put("pcCod", d.getPcCod());
             map.put("doapcData", d.getDoapcData().toString());
+
+            List<Map<String, Object>> produtos = new ArrayList<>();
+            for (DoaProd dp : d.getProdutos()) {
+                Produto produto = produtoDAO.get(dp.getProdutoProdCod());
+
+                Map<String, Object> prodMap = new HashMap<>();
+                prodMap.put("produtoCod", dp.getProdutoProdCod());
+                prodMap.put("descricao", produto != null ? produto.getProd_desc() : "Produto não encontrado");
+                prodMap.put("quantidade", dp.getDoaProdQtd());
+
+                produtos.add(prodMap);
+            }
+
+            map.put("produtos", produtos);
             lista.add(map);
         }
 

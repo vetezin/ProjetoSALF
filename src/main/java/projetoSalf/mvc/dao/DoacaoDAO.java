@@ -71,8 +71,12 @@ public class DoacaoDAO {
     }
 
     public boolean deletar(int doaCod) {
-        String sql = "DELETE FROM doacao WHERE doa_cod = " + doaCod;
-        return SingletonDB.getConexao().manipular(sql);
+        if(doaCod == 0) return false;
+        else {
+            String sqlDoaProd = "DELETE FROM doa_prod WHERE doa_cod = " + doaCod;
+            SingletonDB.getConexao().manipular(sqlDoaProd);
+            String sql = "DELETE FROM doacao WHERE doa_cod = " + doaCod;
+            return SingletonDB.getConexao().manipular(sql);
+        }
     }
-
 }
