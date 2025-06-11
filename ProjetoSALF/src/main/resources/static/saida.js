@@ -59,7 +59,9 @@ async function listarSaidasComProdutos() {
         tbody.innerHTML = ""; // limpa antes de preencher
 
         saidas.forEach(saida => {
-          let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+          //let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+          let produtosNomes = saida.produtos.map(p => `${p.nome} (${p.quantidade})`).join(", ") || "-";
+
           let nomeFuncionario = saida.funcionario ? saida.funcionario.nome : "Desconhecido";
 
           let tr = document.createElement("tr");
@@ -110,7 +112,9 @@ async function ordenarPorMotivo() {
     tbody.innerHTML = ""; // limpa a tabela antes de preencher
 
     saidas.forEach(saida => {
-      let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      //let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      let produtosNomes = saida.produtos.map(p => `${p.nome} (${p.quantidade})`).join(", ") || "-";
+
       let nomeFuncionario = saida.funcionario ? saida.funcionario.nome : "Desconhecido";
 
       let tr = document.createElement("tr");
@@ -162,7 +166,9 @@ async function ordenarPorFuncionario() {
     tbody.innerHTML = ""; // limpa a tabela antes de preencher
 
     saidas.forEach(saida => {
-      let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      //let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      let produtosNomes = saida.produtos.map(p => `${p.nome} (${p.quantidade})`).join(", ") || "-";
+
       let nomeFuncionario = saida.funcionario ? saida.funcionario.nome : "Desconhecido";
 
       let tr = document.createElement("tr");
@@ -187,7 +193,7 @@ async function ordenarPorFuncionario() {
 
 async function buscarPorMotivo() {
   let termo = document.getElementById("buscaMotivo").value.trim().toLowerCase();
-  let tbody = document.querySelector("#tabelaSaidas tbody");
+  let tbody = document.querySelector("#tabelaSaidas t body");
 
   tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
 
@@ -213,7 +219,9 @@ async function buscarPorMotivo() {
     tbody.innerHTML = "";
 
     filtradas.forEach(saida => {
-      let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      //let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      let produtosNomes = saida.produtos.map(p => `${p.nome} (${p.quantidade})`).join(", ") || "-";
+
       let nomeFuncionario = saida.funcionario ? saida.funcionario.nome : "Desconhecido";
 
       let tr = document.createElement("tr");
