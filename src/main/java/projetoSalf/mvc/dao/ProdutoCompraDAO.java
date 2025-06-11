@@ -146,6 +146,31 @@ public class ProdutoCompraDAO {
         }
     }
 
+    public boolean excluirItemDaCompra(int lcCod, int prodCod, int cotCod, int fornCod, int compraCod) {
+        String sql = """
+        DELETE FROM compra_prod_cot
+        WHERE lc_cod = ? AND prod_cod = ? AND cot_cod = ? AND forn_cod = ? AND compra_cod = ?
+    """;
+
+        try (Connection conn = SingletonDB.getConexao().getConnect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, lcCod);
+            stmt.setInt(2, prodCod);
+            stmt.setInt(3, cotCod);
+            stmt.setInt(4, fornCod);
+            stmt.setInt(5, compraCod);
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0;
+
+        } catch (Exception e) {
+            System.err.println("Erro ao excluir item da compra: " + e.getMessage());
+            return false;
+        }
+    }
+
+
 
 
 

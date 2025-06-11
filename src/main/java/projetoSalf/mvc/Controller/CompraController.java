@@ -33,4 +33,21 @@ public class CompraController {
         ProdutoCompraDAO dao = new ProdutoCompraDAO();
         return dao.getProdutosDaCompra(compraId, conexao);
     }
+
+    public Map<String, Object> excluirItemCompra(Map<String, Object> dados) {
+
+        int lcCod = ((Number) dados.get("lcCod")).intValue();
+        int prodCod = ((Number) dados.get("prodCod")).intValue();
+        int cotCod = ((Number) dados.get("cotCod")).intValue();
+        int fornCod = ((Number) dados.get("fornCod")).intValue();
+        int compraCod = ((Number) dados.get("compraCod")).intValue();
+
+        ProdutoCompraDAO dao = new ProdutoCompraDAO();
+        boolean sucesso = dao.excluirItemDaCompra(lcCod, prodCod, cotCod, fornCod, compraCod);
+
+        return sucesso
+                ? Map.of("mensagem", "Item excluído com sucesso")
+                : Map.of("erro", "Erro ao excluir o item");
+    }
+
 }

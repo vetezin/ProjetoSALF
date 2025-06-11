@@ -77,5 +77,10 @@ public class CompraView {
         }
     }
 
+    @DeleteMapping("/item")
+    public Map<String, Object> excluirItem(@RequestBody Map<String, Object> dados) {
+        return controller.excluirItemCompra(dados);
+    }
+
 
 }
