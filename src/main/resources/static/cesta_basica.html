@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Cesta Básica</title>
+    <style>
+        :root {
+            --lar-salmao: #ea3d3d;
+            --lar-escuro: #b92c2c;
+            --lar-claro: #fceeee;
+            --cinza-claro: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cinza-claro);
+            display: flex;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: var(--lar-escuro);
+            color: white;
+            min-height: 100vh;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #f8dada;
+            text-decoration: none;
+            margin: 0.75rem 0;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background-color: var(--lar-salmao);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+        }
+
+        .main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--lar-salmao);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--lar-escuro);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+            background-color: var(--lar-claro);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .produto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .produto-item button {
+            background-color: #888;
+            padding: 4px 10px;
+        }
+
+        .produto-grid {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .produto-grid > div {
+            flex: 1;
+        }
+
+        .produto-grid .botao-add {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            background-color: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>SALF</h2>
+    <a href="#">Necessidades</a>
+    <a href="#">Categorias</a>
+    <a href="#">Doações</a>
+    <a href="#">Cestas</a>
+    <a href="#" class="active">Cesta Básica</a>
+</div>
+<div class="main">
+    <h1>Registrar Cesta Básica</h1>
+    <form id="form-cesta">
+        <label>Motivo da Doação *</label>
+        <input type="text" id="motivo" required>
+
+        <label>Data de Criação *</label>
+        <input type="date" id="dtCriacao" required>
+
+        <label>Data da Doação *</label>
+        <input type="date" id="dtDoacao" required>
+
+        <div class="produto-grid">
+            <div>
+                <label>Código do Funcionário *</label>
+                <input type="number" id="codFunc" oninput="buscarNomeFuncionario(this.value)" required>
+            </div>
+            <div>
+                <label>Nome do Funcionário</label>
+                <input type="text" id="nomeFunc" readonly>
+            </div>
+        </div>
+
+        <div class="produto-grid">
+            <div>
+                <label>CPF da Pessoa Carente *</label>
+                <input type="text" id="cpfPessoa" onblur="buscarPessoaPorCpf()" required>
+            </div>
+            <div>
+                <label>Nome da Pessoa Carente</label>
+                <input type="text" id="nomePessoa" readonly>
+            </div>
+        </div>
+
+        <input type="hidden" id="codPessoa">
+
+        <h3>Produtos da Cesta</h3>
+        <div class="produto-grid">
+            <div>
+                <label>Código do Produto</label>
+                <input type="number" id="prod-cod" oninput="buscarNomeProduto(this.value)">
+            </div>
+            <div>
+                <label>Nome do Produto</label>
+                <input type="text" id="prod-nome" readonly>
+            </div>
+            <div>
+                <label>Quantidade</label>
+                <input type="number" id="prod-qtd">
+            </div>
+            <div class="botao-add">
+                <button type="button" onclick="adicionarProduto()">Adicionar</button>
+            </div>
+        </div>
+
+        <ul id="lista-produtos"></ul>
+
+        <button type="submit">Registrar Cesta</button>
+    </form>
+
+    <div id="mensagem"></div>
+
+    <h2>Cestas Básicas Registradas</h2>
+
+    <div>
+        <label for="filtroCesta">Pesquisa (Nome ou CPF da Pessoa Carente):</label>
+        <input type="text" id="filtroCesta" placeholder="Digite nome ou CPF..." oninput="aplicarFiltroCestas()">
+    </div>
+
+    <table id="tabela-cestas">
+        <thead>
+        <tr>
+            <th>Cód. Cesta</th>
+            <th>Motivo</th>
+            <th>Data Criação</th>
+            <th>Data Doação</th>
+            <th>Nome Pessoa Carente</th>
+            <th>CPF Pessoa Carente</th>
+            <th>Funcionário</th>
+        </tr>
+        </thead>
+        <tbody id="corpo-tabela-cestas"></tbody>
+    </table>
+</div>
+
+<script>
+    const produtos = [];
+    let listaCestas = [];
+
+    async function buscarNomeProduto(cod) {
+        if (!cod) return;
+        try {
+            const resp = await fetch(`/apis/produto/${cod}`);
+            if (!resp.ok) {
+                document.getElementById("prod-nome").value = "Produto não encontrado";
+                return;
+            }
+            const data = await resp.json();
+            document.getElementById("prod-nome").value = data.descricao || "Produto não encontrado";
+        } catch {
+            document.getElementById("prod-nome").value = "Erro ao buscar";
+        }
+    }
+
+    function adicionarProduto() {
+        const cod = document.getElementById("prod-cod").value;
+        const qtd = document.getElementById("prod-qtd").value;
+        const nome = document.getElementById("prod-nome").value;
+
+        if (!cod || !qtd || qtd <= 0 || nome === "Produto não encontrado") {
+            alert("Preencha corretamente o produto.");
+            return;
+        }
+
+        produtos.push({ produto_prod_cod: parseInt(cod), prod_qtd: parseInt(qtd), nome: nome });
+        atualizarListaProdutos();
+        document.getElementById("prod-cod").value = '';
+        document.getElementById("prod-qtd").value = '';
+        document.getElementById("prod-nome").value = '';
+    }
+
+    function removerProduto(index) {
+        produtos.splice(index, 1);
+        atualizarListaProdutos();
+    }
+
+    function atualizarListaProdutos() {
+        const lista = document.getElementById("lista-produtos");
+        lista.innerHTML = "";
+        produtos.forEach((p, i) => {
+            const li = document.createElement("li");
+            li.className = "produto-item";
+            li.innerHTML = `Produto: ${p.nome} (Cód: ${p.produto_prod_cod}), Qtd: ${p.prod_qtd}
+      <div>
+        <button onclick="editarProduto(${i})">Alterar</button>
+        <button onclick="removerProduto(${i})">Remover</button>
+      </div>`;
+            lista.appendChild(li);
+        });
+    }
+
+    function editarProduto(i) {
+        const prod = produtos[i];
+        document.getElementById("prod-cod").value = prod.produto_prod_cod;
+        document.getElementById("prod-qtd").value = prod.prod_qtd;
+        document.getElementById("prod-nome").value = prod.nome;
+        produtos.splice(i, 1);
+        atualizarListaProdutos();
+    }
+
+    async function buscarNomeFuncionario(cod) {
+        if (!cod) return;
+        try {
+            const resp = await fetch(`/apis/funcionario/${cod}`);
+            const data = await resp.json();
+            document.getElementById("nomeFunc").value = data.func_nome || data.nome || "Funcionário não encontrado";
+        } catch {
+            document.getElementById("nomeFunc").value = "Erro";
+        }
+    }
+
+    async function buscarPessoaPorCpf() {
+        const cpf = document.getElementById("cpfPessoa").value.replace(/\D/g, '');
+        if (cpf.length !== 11) {
+            document.getElementById("nomePessoa").value = "CPF inválido";
+            return;
+        }
+
+        try {
+            const resp = await fetch(`/apis/pessoa_carente/cpf/${cpf}`);
+            if (!resp.ok) {
+                document.getElementById("nomePessoa").value = "Pessoa não encontrada";
+                document.getElementById("codPessoa").value = "";
+                return;
+            }
+            const data = await resp.json();
+            document.getElementById("nomePessoa").value = data.nome || data.pc_nome;
+            document.getElementById("codPessoa").value = data.cod || data.pc_cod;
+        } catch {
+            document.getElementById("nomePessoa").value = "Erro";
+        }
+    }
+
+    document.getElementById("form-cesta").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const codPessoa = document.getElementById("codPessoa").value;
+        const codFunc = document.getElementById("codFunc").value;
+        const dtCriacao = document.getElementById("dtCriacao").value;
+        const dtDoacao = document.getElementById("dtDoacao").value;
+        const motivo = document.getElementById("motivo").value;
+
+        if (!motivo || !codPessoa || !codFunc || !dtCriacao || !dtDoacao || produtos.length === 0) {
+            document.getElementById("mensagem").innerHTML = `<div style="color:red;">❌ Preencha todos os campos obrigatórios e adicione pelo menos 1 produto.</div>`;
+            return;
+        }
+
+        const cesta = {
+            cb_motivo: motivo,
+            cb_dtcriacao: dtCriacao,
+            cb_dtdoacao: dtDoacao,
+            cb_codfunc: parseInt(codFunc),
+            cb_pessoacod: parseInt(codPessoa)
+        };
+
+        const dados = {
+            cesta: cesta,
+            listaProdutos: produtos.map(p => ({
+                produto_prod_cod: p.produto_prod_cod,
+                prod_qtd: p.prod_qtd
+            }))
+        };
+
+        try {
+            const resp = await fetch("/apis/cesta/registrar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
+            const msg = await resp.text();
+            document.getElementById("mensagem").innerHTML = `<div style="padding: 10px; border-radius: 5px; background-color: ${resp.ok ? '#d4edda' : '#f8d7da'}; color: ${resp.ok ? '#155724' : '#721c24'}">${msg}</div>`;
+            if (resp.ok) {
+                produtos.length = 0;
+                atualizarListaProdutos();
+                document.getElementById("form-cesta").reset();
+                document.getElementById("nomePessoa").value = "";
+                document.getElementById("nomeFunc").value = "";
+                carregarCestas(); // Atualizar a tabela
+            }
+        } catch (err) {
+            document.getElementById("mensagem").innerHTML = "<div style='color: red'>❌ Erro ao registrar</div>";
+        }
+    });
+
+    async function carregarCestas() {
+        try {
+            const resp = await fetch("/apis/cesta/listar");
+            listaCestas = await resp.json();
+            atualizarTabelaCestas(listaCestas);
+        } catch (e) {
+            console.error("Erro ao carregar cestas:", e);
+        }
+    }
+
+    function atualizarTabelaCestas(lista) {
+        const tbody = document.getElementById("corpo-tabela-cestas");
+        tbody.innerHTML = "";
+        lista.forEach(cb => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+        <td>${cb.cb_cod}</td>
+        <td>${cb.cb_motivo}</td>
+        <td>${cb.cb_dtcriacao}</td>
+        <td>${cb.cb_dtdoacao}</td>
+        <td>${cb.nomePessoa || ""}</td>
+        <td>${cb.cpfPessoa || ""}</td>
+        <td>${cb.nomeFuncionario || ""}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function aplicarFiltroCestas() {
+        const termo = document.getElementById("filtroCesta").value.toLowerCase().trim();
+        const resultado = listaCestas.filter(cb => {
+            const nome = (cb.nomePessoa || "").toLowerCase();
+            const cpf = (cb.cpfPessoa || "").replace(/\D/g, "");
+            return nome.includes(termo) || cpf.includes(termo.replace(/\D/g, ""));
+        });
+        atualizarTabelaCestas(resultado);
+    }
+
+    window.onload = function () {
+        carregarCestas();
+    };
+</script>
+</body>
+</html>

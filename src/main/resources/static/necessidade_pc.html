@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Necessidade</title>
+    <style>
+        :root {
+            --lar-salmao: #ea3d3d;
+            --lar-escuro: #b92c2c;
+            --lar-claro: #fceeee;
+            --cinza-claro: #f8f9fa;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cinza-claro);
+            display: flex;
+            margin: 0;
+        }
+        .sidebar {
+            width: 240px;
+            background-color: var(--lar-escuro);
+            color: white;
+            min-height: 100vh;
+            padding: 1.5rem 1rem;
+        }
+        .sidebar h2 {
+            font-size: 1.5rem;
+        }
+        .sidebar a {
+            display: block;
+            color: #f8dada;
+            text-decoration: none;
+            margin: 0.75rem 0;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background-color: var(--lar-salmao);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+        }
+        .main {
+            flex: 1;
+            padding: 2rem;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--lar-salmao);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: var(--lar-escuro);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        tr:hover {
+            background-color: var(--lar-claro);
+            cursor: pointer;
+        }
+        tr.selecionado {
+            background-color: #ffcccc !important;
+            border-left: 4px solid red;
+        }
+        #contador {
+            font-size: 0.9em;
+            color: #555;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>SALF</h2>
+    <a href="#" class="active">Necessidades</a>
+    <a href="#">Categorias</a>
+    <a href="#">Doações</a>
+    <a href="#">Cestas</a>
+</div>
+<div class="main">
+    <h1>Registrar Necessidade</h1>
+    <form onsubmit="return false;">
+        <label>CPF da Pessoa Carente: <span>*</span></label>
+        <input type="text" id="pc_cpf" required>
+        <button type="button" onclick="buscarPorCPF()">🔍 Buscar</button>
+        <button id="btnCadastrarPessoa" style="display:none; background-color:#999;" onclick="redirecionarCadastro()">Cadastrar Pessoa</button>
+
+        <input type="hidden" id="npc_cod">
+
+        <label>Descrição: <span>*</span> <span id="contador">0/300</span></label>
+        <input type="text" id="npc_desc" maxlength="300" required oninput="document.getElementById('contador').textContent = `${this.value.length}/300`">
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label>Código do Funcionário: <span>*</span></label>
+                <input type="number" id="func_cod" oninput="buscarNomeFuncionario(this.value)" required>
+            </div>
+            <div style="flex: 3;">
+                <label>Nome do Funcionário:</label>
+                <input type="text" id="func_nome" readonly>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label>Código da Pessoa Carente: <span>*</span></label>
+                <input type="number" id="pc_cod" readonly required>
+            </div>
+            <div style="flex: 3;">
+                <label>Nome da Pessoa Carente:</label>
+                <input type="text" id="pc_nome" readonly>
+            </div>
+        </div>
+
+        <button type="button" onclick="registrarNecessidade()">Registrar Necessidade</button>
+        <button type="button" onclick="alterarNecessidade()">Alterar</button>
+        <button type="button" onclick="excluirNecessidade()">Excluir</button>
+        <button type="button" onclick="limparFormulario()">Limpar</button>
+    </form>
+
+    <h2 style="display: flex; align-items: center; gap: 10px;">
+        Necessidades Encontradas
+        <button onclick="recarregarNecessidades()">🔄</button>
+    </h2>
+
+    <table id="tabelaResultados">
+        <thead>
+        <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Funcionário</th>
+            <th>Pessoa Carente</th>
+            <th>Data Criação</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        let soma = 0;
+        for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+        let resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(9))) return false;
+        soma = 0;
+        for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        return resto === parseInt(cpf.charAt(10));
+    }
+
+    function buscarPorCPF() {
+        const cpf = document.getElementById("pc_cpf").value.replace(/\D/g, '');
+        if (!validarCPF(cpf)) {
+            alert("CPF inválido!");
+            return;
+        }
+        fetch("/apis/pessoa_carente/cpf/" + cpf)
+            .then(resp => {
+                if (resp.ok) return resp.json();
+                else throw new Error("Pessoa não encontrada.");
+            })
+            .then(data => {
+                document.getElementById("pc_cod").value = data.cod || data.pc_cod;
+                document.getElementById("pc_nome").value = data.nome || data.pc_nome || "Pessoa encontrada";
+                document.getElementById("btnCadastrarPessoa").style.display = "none";
+                recarregarNecessidades();
+            })
+            .catch(() => {
+                alert("Pessoa não encontrada. Cadastre-a antes.");
+                document.getElementById("btnCadastrarPessoa").style.display = "inline-block";
+                document.getElementById("pc_cod").value = "";
+                document.getElementById("pc_nome").value = "";
+            });
+    }
+
+    function buscarNomeFuncionario(func_cod) {
+        fetch("/apis/funcionario/" + func_cod)
+            .then(resp => resp.json())
+            .then(data => {
+                document.getElementById("func_nome").value =
+                    data && (data.nome || data.func_nome) ? (data.nome || data.func_nome) : "Funcionário não encontrado";
+            })
+            .catch(() => {
+                document.getElementById("func_nome").value = "Erro ao buscar";
+            });
+    }
+
+    function validarFormularioNecessidade() {
+        const cpf = document.getElementById("pc_cpf").value.replace(/\D/g, '');
+        const desc = document.getElementById("npc_desc").value.trim();
+        const func = document.getElementById("func_cod").value.trim();
+        const pcCod = document.getElementById("pc_cod").value.trim();
+
+        if (!cpf || !validarCPF(cpf)) {
+            alert("❌ Informe um CPF válido.");
+            return false;
+        }
+        if (!desc) {
+            alert("❌ A descrição é obrigatória.");
+            return false;
+        }
+        if (!func) {
+            alert("❌ Informe o código do funcionário.");
+            return false;
+        }
+        if (!pcCod) {
+            alert("❌ Busque o CPF primeiro para preencher o código da pessoa carente.");
+            return false;
+        }
+        return true;
+    }
+
+    function registrarNecessidade() {
+        if (!validarFormularioNecessidade()) return;
+        const payload = {
+            npc_desc: document.getElementById("npc_desc").value,
+            func_cod: parseInt(document.getElementById("func_cod").value),
+            pc_cod: parseInt(document.getElementById("pc_cod").value)
+        };
+        fetch("/apis/necessidade/registrar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+            .then(resp => resp.text())
+            .then(msg => alert(msg))
+            .catch(err => alert("Erro ao registrar: " + err));
+    }
+
+    function alterarNecessidade() {
+        const npc_cod = document.getElementById("npc_cod").value;
+        if (!npc_cod) return alert("Selecione uma necessidade antes de alterar.");
+        if (!validarFormularioNecessidade()) return;
+        const payload = {
+            npc_desc: document.getElementById("npc_desc").value,
+            func_cod: parseInt(document.getElementById("func_cod").value),
+            pc_cod: parseInt(document.getElementById("pc_cod").value)
+        };
+        fetch("/apis/necessidade/" + npc_cod, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(resp => {
+            if (resp.ok) alert("Necessidade alterada com sucesso!");
+            else alert("Erro ao alterar.");
+        });
+    }
+
+    function excluirNecessidade() {
+        const npc_cod = document.getElementById("npc_cod").value;
+        if (!npc_cod) return alert("Selecione uma necessidade antes de excluir.");
+        fetch("/apis/necessidade/" + npc_cod, { method: "DELETE" })
+            .then(resp => {
+                if (resp.ok) alert("Necessidade excluída com sucesso!");
+                else alert("Erro ao excluir.");
+                recarregarNecessidades();
+            });
+    }
+
+    function preencherFormulario(item) {
+        document.getElementById("npc_cod").value = item.npc_cod;
+        document.getElementById("npc_desc").value = item.npc_desc;
+        document.getElementById("func_cod").value = item.func_cod;
+        document.getElementById("pc_cod").value = item.pc_cod;
+        buscarNomeFuncionario(item.func_cod);
+    }
+
+    function limparFormulario() {
+        document.getElementById("npc_cod").value = "";
+        document.getElementById("npc_desc").value = "";
+        document.getElementById("pc_cpf").value = "";
+        document.getElementById("pc_cod").value = "";
+        document.getElementById("pc_nome").value = "";
+        document.getElementById("func_cod").value = "";
+        document.getElementById("func_nome").value = "";
+        document.getElementById("contador").textContent = "0/300";
+        document.getElementById("btnCadastrarPessoa").style.display = "none";
+        limparSelecaoTabela();
+    }
+
+    function limparSelecaoTabela() {
+        const linhas = document.querySelectorAll("#tabelaResultados tbody tr");
+        linhas.forEach(linha => linha.classList.remove("selecionado"));
+    }
+
+    function recarregarNecessidades() {
+        const cpf = document.getElementById("pc_cpf").value.replace(/\D/g, '');
+        fetch("/apis/necessidade/buscarPorCpf?cpf=" + cpf)
+            .then(resp => resp.json())
+            .then(data => {
+                const tbody = document.getElementById("tabelaResultados").querySelector("tbody");
+                tbody.innerHTML = "";
+                data.forEach(item => {
+                    const dataFormatada = formatarDataBrasileira(item.npc_dtcriacao);
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${item.npc_cod}</td>
+                        <td>${item.npc_desc}</td>
+                        <td>${item.func_cod}</td>
+                        <td>${item.pc_cod}</td>
+                        <td>${dataFormatada}</td>
+                    `;
+                    row.onclick = () => {
+                        limparSelecaoTabela();
+                        row.classList.add("selecionado");
+                        preencherFormulario(item);
+                    };
+                    tbody.appendChild(row);
+                });
+            });
+    }
+
+    function formatarDataBrasileira(dataISO) {
+        const data = new Date(dataISO);
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    function redirecionarCadastro() {
+        window.location.href = "cadastrar_pessoa_carente.html";
+    }
+</script>
+</body>
+</html>

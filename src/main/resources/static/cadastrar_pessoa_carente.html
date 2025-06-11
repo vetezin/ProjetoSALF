@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Pessoa Carente</title>
+    <style>
+        :root {
+            --lar-salmao: #ea3d3d;
+            --lar-escuro: #b92c2c;
+            --lar-claro: #fceeee;
+            --cinza-claro: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cinza-claro);
+            display: flex;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: var(--lar-escuro);
+            color: white;
+            min-height: 100vh;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #f8dada;
+            text-decoration: none;
+            margin: 0.75rem 0;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background-color: var(--lar-salmao);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+        }
+
+        .main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .obrigatorio {
+            color: black;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--lar-salmao);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--lar-escuro);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        tr:hover {
+            background-color: var(--lar-claro);
+            cursor: pointer;
+        }
+
+        tr.selecionado {
+            background-color: #ffcccc !important;
+            border-left: 4px solid red;
+        }
+
+        #mensagem {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h2>SALF</h2>
+    <a href="#">Necessidades</a>
+    <a href="#">Categorias</a>
+    <a href="#">Doações</a>
+    <a href="#">Cestas</a>
+    <a href="#" class="active">Pessoas Carentes</a>
+</div>
+<div class="main">
+    <h1>Cadastrar Pessoa Carente</h1>
+    <button onclick="window.location.href='necessidade_pc.html'" style="margin-bottom: 20px;">Voltar para Registro de Necessidade</button>
+
+    <form onsubmit="return false;">
+        <input type="hidden" id="pc_cod">
+
+        <label>Nome <span class="obrigatorio">*</span></label>
+        <input type="text" id="pc_nome" required>
+
+        <label>Endereço <span class="obrigatorio">*</span></label>
+        <input type="text" id="pc_endereco" required>
+
+        <label>Telefone <span class="obrigatorio">*</span></label>
+        <input type="text" id="pc_telefone" required>
+
+        <label>CPF <span class="obrigatorio">*</span></label>
+        <input type="text" id="pc_cpf" required>
+
+        <button type="button" onclick="cadastrarPessoa()">Cadastrar</button>
+        <button type="button" onclick="limparFormulario()">Limpar</button>
+        <button type="button" onclick="alterarPessoa()">Alterar</button>
+        <button type="button" onclick="excluirPessoa()">Excluir</button>
+    </form>
+
+    <div id="mensagem"></div>
+
+    <h2>Pessoas Carentes Cadastradas</h2>
+    <label for="buscaPessoa"><strong>Pesquisa (Nome ou CPF):</strong></label>
+    <input type="text" id="buscaPessoa" oninput="filtrarPessoas()" placeholder="Digite o nome ou CPF para filtrar" style="width: 50%; padding: 8px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
+
+    <table>
+        <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Endereço</th>
+            <th>Telefone</th>
+            <th>CPF</th>
+        </tr>
+        </thead>
+        <tbody id="tabelaPessoas"></tbody>
+    </table>
+</div>
+
+<script>
+    function aplicarMascaraCPF(cpf) {
+        return cpf.replace(/\D/g, "")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    }
+
+    function aplicarMascaraTelefone(tel) {
+        tel = tel.replace(/\D/g, "");
+        if (tel.length <= 10) {
+            return tel.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+        } else {
+            return tel.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+        }
+    }
+
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        let soma = 0;
+        for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
+        let resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.charAt(9))) return false;
+        soma = 0;
+        for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        return resto === parseInt(cpf.charAt(10));
+    }
+
+    function exibirMensagem(texto, sucesso = true) {
+        const div = document.getElementById("mensagem");
+        div.innerHTML = `<div style="padding: 10px; border-radius: 5px; background-color: ${sucesso ? '#d4edda' : '#f8d7da'}; color: ${sucesso ? '#155724' : '#721c24'}">${texto}</div>`;
+    }
+
+    function limparFormulario() {
+        document.getElementById("pc_cod").value = "";
+        document.getElementById("pc_nome").value = "";
+        document.getElementById("pc_endereco").value = "";
+        document.getElementById("pc_telefone").value = "";
+        document.getElementById("pc_cpf").value = "";
+        document.querySelectorAll("tr").forEach(tr => tr.classList.remove("selecionado"));
+    }
+
+    async function carregarPessoas() {
+        try {
+            const resp = await fetch("/apis/pessoa_carente/listar");
+            const lista = await resp.json();
+            const tbody = document.getElementById("tabelaPessoas");
+            tbody.innerHTML = "";
+            lista.forEach(pessoa => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+            <td>${pessoa.pc_cod}</td>
+            <td>${pessoa.pc_nome}</td>
+            <td>${pessoa.pc_endereco}</td>
+            <td>${aplicarMascaraTelefone(pessoa.pc_telefone)}</td>
+            <td>${aplicarMascaraCPF(pessoa.pc_cpf)}</td>
+          `;
+                tr.onclick = () => preencherFormulario(pessoa, tr);
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            exibirMensagem("Erro ao carregar pessoas.", false);
+        }
+    }
+
+    function preencherFormulario(p, linha) {
+        document.querySelectorAll("tr").forEach(tr => tr.classList.remove("selecionado"));
+        linha.classList.add("selecionado");
+        document.getElementById("pc_cod").value = p.pc_cod;
+        document.getElementById("pc_nome").value = p.pc_nome;
+        document.getElementById("pc_endereco").value = p.pc_endereco;
+        document.getElementById("pc_telefone").value = aplicarMascaraTelefone(p.pc_telefone);
+        document.getElementById("pc_cpf").value = aplicarMascaraCPF(p.pc_cpf);
+    }
+
+    async function cadastrarPessoa() {
+        const nome = document.getElementById("pc_nome").value.trim();
+        const endereco = document.getElementById("pc_endereco").value.trim();
+        const telefone = document.getElementById("pc_telefone").value.replace(/\D/g, '');
+        const cpfLimpo = document.getElementById("pc_cpf").value.replace(/\D/g, '');
+
+        if (!nome || !endereco || !telefone || !cpfLimpo) {
+            exibirMensagem("❌ Preencha todos os campos obrigatórios.", false);
+            return;
+        }
+
+        if (!validarCPF(cpfLimpo)) {
+            exibirMensagem("❌ CPF inválido!", false);
+            return;
+        }
+
+        const pessoa = { nome, endereco, telefone, cpf: cpfLimpo };
+
+        try {
+            const resp = await fetch("/apis/pessoa_carente/cadastrar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pessoa)
+            });
+            const msg = await resp.text();
+            exibirMensagem(msg, resp.ok);
+            if (resp.ok) {
+                carregarPessoas();
+                limparFormulario();
+            }
+        } catch (e) {
+            exibirMensagem("Erro ao cadastrar.", false);
+        }
+    }
+
+    async function alterarPessoa() {
+        const cod = document.getElementById("pc_cod").value;
+        const nome = document.getElementById("pc_nome").value.trim();
+        const endereco = document.getElementById("pc_endereco").value.trim();
+        const telefone = document.getElementById("pc_telefone").value.replace(/\D/g, '');
+        const cpfLimpo = document.getElementById("pc_cpf").value.replace(/\D/g, '');
+
+        if (!cod) return alert("Selecione uma pessoa para alterar.");
+        if (!nome || !endereco || !telefone || !cpfLimpo) {
+            exibirMensagem("❌ Preencha todos os campos obrigatórios.", false);
+            return;
+        }
+        if (!validarCPF(cpfLimpo)) {
+            exibirMensagem("❌ CPF inválido!", false);
+            return;
+        }
+
+        const pessoa = { nome, endereco, telefone, cpf: cpfLimpo };
+
+        try {
+            const resp = await fetch(`/apis/pessoa_carente/alterar/${cod}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pessoa)
+            });
+            const msg = await resp.text();
+            exibirMensagem(msg, resp.ok);
+            if (resp.ok) {
+                carregarPessoas();
+                limparFormulario();
+            }
+        } catch (e) {
+            exibirMensagem("Erro ao alterar.", false);
+        }
+    }
+
+    async function excluirPessoa() {
+        const cod = document.getElementById("pc_cod").value;
+        if (!cod) return alert("Selecione uma pessoa para excluir.");
+        if (!confirm("Tem certeza que deseja excluir essa pessoa?")) return;
+
+        try {
+            const resp = await fetch(`/apis/pessoa_carente/excluir/${cod}`, { method: "DELETE" });
+            const msg = await resp.text();
+
+            if (resp.ok) {
+                exibirMensagem(msg, true);
+                carregarPessoas();
+                limparFormulario();
+            } else if (msg.includes("necessidade_pc") || msg.includes("foreign key")) {
+                exibirMensagem("❌ Não é possível excluir. Existem necessidades vinculadas a essa pessoa.", false);
+            } else {
+                exibirMensagem("❌ Erro ao excluir: " + msg, false);
+            }
+        } catch (e) {
+            exibirMensagem("Erro ao excluir.", false);
+        }
+    }
+
+    function filtrarPessoas() {
+        const termo = document.getElementById("buscaPessoa").value.toLowerCase().trim();
+        const linhas = document.querySelectorAll("#tabelaPessoas tr");
+
+        linhas.forEach((linha) => {
+            const colunas = linha.querySelectorAll("td");
+            if (colunas.length < 5) {
+                linha.style.display = "none";
+                return;
+            }
+
+            const nome = colunas[1].textContent.toLowerCase();
+            const cpf = colunas[4].textContent.toLowerCase();
+
+            const corresponde = nome.includes(termo) || cpf.includes(termo);
+            linha.style.display = corresponde ? "" : "none";
+        });
+    }
+
+    window.onload = () => {
+        carregarPessoas();
+        document.getElementById("pc_cpf").addEventListener("input", function () {
+            this.value = aplicarMascaraCPF(this.value);
+        });
+        document.getElementById("pc_telefone").addEventListener("input", function () {
+            this.value = aplicarMascaraTelefone(this.value);
+        });
+    };
+</script>
+</body>
+</html>

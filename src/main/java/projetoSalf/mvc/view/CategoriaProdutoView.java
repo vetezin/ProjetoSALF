@@ -1,18 +1,20 @@
 package projetoSalf.mvc.view;
 
-import projetoSalf.mvc.control.CategoriaProdutoControl;
+import projetoSalf.mvc.dao.CategoriaProdutoDAO;
 import projetoSalf.mvc.model.CategoriaProduto;
+import projetoSalf.mvc.util.SingletonDB;
+
 
 import java.util.List;
 import java.util.Scanner;
 
 public class CategoriaProdutoView {
 
-    private CategoriaProdutoControl control;
+    private CategoriaProdutoDAO dao;
     private Scanner scanner;
 
     public CategoriaProdutoView() {
-        control = new CategoriaProdutoControl();
+        dao = new CategoriaProdutoDAO();
         scanner = new Scanner(System.in);
     }
 
@@ -45,12 +47,17 @@ public class CategoriaProdutoView {
     private void cadastrar() {
         System.out.print("Descrição da nova categoria: ");
         String descricao = scanner.nextLine();
-        boolean sucesso = control.adicionarCategoria(descricao);
-        if (sucesso) System.out.println("Categoria cadastrada com sucesso!");
+        CategoriaProduto categoria = new CategoriaProduto(0, descricao);
+        boolean sucesso = dao.inserir(categoria);
+        if (sucesso) {
+            System.out.println("Categoria cadastrada com sucesso!");
+        } else {
+            System.out.println("Erro ao cadastrar categoria.");
+        }
     }
 
     private void listar() {
-        List<CategoriaProduto> categorias = control.listarCategorias();
+        List<CategoriaProduto> categorias = dao.consultarTodos();
         System.out.println("\n--- Lista de Categorias ---");
         for (CategoriaProduto c : categorias) {
             System.out.println(c);
@@ -64,8 +71,13 @@ public class CategoriaProdutoView {
         scanner.nextLine();
         System.out.print("Nova descrição: ");
         String novaDesc = scanner.nextLine();
-        boolean sucesso = control.atualizarCategoria(cod, novaDesc);
-        if (sucesso) System.out.println("Categoria atualizada.");
+        CategoriaProduto categoria = new CategoriaProduto(cod, novaDesc);
+        boolean sucesso = dao.atualizar(categoria);
+        if (sucesso) {
+            System.out.println("Categoria atualizada.");
+        } else {
+            System.out.println("Erro ao atualizar categoria.");
+        }
     }
 
     private void excluir() {
@@ -73,17 +85,23 @@ public class CategoriaProdutoView {
         System.out.print("Digite o código da categoria que deseja excluir: ");
         int cod = scanner.nextInt();
         scanner.nextLine();
-        boolean sucesso = control.excluirCategoria(cod);
-        if (sucesso) System.out.println("Categoria excluída.");
+        boolean sucesso = dao.excluir(cod);
+        if (sucesso) {
+            System.out.println("Categoria excluída.");
+        } else {
+            System.out.println("Erro ao excluir categoria.");
+        }
     }
 
     private void buscarPorDescricao() {
         System.out.print("Digite parte da descrição para buscar: ");
         String filtro = scanner.nextLine();
-        List<CategoriaProduto> resultado = control.buscarPorDescricao(filtro);
+        List<CategoriaProduto> resultado = dao.consultarTodos();
         System.out.println("\n--- Resultado da Busca ---");
         for (CategoriaProduto c : resultado) {
-            System.out.println(c);
+            if (c.getDesc().toLowerCase().contains(filtro.toLowerCase())) {
+                System.out.println(c);
+            }
         }
     }
 }

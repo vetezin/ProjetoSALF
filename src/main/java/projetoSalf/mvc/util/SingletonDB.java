@@ -10,7 +10,9 @@ public class SingletonDB {
     {
 
         conexao=new Conexao();
-        return conexao.conectar("jdbc:postgresql://localhost:5432/","casofa_db","postgres","postgres123");
+        return conexao.conectar("jdbc:postgresql://localhost:5432/", "ComandosDB", "postgres", "postgres123");
+
+
     }
     public static Conexao getConexao() {
         return conexao;
