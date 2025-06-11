@@ -57,7 +57,7 @@ public class EstoqueDAO implements IDAO<Estoque> {
     public Estoque alterarQtd(Estoque estoque) {
         String sql = """
         UPDATE estoque SET
-        es_qtdprod = #1,
+        es_qtdprod = #1
         WHERE estoque_id = #2;
         """;
         sql = sql.replace("#1", String.valueOf(estoque.getEs_qtdprod()));

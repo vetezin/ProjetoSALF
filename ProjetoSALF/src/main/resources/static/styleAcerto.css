@@ -1,0 +1,335 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to right, #2b2e2e, #393939);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+}
+
+main.container {
+  width: 100%;
+  max-width: 1000px;
+  padding: 40px 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700; 
+  letter-spacing: 1px; 
+  background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.top-bar input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #555;
+  color: #fff;
+}
+
+.botoes-topo button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2575fc;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.botoes-topo button:hover {
+  background-color: #1e60d5;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #2b2e2e;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+
+.tabela-simples {
+  width: 100%;
+  font-size: 14px;
+  border-collapse: collapse;
+  background-color: #2b2e2e;
+  color: white !important;
+  box-shadow: none;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabela-simples thead tr {
+  background-color: #343a40;
+  font-weight: bold;
+}
+
+.tabela-simples th,
+.tabela-simples td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #444;
+  text-align: center;
+}
+
+.tabela-simples tr:nth-child(even) {
+  background-color: #3a3a3a;
+}
+
+.tabela-simples tr:hover {
+  background-color: #444;
+}
+
+.tabela-simples th {
+  background-color: #2e2e2e;
+}
+
+.tabela-simples .acoes button {
+  padding: 4px 8px;
+  margin: 0 2px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+
+
+th,
+td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #444;
+  color: white !important;
+}
+
+thead tr {
+  background: linear-gradient(90deg, #2575fc, #6a11cb);
+  color: white;
+}
+
+th {
+  background: transparent;
+  color: white;
+   text-align: center; 
+}
+
+tr:nth-child(even) {
+  background-color: #3a3a3a;
+}
+
+tr:hover {
+  background-color: #444;
+}
+.acoes button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.editar {
+  background-color: #d19e06;
+}
+
+.excluir {
+  background-color: #dc3545;
+}
+
+/* Modal */
+
+.modal-content {
+  background-color: #2b2e2e;
+  margin: 8% auto;
+  padding: 25px 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 0 15px rgba(0, 213, 255, 0.2);
+  border: 1px solid #3a7bd5;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+}
+
+.modal-header h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-close {
+  font-size: 28px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #fff;
+}
+
+.modal-footer {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+form input,
+form select {
+  background-color: #444;
+  border: 1px solid #666;
+  color: #fff;
+  border-radius: 6px;
+}
+
+.form-floating > label {
+  color: #aaa;
+}
+
+.button.green {
+  background: linear-gradient(to right, #28a745, #218838);
+}
+
+.button.blue {
+  background: linear-gradient(to right, #007bff, #0056b3);
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #555;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.button.green {
+  background-color: #28a745;
+}
+
+.button.blue {
+  background-color: #007bff;
+}
+
+.button {
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form-floating > label {
+  color: #ccc;
+}
+
+#mensagemToast {
+  position: fixed;
+  top: 20px;       
+  right: 20px;     
+  background-color: #333;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  font-weight: bold;
+  display: none;   
+  z-index: 1050;   
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+/* Padronização de h5 para manter estilo consistente com tabelas */
+h5 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  color: #00d2ff;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px #000;
+}
+
+/* Botões padrão */
+button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+button:hover {
+  transform: scale(1.02);
+}
+
+/* Navbar personalizada */
+.custom-navbar {
+ background-color: #2575fc;
+  border-bottom: 1px solid #3a7bd5;
+  box-shadow: 0 0 10px rgba(58, 123, 213, 0.4);
+  z-index: 1030;
+
+}
+
+.navbar-nav .nav-link {
+  color: #fff;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  padding: 10px 20px;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #00d2ff !important;
+ 
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+  height: calc(3.5rem + 2px);
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.form-floating > label {
+  padding-top: 0.5rem;
+  padding-left: 0.75rem;
+  color: #bbb;
+}
+
+#formAcerto button[type="submit"] {
+  margin-top: 10px;
+}
+
+
+#formAcerto input[type="date"] {
+  height: calc(3.5rem + 2px);
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+}

@@ -185,3 +185,53 @@ async function ordenarPorFuncionario() {
   }
 }
 
+async function buscarPorMotivo() {
+  let termo = document.getElementById("buscaMotivo").value.trim().toLowerCase();
+  let tbody = document.querySelector("#tabelaSaidas tbody");
+
+  tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
+
+  try {
+    let response = await fetch("http://localhost:8080/apis/saida/listar-com-produtos");
+    if (!response.ok) {
+      tbody.innerHTML = `<tr><td colspan="6">Erro ao buscar saídas: ${response.status}</td></tr>`;
+      return;
+    }
+
+    let saidas = await response.json();
+
+    // Filtra apenas os que contêm o termo no motivo
+    let filtradas = saidas.filter(saida => 
+      saida.motivo && saida.motivo.toLowerCase().includes(termo)
+    );
+
+    if (filtradas.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='6'>Nenhuma saída encontrada para o motivo buscado.</td></tr>";
+      return;
+    }
+
+    tbody.innerHTML = "";
+
+    filtradas.forEach(saida => {
+      let produtosNomes = saida.produtos.map(p => p.nome).join(", ") || "-";
+      let nomeFuncionario = saida.funcionario ? saida.funcionario.nome : "Desconhecido";
+
+      let tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${saida.id}</td>
+        <td>${new Date(saida.data).toLocaleDateString('pt-BR')}</td>
+        <td>${saida.motivo}</td>
+        <td>${nomeFuncionario}</td>
+        <td>${produtosNomes}</td>
+        <td class="acoes">
+          <button class="excluir btn btn-danger btn-sm" onclick="apagarSaida(${saida.id})">Excluir</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+  } catch (error) {
+    console.error("Erro ao filtrar saídas:", error);
+    tbody.innerHTML = "<tr><td colspan='6'>Erro ao carregar dados.</td></tr>";
+  }
+}

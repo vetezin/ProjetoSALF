@@ -45,22 +45,25 @@
 
 
 
+ 
+
 
 
 
 
 
   <main class="container" style="padding-top: 70px;">
-    <h1 class="mb-4">Listar Saídas</h1>
+    <h1 >Listar Saídas</h1>
 
 
-    <div class="d-flex justify-content-start mb-3 gap-2">
-      <button id="btnOrdenarMotivo" class="btn btn-primary" onclick="ordenarPorFuncionario()">Ordenar por Funcionário</button>
-      <button id="btnOrdenarMotivo" class="btn btn-primary" onclick="ordenarPorMotivo()">Ordenar por Motivo</button>
-    
-
-    <button class="btn btn-warning" onclick="window.location.href='regSaida.html'">Nova Saida</button>
+     <div class="top-bar d-flex align-items-center gap-2 flex-wrap mb-3" style="padding-top: 30px;">
+    <input type="text" id="buscaMotivo" placeholder="Buscar por motivo..." class="form-control flex-grow-1" oninput="buscarPorMotivo()" />
+    <div class="botoes-topo d-flex gap-2 flex-wrap">
+      <button id="btnOrdenarFuncionario" class="btn btn-outline-primary" onclick="ordenarPorFuncionario()">Ordenar por Funcionário</button>
+      <button id="btnOrdenarMotivo" class="btn btn-outline-primary" onclick="ordenarPorMotivo()">Ordenar por Motivo</button>
+      <button class="btn btn-primary" onclick="window.location.href='regSaida.html'">Nova Saida</button>
     </div>
+  </div>
 
     <table id="tabelaSaidas" >
       <thead>

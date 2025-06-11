@@ -157,11 +157,11 @@ async function registrarSaida(event) {
       fecharModal("modalSaidaProduto");
       listarEstoque();
     } else {
-      alert("Erro: " + resultado.mensagem || "Falha ao registrar saída.");
+       mostrarToast("Erro ao registrar saida",5000);
     }
   } catch (erro) {
     console.error("Erro ao registrar saída:", erro);
-    alert("Erro ao tentar registrar a saída.");
+    mostrarToast("Erro ao registrar saida",5000);
   }
 
   return false;
@@ -173,12 +173,12 @@ function adicionarSelecionados() {
   let qtd = document.getElementById("quantidadeItem").value;
 
   if (checkboxes.length === 0) {
-    alert("Nenhum produto selecionado!");
+    mostrarToast("Nenhum produto selecionado",5000);
     return;
   }
 
   if (!qtd || qtd <= 0) {
-    alert("Informe uma quantidade válida para todos os produtos.");
+    mostrarToast("Informe uma quantidade válida para todos os produtos.",5000);
     return;
   }
 
@@ -222,7 +222,7 @@ async function registrarSaidaFinal() {
   });
 
   if (produtos.length === 0) {
-    alert("Nenhum produto selecionado.");
+    mostrarToast("Nenhum produto selecionado.",5000);
     return;
   }
 
@@ -243,14 +243,14 @@ async function registrarSaidaFinal() {
     let resultado = await resposta.json();
 
     if (resposta.ok) {
-      alert("Saída registrada com sucesso!");
+      mostrarToast("Saída registrada com sucesso!",5000);
       window.location.reload(); 
     } else {
-      alert("Erro: " + (resultado.mensagem || "Falha ao registrar saída."));
+      mostrarToast("Falha ao registrar saída.",5000);
     }
   } catch (erro) {
     console.error("Erro ao registrar saída:", erro);
-    alert("Erro de comunicação com o servidor.");
+    mostrarToast("Falha ao registrar saída.",5000);
   }
 }
 
