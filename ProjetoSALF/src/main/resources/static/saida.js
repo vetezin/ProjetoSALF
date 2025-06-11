@@ -193,7 +193,7 @@ async function ordenarPorFuncionario() {
 
 async function buscarPorMotivo() {
   let termo = document.getElementById("buscaMotivo").value.trim().toLowerCase();
-  let tbody = document.querySelector("#tabelaSaidas t body");
+  let tbody = document.querySelector("#tabelaSaidas tbody");
 
   tbody.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
 
