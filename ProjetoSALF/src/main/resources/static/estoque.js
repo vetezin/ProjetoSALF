@@ -77,6 +77,7 @@ async function listarEstoque() {
       return;
     }
 
+    /*
     estoque.forEach((item) => {
       let tr = document.createElement("tr");
       tr.innerHTML = `
@@ -96,7 +97,29 @@ async function listarEstoque() {
 
       `;
       tbody.appendChild(tr);
-    });
+    });*/
+    estoque.forEach((item) => {
+  let nomeProduto = item.produto?.nome || "Produto excluído";
+
+  let tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${item.id}</td>
+    <td>${item.produtoId}</td>
+    <td>${nomeProduto}</td>
+    <td>${item.quantidade}</td>
+    <td>${item.validade}</td>
+    <td class="text-center">
+      <input type="checkbox" class="form-check-input produto-checkbox"
+        data-estoque-id="${item.id}"
+        data-produto-id="${item.produtoId}"
+        data-produto-nome="${nomeProduto}"
+        data-quantidade="${item.quantidade}"
+        data-validade="${item.validade}" />
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
   } catch (erro) {
     console.error("Erro ao buscar estoque:", erro);
     tbody.innerHTML =
